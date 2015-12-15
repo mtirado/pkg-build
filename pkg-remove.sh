@@ -1,7 +1,11 @@
 #!/bin/bash
+#PKGINSTALL="/podhome/local"
+#PKGFILES="/podhome/local/.packages"
+PKGINSTALL="/usr/local"
+PKGFILES="/usr/local/.packages"
 set -e
+umask 022
 #-----------------------------------------------------------------------------
-#src-dir should be the source directory where configure is located
 if [ "$1" = "" ]; then
 	echo "usage: pkg-remove name"
 	exit -1
@@ -9,10 +13,7 @@ fi
 
 
 #-----------------------------------------------------------------------------
-PKGFILES="/podhome/local/.packages"
-INSTALL="/podhome/local"
 PKGNAME="$1"
-
 
 #----------- check if package name is in use ---------------------------------
 FIND=$(find $PKGFILES -name $PKGNAME)
@@ -21,14 +22,12 @@ if [ "$FIND" = "" ]; then
 	exit -1
 fi
 
-echo "removing files"
 #----------- remove files ----------------------------------------------------
-cd $INSTALL
+cd $PKGINSTALL
 while read FILE; do
-	rm $FILE
+	rm $PKGINSTALL/$FILE
 done <$PKGFILES/$PKGNAME
 
-echo "removing package file"
 #----------- remove package file ---------------------------------------------
 rm $PKGFILES/$PKGNAME
 

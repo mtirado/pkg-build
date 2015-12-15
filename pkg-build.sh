@@ -1,82 +1,97 @@
 #!/bin/bash
+#
+# export PKGAUTOMATE=1 to skip user interaction
+#
+#-----------------------------------------------------------------------------
 set -e
-INSTALL="/podhome/local"
-
+umask 022
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-	echo "usage: pkg-build <src-dir> <pkg-dir> [numjobs]"
+	echo "usage: pkg-build <pkg-dir> [numjobs]"
 	exit 0
-
-#-----------------------------------------------------------------------------
-#src-dir should be the source code directory where configure file is located
+fi
 if [ "$1" = "" ]; then
-	echo "usage: pkg-build <src-dir> <pkg-dir> [numjobs]"
+	echo "usage: pkg-build <pkg-dir> [numjobs]"
 	exit -1
 fi
-#pkg-dir is the --prefix path where we build into
-if [ "$2" = "" ]; then
-	echo "usage: pkg-build <src-dir> <pkg-dir> [numjobs]"
-	exit -1
-fi
-
 # make absolute path
-if [[ "$2" != /* ]]; then
-	PKGDIR="$(pwd)/$2"
+if [[ "$1" != /* ]]; then
+	PKGDIR="$(pwd)/$1"
 else
-	PKGDIR="$2"
+	PKGDIR="$1"
 fi
-
 # number of parallel jobs for make to use
-if [[ "$3" -eq "" ]]; then
+if [ "$2" = "" ]; then
 	JOBS=1
-elif test $3 -lt 0; then
+elif test $2 -lt 0; then
 	JOBS=1
-elif test "$3" -lt 32; then
-	JOBS="$3"
+elif test "$2" -lt 32; then
+	JOBS="$2"
 else
 	exit -1
 fi
 #-----------------------------------------------------------------------------
 
 
+PKGNAME="pkgdist-$(basename $PKGDIR)"
+PKGCONFIG="pkg-configure.sh"
+PKGCOMPILE="pkg-compile.sh"
+PKGASSEMBLE="pkg-assemble.sh"
+PKGDISTDIR="$PKGDIR/$PKGNAME"
+
+export PKGDISTDIR
+export PKGDIR
+export JOBS
+
 
 echo ""
-echo "source directory: $1"
-echo "package directory: $PKGDIR"
-echo "make -j$JOBS"
-echo ""
-echo "press any key to continue"
-read -n 1 -s KEY
-echo "rm -rf $PKGDIR..."
-rm -rf $PKGDIR
-mkdir $PKGDIR
+echo "-----------------------------------------------------------------------"
+echo " package directory: $PKGDIR"
+echo " parallel jobs: $JOBS"
+echo "-----------------------------------------------------------------------"
+if [ "$PKGAUTOMATE" != "1" ]; then
+	echo "press any key to continue."
+	read -n 1 -s KEY
+fi
 
 
-cd $1
-echo "cleaning..."
-sleep 1
-make clean
 
-# TODO  -- modularize configuration script
-echo "configuring..."
-./configure 						\
-	       	--prefix=$PKGDIR			\
-		--target-list=i386-linux-user
-#		--enable-seccomp			\
-echo ""
-echo "configured, starting build..."
-echo "in 3"
-sleep 1
-echo "in 2"
-sleep 1
-echo "in 1"
-sleep 1
-echo "in 0"
-sleep 1
+# everything happens in package directory
+#mkdir $PKGDISTDIR
+cd $PKGDIR
 
-make -j$JOBS && make install
 
-echo ""
-echo "you can remove any undesired files from $PKGDIR at this time."
-echo "then run 'pkg-install $PKGDIR <name>' as owner of $INSTALL"
+echo "running config script..."
+./$PKGCONFIG
+echo "-----------------------------------------------------------------------"
+echo " configured."
+echo "-----------------------------------------------------------------------"
+if [ "$PKGAUTOMATE" != "1" ]; then
+	echo "press any key to continue."
+	read -n 1 -s KEY
+fi
+
+
+echo "running build script..."
+./$PKGCOMPILE
+echo "-----------------------------------------------------------------------"
+echo " build finished."
+echo "-----------------------------------------------------------------------"
+if [ "$PKGAUTOMATE" != "1" ]; then
+	echo "press any key to continue."
+	read -n 1 -s KEY
+fi
+
+
+echo "running assembly script..."
+./$PKGASSEMBLE
+echo "-----------------------------------------------------------------------"
+echo " assembly complete, ready for pkg-install."
+echo "-----------------------------------------------------------------------"
+if [ "$PKGAUTOMATE" != "1" ]; then
+	echo "press any key to continue."
+	read -n 1 -s KEY
+fi
+
+
 
 
