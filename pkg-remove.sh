@@ -1,8 +1,6 @@
 #!/bin/bash
 #PKGINSTALL="/podhome/local"
 #PKGFILES="/podhome/local/.packages"
-PKGINSTALL="/usr/local"
-PKGFILES="/usr/local/.packages"
 set -e
 umask 022
 #-----------------------------------------------------------------------------
@@ -11,7 +9,14 @@ if [ "$1" = "" ]; then
 	exit -1
 fi
 
+if [ "$PKGINSTALL" = "" ]; then
+	PKGINSTALL="/usr/local"
+fi
+PKGFILES="$PKGINSTALL/.packages"
 
+echo "removing package from $PKGINSTALL"
+echo "press any key to continue"
+read -n 1 -s KEY
 #-----------------------------------------------------------------------------
 PKGNAME="$1"
 
