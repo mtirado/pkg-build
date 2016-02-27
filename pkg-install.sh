@@ -50,14 +50,26 @@ fi
 #----------- fail if file exists ---------------------------------------------
 cd $DISTDIR
 EXISTS=0
+EXCEPT=0
 find . -print0 | (
 	while IFS= read -r -d '' FILE
 	do
-		# ignore directories
 		if [ ! -d "$FILE" ]; then
 			if [ -e "$PKGINSTALL/$FILE" ]; then
 				echo "$PKGINSTALL/$FILE already exists"
 				EXISTS=$((EXISTS + 1))
+				EXCEPT=1
+			elif [ "$EXCEPT" = "0" ]; then
+				MKPATH=$(dirname "$PKGINSTALL/$FILE")
+				if [ ! -e "$MKPATH" ]; then
+					echo "make path: $MKPATH"
+					mkdir -p "$MKPATH"
+				fi
+			fi
+		else
+			if [ -e "$PKGINSTALL/$FILE" ]; then
+				echo "make path: $PKGINSTALL/$FILE"
+				mkdir -p "$PKGINSTALL/$FILE"
 			fi
 		fi
 	done
@@ -70,6 +82,7 @@ find . -print0 | (
 #----------- TODO strip debug info -------------------------------------------
 # optional of course...
 
+
 #----------- construct package file list -------------------------------------
 touch $PKGFILES/$PKGNAME
 find . -print0 | while IFS= read -r -d '' FILE; do
@@ -80,15 +93,16 @@ done
 cd $CWD
 cd $DISTDIR
 
+
 #----------- copy files to install destination  ------------------------------
 find . -type f -print0 | while IFS= read -r -d '' FILE; do
-	cp -rv $FILE $PKGINSTALL/
+	cp -rv $FILE $PKGINSTALL/$FILE
 done
 
 
 #----------- copy symlinks to install destination  ------------------------------
 find . -type l -print0 | while IFS= read -r -d '' FILE; do
-	cp -rv $FILE $PKGINSTALL/
+	cp -rv $FILE $PKGINSTALL/$FILE
 done
 
 #-- TODO some way to chown, set caps, suid bit, etc --
