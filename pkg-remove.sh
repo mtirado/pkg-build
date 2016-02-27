@@ -27,6 +27,9 @@ if [ "$FIND" = "" ]; then
 	exit -1
 fi
 
+#----------- TODO remove package directories if empty, otherwise error -------
+#----------- user could either continue deleting, or quit and manually repair
+#----------- we will need to update the package file to resume after repair!
 #----------- remove files ----------------------------------------------------
 cd $PKGINSTALL
 while read FILE; do
