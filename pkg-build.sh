@@ -1,10 +1,12 @@
 #!/bin/bash
-#
+# (c) Michael R. Tirado GPL Version 3 or any later version.
 # export PKGAUTOMATE=1 to skip user interaction
 #
+# the main assumption here is all packages are package.tar.* files in pkg-dir
 #-----------------------------------------------------------------------------
 set -e
 umask 022
+
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 	echo "usage: pkg-build <pkg-dir> [numjobs]"
 	exit 0
@@ -13,35 +15,37 @@ if [ "$1" = "" ]; then
 	echo "usage: pkg-build <pkg-dir> [numjobs]"
 	exit -1
 fi
+
 # make absolute path
 if [[ "$1" != /* ]]; then
 	PKGDIR="$(pwd)/$1"
 else
 	PKGDIR="$1"
 fi
+
 # number of parallel jobs for make to use
 if [ "$2" = "" ]; then
 	JOBS=1
 elif test $2 -lt 0; then
 	JOBS=1
-elif test "$2" -lt 32; then
+elif test "$2" -lt 128; then
 	JOBS="$2"
 else
 	exit -1
 fi
+
 #-----------------------------------------------------------------------------
 
-
-PKGNAME="pkgdist-$(basename $PKGDIR)"
-PKGCONFIG="pkg-configure.sh"
+CWD=$(pwd)
+PKGNAME="$(basename $PKGDIR)"
+PKGPREPARE="pkg-prepare.sh"
 PKGCOMPILE="pkg-compile.sh"
-PKGASSEMBLE="pkg-assemble.sh"
-PKGDISTDIR="$PKGDIR/$PKGNAME"
-
+PKGBUILDDIR="$CWD/pkgbuild-$PKGNAME"
+PKGDISTDIR="$PKGBUILDDIR/pkgdist"
+export PKGBUILDDIR
 export PKGDISTDIR
 export PKGDIR
 export JOBS
-
 
 echo ""
 echo "-----------------------------------------------------------------------"
@@ -54,44 +58,38 @@ if [ "$PKGAUTOMATE" != "1" ]; then
 fi
 
 
+if [ -e "$PKGBUILDDIR" ]; then
+	echo "build directory $PKGBUILDDIR already exists, remove it."
+	exit -1
+fi
 
-# everything happens in package directory
+# everything happens in temporary build directory
 #mkdir $PKGDISTDIR
-cd $PKGDIR
+mkdir $PKGBUILDDIR
+cd $PKGBUILDDIR
 
-
-echo "running config script..."
-./$PKGCONFIG
+# extract packages
+echo "running prep script..."
+$PKGPREPARE $PKGDIR || {
+	echo "prep failed"
+	exit -1
+}
 echo "-----------------------------------------------------------------------"
-echo " configured."
+echo " prepared."
 echo "-----------------------------------------------------------------------"
 if [ "$PKGAUTOMATE" != "1" ]; then
 	echo "press any key to continue."
 	read -n 1 -s KEY
 fi
 
-
+# configure and build
 echo "running build script..."
-./$PKGCOMPILE
+$PKGDIR/$PKGCOMPILE || {
+	echo "build failed"
+	exit -1
+}
 echo "-----------------------------------------------------------------------"
-echo " build finished."
+echo " built. you can now run pkg-install as root."
+echo " pkg-install.sh $PKGDISTDIR $PKGNAME"
 echo "-----------------------------------------------------------------------"
-if [ "$PKGAUTOMATE" != "1" ]; then
-	echo "press any key to continue."
-	read -n 1 -s KEY
-fi
-
-
-echo "running assembly script..."
-./$PKGASSEMBLE
-echo "-----------------------------------------------------------------------"
-echo " assembly complete, ready for pkg-install."
-echo "-----------------------------------------------------------------------"
-if [ "$PKGAUTOMATE" != "1" ]; then
-	echo "press any key to continue."
-	read -n 1 -s KEY
-fi
-
-
-
 

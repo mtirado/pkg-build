@@ -7,19 +7,29 @@ if [ "$1" = "" ]; then
 fi
 
 PKGDIR="$1"
-cd $PKGDIR
+
+if [ ! -f "$PKGDIR/wares" ]; then
+	echo "missing package wares file"
+	exit -1
+fi
+
 #-----------------------------------------------------------------------------
-# download / extract packages  TODO checksum + sig
+# download / extract packages
 #-----------------------------------------------------------------------------
-# TODO download remote source packages if not local
-# and also file verification, size maybe?
-# support for different archive file types?
+# TODO:
+# download remote source packages. check sigs, checksums, filesize.
+# universal archive support, for when tar xf fails us
+#-----------------------------------------------------------------------------
 echo "acquiring and unpacking source archives..."
 while read LINE; do
 	ARCHIVE=$(echo $LINE | cut -d " " -f 1)
-	echo "tar xf $ARCHIVE"
-	tar xf $ARCHIVE
-done <wares
+	if [ ! -f "$PKGDIR/$ARCHIVE" ]; then
+		echo "missing package archive $PKGDIR/$ARCHIVE"
+		exit -1
+	fi
+	echo "tar xf $PKGDIR/$ARCHIVE"
+	tar xfv $PKGDIR/$ARCHIVE
+done <$PKGDIR/wares
 echo "done, ready for pkg-build"
 
 

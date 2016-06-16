@@ -6,6 +6,7 @@ set -e
 #-----------------------------------------------------------------------------
 # pkgbuild-dir is the distribution folder normally set by ./configure --prefix
 # which is populated on make install
+#-----------------------------------------------------------------------------
 if [ "$1" = "" ] || [ "$1" = "-h" ]; then
 	echo "usage: pkg-install <pkgdist-dir> <pkgname>"
 	echo "set PKGINSTALL=<path> to install to other directories"
@@ -51,6 +52,7 @@ fi
 cd $DISTDIR
 EXISTS=0
 EXCEPT=0
+# TODO check used files in another pass before creating dirs
 find . -print0 | (
 	while IFS= read -r -d '' FILE
 	do
@@ -75,12 +77,10 @@ find . -print0 | (
 	done
 	if [ "$EXISTS" != "0" ]; then
 		echo "error: $EXISTS file(s) already exist in $PKGINSTALL"
-		# we could scan packages to find which one owns file
+		# TODO we should scan packages to find which one owns file
 		exit -1
 	fi
 )
-#----------- TODO strip debug info -------------------------------------------
-# optional of course...
 
 
 #----------- construct package file list -------------------------------------
@@ -105,12 +105,8 @@ find . -type l -print0 | while IFS= read -r -d '' FILE; do
 	cp -rv $FILE $PKGINSTALL/$FILE
 done
 
-#-- TODO some way to chown, set caps, suid bit, etc --
 
-
-
-
-
+#-- TODO some way to chown, prompt for set caps, suid/gid bit, etc --
 
 
 
