@@ -2,12 +2,13 @@
 # assumes untarred directory is same as filename without .tar.* extension.
 set -e
 CWD=$(pwd)
-#ugh procps configure is a bit funky
-export CFLAGS="-I$PKGDISTDIR/include -I$PKGDISTDIR/include/ncurses"
-export LDFLAGS="-L$PKGDISTDIR/lib -L$PKGDISTDIR/lib/ncurses"
+IFS=' '
+
 while read LINE ;do
 	cd $CWD
-	ARCHIVEDIR=${LINE%.tar.*}
+	PKGROOT=$PKGDISTDIR/$(echo $LINE | cut -d " " -f 1)
+	ARCHIVEDIR=$(echo $LINE | cut -d " " -f 2)
+	ARCHIVEDIR=${ARCHIVEDIR%.tar.*}
 	if [ ! -d "$ARCHIVEDIR" ]; then
 		echo "archive dir $ARCHIVEDIR is missing"
 		exit -1
@@ -15,29 +16,33 @@ while read LINE ;do
 
 	cd $ARCHIVEDIR
 	echo "archive dir $ARCHIVEDIR"
+	echo "pkg dir $PKGDIR"
 	case "$ARCHIVEDIR" in
 		ncurses*)
 			./configure 			\
-				--prefix=$PKGDISTDIR	\
+				--prefix=$PKGROOT	\
 				--with-shared		\
 				--without-debug
+			# procps-ng build system is a bit flaky without pkg-config
+			export CFLAGS="-I$PKGROOT/include -I$PKGROOT/include/ncurses"
+			export LDFLAGS="-L$PKGROOT/lib -L$PKGROOT/lib/ncurses"
+			export NCURSES_LIBS="-L$PKGROOT/lib -lncurses"
+			export NCURSES_CFLAGS="-I$PKGROOT/include/ncurses"
 		;;
 		ex-*)
-			sed -i "s|DESTDIR.*=|DESTDIR = $PKGDISTDIR|" Makefile
+			sed -i "s|DESTDIR.*=|DESTDIR = $PKGROOT|" Makefile
 			sed -i "s|/usr/ucb|/usr/bin|" Makefile
 			sed -i "s|/usr/local|/|" Makefile
 			sed -i "s|= termlib|= ncurses|" Makefile
 		;;
 		procps*)
-			NCURSES_LIBS="-L$PKGDISTDIR/lib -lncurses"	\
-			NCURSES_CFLAGS="-I$PKGDISTDIR/include/ncurses"	\
-			./configure 					\
-				--prefix=$PKGDISTDIR			\
+			./configure 			\
+				--prefix=$PKGROOT	\
 				--disable-kill
 		;;
 		#*)
-		#	./configure 				\
-		#		--prefix=$PKGDISTDIR
+		#	./configure 			\
+		#		--prefix=$PKGROOT
 	esac
 
 	make -j$JOBS
