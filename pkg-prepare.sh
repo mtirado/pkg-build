@@ -18,17 +18,18 @@ fi
 #-----------------------------------------------------------------------------
 # TODO:
 # download remote source packages. check sigs, checksums, filesize.
-# universal archive support, for when tar xf fails us
 #-----------------------------------------------------------------------------
 echo "acquiring and unpacking source archives..."
 while read LINE; do
-	ARCHIVE=$(echo $LINE | cut -d " " -f 1)
+	PKGNAME=$(echo $LINE | cut -d " " -f 1)
+	ARCHIVE=$(echo $LINE | cut -d " " -f 2)
 	if [ ! -f "$PKGDIR/$ARCHIVE" ]; then
 		echo "missing package archive $PKGDIR/$ARCHIVE"
 		exit -1
 	fi
 	echo "tar xf $PKGDIR/$ARCHIVE"
 	tar xfv $PKGDIR/$ARCHIVE
+	mkdir -vp $PKGDISTDIR/$PKGNAME
 done <$PKGDIR/wares
 echo "done, ready for pkg-build"
 

@@ -37,10 +37,9 @@ fi
 #-----------------------------------------------------------------------------
 
 CWD=$(pwd)
-PKGNAME="$(basename $PKGDIR)"
 PKGPREPARE="pkg-prepare.sh"
 PKGCOMPILE="pkg-compile.sh"
-PKGBUILDDIR="$CWD/pkgbuild-$PKGNAME"
+PKGBUILDDIR="$CWD/pkgbuild-$(basename $PKGDIR)"
 PKGDISTDIR="$PKGBUILDDIR/pkgdist"
 export PKGBUILDDIR
 export PKGDISTDIR
@@ -64,7 +63,6 @@ if [ -e "$PKGBUILDDIR" ]; then
 fi
 
 # everything happens in temporary build directory
-#mkdir $PKGDISTDIR
 mkdir $PKGBUILDDIR
 cd $PKGBUILDDIR
 
@@ -88,8 +86,10 @@ $PKGDIR/$PKGCOMPILE || {
 	echo "build failed"
 	exit -1
 }
+
+#TODO more informative output on packages installed
 echo "-----------------------------------------------------------------------"
 echo " built. you can now run pkg-install as root."
-echo " pkg-install.sh $PKGDISTDIR $PKGNAME"
+echo " pkg-install.sh $PKGDISTDIR "
 echo "-----------------------------------------------------------------------"
 
