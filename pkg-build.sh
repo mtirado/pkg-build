@@ -7,6 +7,8 @@
 set -e
 umask 022
 
+export PKGAUTOMATE="1"
+
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 	echo "usage: pkg-build <pkg-dir> [numjobs]"
 	exit 0

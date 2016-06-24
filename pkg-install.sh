@@ -41,7 +41,16 @@ for ITEM in `find . -mindepth 1 -maxdepth 1`; do
 	#----------- check if package name is in use -------------------------
 	FIND=$(find $PKGFILES -name $PKGNAME)
 	if [ "$FIND" != "" ]; then
-		echo "package $PKGNAME already exists, run pkg-remove first."
+		echo "-----------------------------------------------------------------"
+		echo " package already exists, did you forget to run pkg-remove ?"
+		echo " skip installing package $PKGNAME ? (y/n)"
+		echo "-----------------------------------------------------------------"
+		read -n 1 -s ACK
+		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
+			continue
+		else
+			exit -1
+		fi
 		exit -1
 	fi
 	cd $DISTDIR/$ITEM
@@ -67,9 +76,18 @@ for ITEM in `find . -mindepth 1 -maxdepth 1`; do
 	done
 
 	if [ "$EXISTS" != "0" ]; then
-		echo "error: $EXISTS file(s) already exist in $PKGINSTALL"
 		# TODO check used files in another pass before creating dirs
 		# TODO we should scan packages to find which one owns file
+		echo "-----------------------------------------------------------------"
+		echo "error: $EXISTS file(s) already exist in $PKGINSTALL"
+		echo  "skip installing package $PKGNAME ? (y/n)"
+		echo "-----------------------------------------------------------------"
+		read -n 1 -s ACK
+		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
+			continue
+		else
+			exit -1
+		fi
 		exit -1
 	fi
 
@@ -92,6 +110,11 @@ for ITEM in `find . -mindepth 1 -maxdepth 1`; do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
+	#----------- fix pkg-config prefix -----------------------------------
+	for FILE in `find lib/pkgconfig -mindepth 1`; do
+		echo "adjusting: $FILE"
+		sed "s|prefix=/.*|prefix=/usr/lib|" $FILE
+	done
 
 	#-- TODO some way to chown, prompt for set caps, suid/gid bit, etc --
 
