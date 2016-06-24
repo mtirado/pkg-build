@@ -38,6 +38,13 @@ while read LINE ;do
 				--prefix=$PKGROOT
 			export YACC=$PKGROOT/bin/yacc
 		;;
+		pkgconf*)
+			./configure                                      \
+				--with-system-libdir=/usr/lib            \
+				--with-system-includedir=/usr/include    \
+				--with-pkg-config-dir=/usr/lib/pkgconfig \
+				--prefix=$PKGROOT
+		;;
 		*)
 			./configure 			\
 				--prefix=$PKGROOT
@@ -46,6 +53,13 @@ while read LINE ;do
 	make -j$JOBS
 	make install
 
+	case "$ARCHIVEDIR" in
+		pkgconf*)
+			# OpenBSD pkgconf, needs symlink
+			ln -sv pkgconf $PKGROOT/bin/pkg-config
+		;;
+	esac
 
 done < $PKGDIR/wares
+
 
