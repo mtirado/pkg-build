@@ -112,7 +112,9 @@ for ITEM in `find . -mindepth 1 -maxdepth 1`; do
 
 	#----------- fix pkg-config prefix -----------------------------------
 	for FILE in `find lib/pkgconfig -mindepth 1`; do
+		echo "-----------------------------------------------"
 		echo "adjusting: $FILE"
+		echo "-----------------------------------------------"
 		sed "s|prefix=/.*|prefix=/usr/lib|" $FILE
 	done
 
