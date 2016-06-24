@@ -4,6 +4,7 @@ set -e
 CWD=$(pwd)
 IFS=' '
 
+export PKG_CONFIG_PATH="/usr/lib/pkgconfig"
 while read LINE ;do
 	cd $CWD
 	PKGROOT=$PKGDISTDIR/$(echo $LINE | cut -d " " -f 1)
@@ -49,6 +50,7 @@ while read LINE ;do
 	make install
 
 	#post install case can go here if needed
+	export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGROOT/lib/pkgconfig"
 
 done < $PKGDIR/wares
 
