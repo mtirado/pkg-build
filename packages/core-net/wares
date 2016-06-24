@@ -1,0 +1,4 @@
+core-net iptables-1.6.0.tar.bz2 local 0
+core-net iproute2-4.6.0.tar.xz local 0
+inetutils inetutils-1.9.4.tar.xz local 0
+lynx lynx2-8-8.tar.bz2 local 0
