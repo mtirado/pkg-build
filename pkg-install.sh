@@ -30,16 +30,14 @@ read -n 1 -s KEY
 		mkdir $PKGFILES
 	fi
 
-
-#----------- fail if file exists ---------------------------------------------
-EXISTS=0
-EXCEPT=0
 cd $DISTDIR
 for ITEM in `find . -mindepth 1 -maxdepth 1`; do
+	EXISTS=0
+	EXCEPT=0
 	PKGNAME=$ITEM
 
 	#----------- check if package name is in use -------------------------
-	FIND=$(find $PKGFILES -name $PKGNAME)
+	FIND=$(find $PKGFILES -print -mindepth 1 -maxdepth 1 -name $PKGNAME)
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
 		echo " package already exists, did you forget to run pkg-remove ?"
@@ -49,6 +47,7 @@ for ITEM in `find . -mindepth 1 -maxdepth 1`; do
 		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
 			continue
 		else
+			echo "installation failed."
 			exit -1
 		fi
 		exit -1
@@ -86,6 +85,7 @@ for ITEM in `find . -mindepth 1 -maxdepth 1`; do
 		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
 			continue
 		else
+			echo "installation failed."
 			exit -1
 		fi
 		exit -1
