@@ -31,13 +31,13 @@ read -n 1 -s KEY
 	fi
 
 cd $DISTDIR
-for ITEM in `find . -mindepth 1 -maxdepth 1`; do
+for ITEM in `find . -mindepth 1 -maxdepth 1 -printf '%f\n'`; do
 	EXISTS=0
 	EXCEPT=0
 	PKGNAME=$ITEM
-
+	echo "PKGNAME $PKGNAME"
 	#----------- check if package name is in use -------------------------
-	FIND=$(find $PKGFILES -print -mindepth 1 -maxdepth 1 -name $PKGNAME)
+	FIND=$(find $PKGFILES -mindepth 1 -maxdepth 1 -name "$PKGNAME" -printf '%f\n')
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
 		echo " package already exists, did you forget to run pkg-remove ?"
