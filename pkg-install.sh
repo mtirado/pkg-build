@@ -31,7 +31,7 @@ read -n 1 -s KEY
 	fi
 
 cd $DISTDIR
-for ITEM in `find . -mindepth 1 -maxdepth 1 -printf '%f\n'`; do
+for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 	EXISTS=0
 	EXCEPT=0
 	PKGNAME=$ITEM
@@ -53,7 +53,7 @@ for ITEM in `find . -mindepth 1 -maxdepth 1 -printf '%f\n'`; do
 		exit -1
 	fi
 	cd $DISTDIR/$ITEM
-	for FILE in `find . -mindepth 1`; do
+	for FILE in $(find . -mindepth 1); do
 		if [ ! -d "$FILE" ]; then
 			if [ -e "$PKGINSTALL/$FILE" ]; then
 				echo "$PKGINSTALL/$FILE already exists"
@@ -94,31 +94,33 @@ for ITEM in `find . -mindepth 1 -maxdepth 1 -printf '%f\n'`; do
 
 	#----------- construct package file list -----------------------------
 	touch $PKGFILES/$PKGNAME
-	for FILE in `find . -mindepth 1`; do
+	for FILE in $(find . -mindepth 1); do
 		if [ ! -d "$FILE" ]; then
 			echo $FILE >> $PKGFILES/$PKGNAME
 		fi
 	done
 
 	#----------- copy files to install destination  ----------------------
-	for FILE in `find . -type f -mindepth 1`; do
+	for FILE in $(find . -type f -mindepth 1); do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
 	#----------- copy symlinks to install destination  -------------------
-	for FILE in `find . -type l -mindepth 1`; do
+	for FILE in $(find . -type l -mindepth 1); do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
 	#----------- fix pkg-config prefix -----------------------------------
-	for FILE in `find lib/pkgconfig -mindepth 1`; do
-		echo "-----------------------------------------------"
-		echo "adjusting: $FILE"
-		echo "-----------------------------------------------"
-		sed "s|prefix=/.*|prefix=/usr/lib|" $FILE
-	done
+	if [ -d "./lib" ]; then
+		for FILE in $(find lib/pkgconfig -mindepth 1); do
+			echo "-----------------------------------------------"
+			echo "adjusting: $FILE"
+			echo "-----------------------------------------------"
+			sed "s|prefix=/.*|prefix=/usr/lib|" $FILE
+		done
+	fi
 
-	#-- TODO some way to chown, prompt for set caps, suid/gid bit, etc --
+	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
 
 	cd $DISTDIR
 done
