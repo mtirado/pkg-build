@@ -17,7 +17,7 @@ fi
 #-----------------------------------------------------------------------------
 PKGFILES="$PKGINSTALL/.packages"
 PKGDIR="$1"
-PKGNAME="$2"
+PKGNAME="?????"
 DISTDIR="$PKGDIR"
 CWD=$(pwd)
 
@@ -26,9 +26,9 @@ echo "press any key to continue"
 read -n 1 -s KEY
 
 #---------- create pkgs directory if needed --------------------------
-	if [ ! -d "$PKGFILES" ]; then
-		mkdir $PKGFILES
-	fi
+if [ ! -d "$PKGFILES" ]; then
+	mkdir $PKGFILES
+fi
 
 cd $DISTDIR
 for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
@@ -41,7 +41,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
 		echo " package already exists, did you forget to run pkg-remove ?"
-		echo " skip installing package $PKGNAME ? (y/n)"
+		echo " skip installing $PKGNAME ? (y/n)"
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
 		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
@@ -76,21 +76,22 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 
 	if [ "$EXISTS" != "0" ]; then
 		# TODO check used files in another pass before creating dirs
-		# TODO we should scan packages to find which one owns file
+		# TODO we should scan packages to find which one owns file << TODO!
 		echo "-----------------------------------------------------------------"
-		echo "error: $EXISTS file(s) already exist in $PKGINSTALL"
-		echo  "skip installing package $PKGNAME ? (y/n)"
+		echo "$PKGNAME: $EXISTS file(s) already exist in $PKGINSTALL"
+		echo "you have 3 possible actions"
+		echo "(s)kip, (o)verwrite (this is currently dangerous if file"
+		echo "is being used by another package since we do not scan yet),"
+		echo "or press any other key to quit installation"
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
-		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
+		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
 			continue
-		else
+		elif [ "$ACK" != "o" ] && [ "$ACK" != "O" ]; then
 			echo "installation failed."
 			exit -1
 		fi
-		exit -1
 	fi
-
 
 	#----------- construct package file list -----------------------------
 	touch $PKGFILES/$PKGNAME
@@ -110,8 +111,9 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
-	#----------- fix pkg-config prefix -----------------------------------
-	if [ -d "./lib" ]; then
+
+	#---------------- fix pkg-config prefix ------------------------------
+	if [ -d "lib/pkgconfig" ]; then
 		for FILE in $(find lib/pkgconfig -mindepth 1); do
 			echo "-----------------------------------------------"
 			echo "adjusting: $FILE"
@@ -119,11 +121,13 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 			sed "s|prefix=/.*|prefix=/usr/lib|" $FILE
 		done
 	fi
-
 	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-
+	echo ""
+	echo ""
+	echo "$PKGNAME installed."
+	echo ""
 	cd $DISTDIR
 done
 
-
+echo "installation complete"
 

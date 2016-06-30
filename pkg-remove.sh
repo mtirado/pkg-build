@@ -33,7 +33,11 @@ fi
 #----------- remove files ----------------------------------------------------
 cd $PKGINSTALL
 while read FILE; do
-	rm $PKGINSTALL/$FILE
+	if [ -e "$PKGINSTALL/$FILE" ] || [ -L "$PKGINSTALL/$FILE" ]; then
+		rm "$PKGINSTALL/$FILE"
+	else
+		echo "warning: $PKGINSTALL/$FILE did not exist"
+	fi
 done <$PKGFILES/$PKGNAME
 
 #----------- remove package file ---------------------------------------------
