@@ -45,6 +45,13 @@ while read LINE ;do
 				--prefix=$PKGROOT	\
 				--disable-kill
 		;;
+		# XXX --disable-nls is used for kbd because
+		# i don't need this.  sorry, rest of world  :P
+		kbd-1.15*)
+			./configure 			\
+				--prefix=$PKGROOT	\
+				--disable-nls
+		;;
 		#*)
 		#	./configure 			\
 		#		--prefix=$PKGROOT
@@ -55,7 +62,7 @@ while read LINE ;do
 	make install
 
 	case "$ARCHIVEDIR" in
-		# move files from /usr to / in pkgroot maybe ncurses should be
+		# move files from /usr to / in pkgroot, maybe ncurses should be
 		# it's own package instead of hacking around hacks
 		ncurses*)
 			cp -fva $PKGROOT/$CURSES_PREFIX/* $PKGROOT/

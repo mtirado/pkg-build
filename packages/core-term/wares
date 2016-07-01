@@ -1,3 +1,4 @@
 core-term ncurses-6.0.tar.gz local 0
 core-term ex-050325.tar.bz2 local 0
+core-term kbd-1.15.3.tar.xz local 0
 procps procps-ng-3.3.11.tar.xz local 0
