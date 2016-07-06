@@ -59,13 +59,16 @@ if [ "$PKGAUTOMATE" != "1" ]; then
 fi
 
 
-if [ -e "$PKGBUILDDIR" ]; then
-	echo "build directory $PKGBUILDDIR already exists, remove it."
-	exit -1
-fi
+#if [ -e "$PKGBUILDDIR" ]; then
+#	echo "build directory $PKGBUILDDIR already exists, remove it."
+#	exit -1
+#fi
 
 # everything happens in temporary build directory
-mkdir $PKGBUILDDIR
+if [ ! -e $PKGBUILDDIR ]; then
+	mkdir $PKGBUILDDIR
+fi
+
 cd $PKGBUILDDIR
 
 # extract packages

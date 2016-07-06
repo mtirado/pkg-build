@@ -14,6 +14,10 @@ while read LINE ;do
 		echo "archive dir $ARCHIVEDIR is missing"
 		exit -1
 	fi
+	# skip completed builds
+	if [ -e "$ARCHIVEDIR/.pkg-built" ]; then
+		continue
+	fi
 
 	cd $ARCHIVEDIR
 	echo "archive dir $ARCHIVEDIR"
@@ -30,6 +34,7 @@ while read LINE ;do
 	make install
 
 	export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGROOT/lib/pkgconfig"
+	touch ".pkg-built"
 
 done < $PKGDIR/wares
 

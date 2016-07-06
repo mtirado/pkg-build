@@ -13,6 +13,10 @@ while read LINE ;do
 		echo "archive dir $ARCHIVEDIR is missing"
 		exit -1
 	fi
+	# skip completed builds
+	if [ -e "$ARCHIVEDIR/.pkg-built" ]; then
+		continue
+	fi
 
 	cd $ARCHIVEDIR
 	echo "archive dir $ARCHIVEDIR"
@@ -59,6 +63,8 @@ while read LINE ;do
 			ln -sv pkgconf $PKGROOT/bin/pkg-config
 		;;
 	esac
+
+	touch ".pkg-built"
 
 done < $PKGDIR/wares
 
