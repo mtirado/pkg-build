@@ -5,7 +5,7 @@ CWD=$(pwd)
 IFS=' '
 # assumes ncurses install prefix will be /usr
 CURSES_PREFIX=/usr
-export PKG_CONFIG_PATH="/usr/lib/pkgconfig"
+export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/lib/pkgconfig"
 while read LINE ;do
 	cd $CWD
 	PKGROOT=$PKGDISTDIR/$(echo $LINE | cut -d " " -f 1)

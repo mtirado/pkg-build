@@ -30,13 +30,23 @@ fi
 #----------- TODO remove package directories if empty, otherwise error -------
 #----------- user could either continue deleting, or quit and manually repair
 #----------- we will need to update the package file to resume after repair!
+#-  if every lib is symlinked we could use a manager to swap global version
+#-  numbers if we handle -L files seperately, pkg-link.sh or somethin.
 #----------- remove files ----------------------------------------------------
 cd $PKGINSTALL
 while read FILE; do
-	if [ -e "$PKGINSTALL/$FILE" ] || [ -L "$PKGINSTALL/$FILE" ]; then
-		rm "$PKGINSTALL/$FILE"
+	FILEPATH="$PKGINSTALL/$FILE"
+	if [ -e "$FILEPATH" ] || [ -L "$FILEPATH" ]; then
+		if [ -f "$FILEPATH" ] || [ -L "$FILEPATH" ]; then
+			rm "$FILEPATH"
+		elif [ -d "$FILEPATH" ]; then
+			rmdir "$FILEPATH"
+		else
+			echo "unexpected file: $FILEPATH"
+			exit -1
+		fi
 	else
-		echo "warning: $PKGINSTALL/$FILE did not exist"
+		echo "warning: $FILEPATH did not exist"
 	fi
 done <$PKGFILES/$PKGNAME
 

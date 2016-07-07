@@ -33,7 +33,6 @@ fi
 cd $DISTDIR
 for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 	EXISTS=0
-	EXCEPT=0
 	PKGNAME=$ITEM
 	echo "PKGNAME $PKGNAME"
 	#----------- check if package name is in use -------------------------
@@ -53,29 +52,18 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 		exit -1
 	fi
 	cd $DISTDIR/$ITEM
+
+	# check for existing files
 	for FILE in $(find . -mindepth 1); do
 		if [ ! -d "$FILE" ]; then
 			if [ -e "$PKGINSTALL/$FILE" ]; then
 				echo "$PKGINSTALL/$FILE already exists"
 				EXISTS=$((EXISTS + 1))
-				EXCEPT=1
-			elif [ "$EXCEPT" = "0" ]; then
-				MKPATH=$(dirname "$PKGINSTALL/$FILE")
-				if [ ! -e "$MKPATH" ]; then
-					echo "make path: $MKPATH"
-					mkdir -vp "$MKPATH"
-				fi
-			fi
-		else
-			if [ -e "$PKGINSTALL/$FILE" ]; then
-				echo "make path: $PKGINSTALL/$FILE"
-				mkdir -p "$PKGINSTALL/$FILE"
 			fi
 		fi
 	done
 
 	if [ "$EXISTS" != "0" ]; then
-		# TODO check used files in another pass before creating dirs
 		# TODO we should scan packages to find which one owns file << TODO!
 		echo "-----------------------------------------------------------------"
 		echo "$PKGNAME: $EXISTS file(s) already exist in $PKGINSTALL"
@@ -92,6 +80,15 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 			exit -1
 		fi
 	fi
+
+	#----------- create directories --------------------------------------
+	echo "creating directories..."
+	for FILE in $(find . -mindepth 1); do
+		DIRNAME=$(dirname "$PKGINSTALL/$FILE")
+		if [ ! -e "$DIRNAME" ]; then
+			mkdir -p "$DIRNAME"
+		fi
+	done
 
 	#----------- construct package file list -----------------------------
 	touch $PKGFILES/$PKGNAME
