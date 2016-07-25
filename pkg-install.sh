@@ -54,11 +54,11 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#----------- check if package name is in use -------------------------
-	FIND=$(find $PKGDIR -mindepth 1 -maxdepth 2 -type f -name "$PKGNAME" -printf '%f\n')
+	FIND=$(find "$PKGINSTALL/.packages" -mindepth 1 -maxdepth 2 -type f -name "$PKGNAME" -printf '%f\n')
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
-		echo " package already exists, did you forget to run pkg-remove ?"
-		echo " skip installing $PKGNAME ? (y/n)"
+		echo " package $PKGNAME already installed. try  running pkg-remove"
+		echo " skip installation  (y/n)"
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
 		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
