@@ -54,7 +54,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#----------- check if package name is in use -------------------------
-	FIND=$(find "$PKGINSTALL/.packages" -mindepth 1 -maxdepth 2 -type f -name "$PKGNAME" -printf '%f\n')
+	FIND=$(find "$PKGINSTALL/.packages" -mindepth 1 -maxdepth 2 -name "$PKGNAME" -printf '%f\n')
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
 		echo " package $PKGNAME already installed. try  running pkg-remove"
