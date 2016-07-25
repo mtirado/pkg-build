@@ -66,7 +66,7 @@ elif [ -d $PKGNAME ]; then
 	done
 	rmdir -v $PKGNAME
 else
-	echo "unexpected file, or duplicate entries type in $PKGINSTALL"
+	echo "unexpected file type, or duplicate entries in $PKGINSTALL"
 	exit -1
 fi
 

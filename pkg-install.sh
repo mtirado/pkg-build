@@ -126,7 +126,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			echo "-----------------------------------------------"
 			echo "adjusting: $FILE"
 			echo "-----------------------------------------------"
-			sed -i "s|prefix=/.*|prefix=/usr/lib|" $FILE
+			sed -i "s|prefix=/.*|prefix=/usr|" $FILE
 		done
 	fi
 	if [ -d "share/pkgconfig" ]; then
@@ -134,7 +134,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			echo "-----------------------------------------------"
 			echo "adjusting: $FILE"
 			echo "-----------------------------------------------"
-			sed -i "s|prefix=/.*|prefix=/usr/share|" $FILE
+			sed -i "s|prefix=/.*|prefix=/usr|" $FILE
 		done
 	fi
 
