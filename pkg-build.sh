@@ -1,20 +1,19 @@
-#!/bin/bash
+#!/bin/sh
 # (c) Michael R. Tirado GPL Version 3 or any later version.
-# export PKGAUTOMATE=1 to skip user interaction
 #
-# the main assumption here is all packages are package.tar.* files in pkg-dir
+# the main assumption here is all packages are package.tar.* files in PKGDIR
 #-----------------------------------------------------------------------------
 set -e
-umask 022
-
-export PKGAUTOMATE="1"
-
+print_usage()
+{
+	echo "print_usage: PKGPASS=1 pkg-build <pkg-dir> [numjobs]"
+}
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-	echo "usage: pkg-build <pkg-dir> [numjobs]"
+	print_usage
 	exit 0
 fi
 if [ "$1" = "" ]; then
-	echo "usage: pkg-build <pkg-dir> [numjobs]"
+	print_usage
 	exit -1
 fi
 
@@ -37,34 +36,39 @@ else
 fi
 
 #-----------------------------------------------------------------------------
-
+#
 CWD=$(pwd)
 PKGPREPARE="pkg-prepare.sh"
 PKGCOMPILE="pkg-compile.sh"
-PKGBUILDDIR="$CWD/pkgbuild-$(basename $PKGDIR)"
+PKGGROUP=$(basename $PKGDIR)
+PKGBUILDDIR="$CWD/pkgbuild-$PKGGROUP"
 PKGDISTDIR="$PKGBUILDDIR/pkgdist"
 export PKGBUILDDIR
 export PKGDISTDIR
 export PKGDIR
 export JOBS
 
-echo ""
-echo "-----------------------------------------------------------------------"
-echo " package directory: $PKGDIR"
-echo " parallel jobs: $JOBS"
-echo "-----------------------------------------------------------------------"
-if [ "$PKGAUTOMATE" != "1" ]; then
-	echo "press any key to continue."
-	read -n 1 -s KEY
+# pass is mandatory for all packages right now, might decide to fallback to 1
+# or prompt user to input pass manually if not using PKGAUTOMATE
+if [ -z "$PKGPASS" ]; then
+	echo "error, set PKGPASS and try again"
+	echo "pass is the first column in the wares file"
+	print_usage
+	exit -1;
 fi
+echo -n "build pass: "
+case "$PKGPASS" in
+	1|2|3|4|5|6|7|8|9)
+		echo "$PKGPASS"
+	;;
+	*)
+		echo "multipass error, valid pass are numbers 1-9"
+		print_usage
+		exit -1
+	;;
+esac
 
-
-#if [ -e "$PKGBUILDDIR" ]; then
-#	echo "build directory $PKGBUILDDIR already exists, remove it."
-#	exit -1
-#fi
-
-# everything happens in temporary build directory
+# directory where compilation occurs
 if [ ! -e $PKGBUILDDIR ]; then
 	mkdir $PKGBUILDDIR
 fi
@@ -74,27 +78,57 @@ cd $PKGBUILDDIR
 # extract packages
 echo "running prep script..."
 $PKGPREPARE $PKGDIR || {
-	echo "prep failed"
-	exit -1
+	RETVAL=$?
+	case "$RETVAL" in
+	1)
+		echo "package built."
+		exit 1
+	;;
+	*)
+		echo "prep failed"
+		exit -1
+	;;
+	esac
 }
-echo "-----------------------------------------------------------------------"
 echo " prepared."
-echo "-----------------------------------------------------------------------"
-if [ "$PKGAUTOMATE" != "1" ]; then
-	echo "press any key to continue."
-	read -n 1 -s KEY
-fi
 
-# configure and build
-echo "running build script..."
-$PKGDIR/$PKGCOMPILE || {
-	echo "build failed"
-	exit -1
-}
+# parse wares file and run build script
+# assumes untarred directory is same as filename without .tar.* extension.
+# XXX some source archives from upstream will break. a quick remedy is to just
+# rename the archive.tar.* file to match the expected dirname. archives with no
+# main subdirectory will not work with this script and should be recreated. =(
+while read LINE ;do
+	cd $PKGBUILDDIR
+	export PKGROOT="$PKGDISTDIR/$(echo $LINE | cut -d " " -f 2)"
+	PKGARCHIVE=$(echo $LINE | cut -d " " -f 3)
+	PKGARCHIVE=${PKGARCHIVE%.tar.*}
+	if [ ! -d "$PKGARCHIVE" ]; then
+		echo "archive dir $PKGARCHIVE is missing"
+		exit -1
+	fi
+	# skip completed builds
+	if [ -e "$PKGARCHIVE/.pkg-built" ]; then
+		continue
+	fi
 
-#TODO more informative output on packages installed
+	cd $PKGARCHIVE
+
+	echo "archive dir $PKGARCHIVE"
+	export PKGARCHIVE
+	mkdir -vp $PKGROOT
+	$PKGDIR/$PKGCOMPILE || {
+		rm -rf $PKGROOT
+		echo "build failed"
+		exit -1
+	}
+
+	touch ".pkg-built"
+
+done < "$PKGBUILDDIR/wares"
+
+
 echo "-----------------------------------------------------------------------"
-echo " built. you can now run pkg-install as root."
-echo " pkg-install.sh $PKGDISTDIR "
+echo " build pass $PKGPASS complete"
 echo "-----------------------------------------------------------------------"
+
 

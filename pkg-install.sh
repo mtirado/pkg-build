@@ -1,42 +1,60 @@
-#!/bin/bash
-#PKGINSTALL - destination
-umask 022
-set -e
+#!/bin/sh
+# (c) Michael R. Tirado GPL Version 3 or any later version.
+#PKGAUTOMATE silences already installed check
 #-----------------------------------------------------------------------------
-if [ "$1" = "" ] || [ "$1" = "-h" ]; then
-	echo "usage: pkg-install <pkgdist-dir>"
-	echo "set PKGINSTALL="/new/path" to install to other directories"
+#TODO more informative output on packages installed
+set -e
+
+# either this or dump all package files in root package dir?
+PKGGROUP="ungrouped"
+#-----------------------------------------------------------------------------
+if [ -z "$1" ] || [ "$1" = "-h" ]; then
+	echo "usage: pkg-install <pkgdist-dir> <pkg-group>"
+	echo "set PKGINSTALL=\"/new/path\" to install to specific directories"
 	exit -1
 fi
-
+#-----------------------------------------------------------------------------
+# make absolute path
+if [[ "$1" != /* ]]; then
+	PKGDIR="$(pwd)/$1"
+else
+	PKGDIR="$1"
+fi
+if [ ! -z "$2" ]; then
+	PKGGROUP=$2
+fi
+# install packages into this location.
 if [ "$PKGINSTALL" = "" ]; then
 	PKGINSTALL="/usr/local"
 fi
 
-
-#-----------------------------------------------------------------------------
-PKGFILES="$PKGINSTALL/.packages"
-PKGDIR="$1"
-PKGNAME="?????"
-DISTDIR="$PKGDIR"
 CWD=$(pwd)
-
-echo "installing package $PKGDIR to $PKGINSTALL"
-echo "press any key to continue"
-read -n 1 -s KEY
+PKGFILES="$PKGINSTALL/.packages/$PKGGROUP"
 
 #---------- create pkgs directory if needed --------------------------
 if [ ! -d "$PKGFILES" ]; then
-	mkdir $PKGFILES
+	mkdir -p $PKGFILES
 fi
 
-cd $DISTDIR
-for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
+cd $PKGDIR
+for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
+
 	EXISTS=0
 	PKGNAME=$ITEM
-	echo "PKGNAME $PKGNAME"
+
+	# this is for multipass automation to know what has been installed
+	# TODO clean this extra file up if distributing package contents
+	if [ -e $PKGDIR/$ITEM/.pkg-installed ]; then
+		if [ -z "$PKGAUTOMATE" ]; then
+			echo "------------------------------------------------"
+			echo "$ITEM has been installed, skipping..."
+			sleep 3
+		fi
+		continue;
+	fi
+
 	#----------- check if package name is in use -------------------------
-	FIND=$(find $PKGFILES -mindepth 1 -maxdepth 1 -name "$PKGNAME" -printf '%f\n')
+	FIND=$(find $PKGDIR -mindepth 1 -maxdepth 2 -type f -name "$PKGNAME" -printf '%f\n')
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
 		echo " package already exists, did you forget to run pkg-remove ?"
@@ -51,7 +69,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 		fi
 		exit -1
 	fi
-	cd $DISTDIR/$ITEM
+	cd $PKGDIR/$ITEM
 
 	# check for existing files
 	for FILE in $(find . -mindepth 1); do
@@ -98,6 +116,28 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 		fi
 	done
 
+	#---------------- fix prefix paths -----------------------------------
+	# this breaks things pretty badly. needs a way to adjust path for
+	# $PKGINSTALL, currently only works with /usr package installations
+	# TODO can just add another global var if no good solutions $PKGADJUST
+	#---------------------------------------------------------------------
+	if [ -d "lib/pkgconfig" ]; then
+		for FILE in $(find lib/pkgconfig -mindepth 1); do
+			echo "-----------------------------------------------"
+			echo "adjusting: $FILE"
+			echo "-----------------------------------------------"
+			sed -i "s|prefix=/.*|prefix=/usr/lib|" $FILE
+		done
+	fi
+	if [ -d "share/pkgconfig" ]; then
+		for FILE in $(find share/pkgconfig -mindepth 1); do
+			echo "-----------------------------------------------"
+			echo "adjusting: $FILE"
+			echo "-----------------------------------------------"
+			sed -i "s|prefix=/.*|prefix=/usr/share|" $FILE
+		done
+	fi
+
 	#----------- copy files to install destination  ----------------------
 	for FILE in $(find . -type f -mindepth 1); do
 		cp -rv $FILE $PKGINSTALL/$FILE
@@ -108,22 +148,13 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -printf '%f\n'); do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
-
-	#---------------- fix pkg-config prefix ------------------------------
-	if [ -d "lib/pkgconfig" ]; then
-		for FILE in $(find lib/pkgconfig -mindepth 1); do
-			echo "-----------------------------------------------"
-			echo "adjusting: $FILE"
-			echo "-----------------------------------------------"
-			sed "s|prefix=/.*|prefix=/usr/lib|" $FILE
-		done
-	fi
 	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
 	echo ""
 	echo ""
 	echo "$PKGNAME installed."
 	echo ""
-	cd $DISTDIR
+	touch $PKGDIR/$ITEM/.pkg-installed
+	cd $PKGDIR
 done
 
 echo "installation complete"
