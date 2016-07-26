@@ -1,53 +1,34 @@
 #!/bin/sh
-# assumes untarred directory is same as filename without .tar.* extension.
 set -e
-CWD=$(pwd)
-IFS=' '
+case "$PKGARCHIVE" in
+	inetutils*)
+		# logger is included in util-linux
+		./configure 			\
+			--prefix=$PKGROOT	\
+			--disable-logger
+	;;
+	iproute2*)
+		./configure 			\
+			--prefix=$PKGROOT
+	;;
+	iptables*)
+		./configure 			\
+			--prefix=$PKGROOT
+	;;
+	*)
+		./configure 			\
+			--prefix=$PKGROOT
+	;;
+esac
 
-export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/lib/pkgconfig"
-while read LINE ;do
-	cd $CWD
-	PKGROOT=$PKGDISTDIR/$(echo $LINE | cut -d " " -f 1)
-	ARCHIVEDIR=$(echo $LINE | cut -d " " -f 2)
-	ARCHIVEDIR=${ARCHIVEDIR%.tar.*}
-	if [ ! -d "$ARCHIVEDIR" ]; then
-		echo "archive dir $ARCHIVEDIR is missing"
-		exit -1
-	fi
-	# skip completed builds
-	if [ -e "$ARCHIVEDIR/.pkg-built" ]; then
-		continue
-	fi
-
-	cd $ARCHIVEDIR
-	echo "archive dir $ARCHIVEDIR"
-	echo "pkg dir $PKGDIR"
-	case "$ARCHIVEDIR" in
-		inetutils*)
-			# logger is included in util-linux
-			./configure 			\
-				--prefix=$PKGROOT	\
-				--disable-logger
-			make -j$JOBS
-			make install
-		;;
-		iproute2*)
-			./configure 			\
-				--prefix=$PKGROOT
-			make -j$JOBS
-			DESTDIR=$PKGROOT		\
-			make install
-		;;
-		*)
-			./configure 			\
-				--prefix=$PKGROOT
-			make -j$JOBS
-			make install
-	esac
-
-	#find deps as we build
-	export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGROOT/lib/pkgconfig"
-	touch ".pkg-built"
-
-done < $PKGDIR/wares
+make -j$JOBS
+case "$PKGARCHIVE" in
+	iproute2*)
+		DESTDIR=$PKGROOT		\
+		make install
+	;;
+	*)
+		make install
+	;;
+esac
 

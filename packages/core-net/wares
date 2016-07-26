@@ -1,5 +1,5 @@
-core-net iptables-1.6.0.tar.bz2 local 0
-core-net iproute2-4.6.0.tar.xz local 0
-gnutls gnutls-3.4.13.tar.xz local 0
-inetutils inetutils-1.9.4.tar.xz local 0
-lynx lynx2-8-8.tar.bz2 local 0
+1 iptables iptables-1.6.0.tar.bz2 local 0
+1 gnutls gnutls-3.4.13.tar.xz local 0
+2 iproute2 iproute2-4.6.0.tar.xz local 0
+2 inetutils inetutils-1.9.4.tar.xz local 0
+2 lynx lynx2-8-8.tar.bz2 local 0
