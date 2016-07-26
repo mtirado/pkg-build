@@ -21,11 +21,15 @@ PKGNAME=$(find "$PKGINSTALL/.packages" -name $PKGNAME)
 if [ "$PKGNAME" = "" ]; then
 	echo "package $PKGNAME not found"
 	exit -1
+elif [ -d $PKGNAME ]; then
+	echo "removing all packages in group: $(basename $PKGNAME)"
+else
+	echo "removing single package: $(basename $PKGNAME)"
 fi
 
-echo "removing package from $PKGINSTALL"
-echo "press any key to continue"
+echo "press any key to remove package(s) from $PKGINSTALL"
 read -n 1 -s KEY
+echo removing $PKGNAME...
 #---- TODO remove package directories if empty, otherwise error ------
 #---- user could either continue deleting, or quit and manually repair
 #---- we will need to update the package file to resume after repair!
