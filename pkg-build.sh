@@ -102,6 +102,7 @@ while read LINE ;do
 	export PKGROOT="$PKGDISTDIR/$(echo $LINE | cut -d " " -f 2)"
 	PKGARCHIVE=$(echo $LINE | cut -d " " -f 3)
 	PKGARCHIVE=${PKGARCHIVE%.tar.*}
+	PKGARCHIVE=$(basename $PKGARCHIVE)
 	if [ ! -d "$PKGARCHIVE" ]; then
 		echo "archive dir $PKGARCHIVE is missing"
 		exit -1
