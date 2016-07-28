@@ -27,11 +27,12 @@ fi
 while read LINE; do
 	PKGNAME=$(echo $LINE | cut -d " " -f 2)
 	ARCHIVE=$(echo $LINE | cut -d " " -f 3)
-	ARCHIVEDIR=${ARCHIVE%.tar.*}
+	PKGARCHIVE=${ARCHIVE%.tar.*}
+	PKGARCHIVE=$(basename $PKGARCHIVE)
 
 	#skip extraction if build directory exists and is marked as built
-	if [ -e "$PKGBUILDDIR/$ARCHIVEDIR" ]; then
-			continue
+	if [ -e "$PKGBUILDDIR/$PKGARCHIVE" ]; then
+		continue
 	fi
 
 	if [ ! -f "$PKGDIR/$ARCHIVE" ]; then
