@@ -15,6 +15,7 @@ fi
 
 #-----------------------------------------------------------------------------
 PKGNAME="$1"
+PKGNAME=$(basename $PKGNAME)
 
 #----------- check if package name is in use ---------------------------------
 PKGNAME=$(find "$PKGINSTALL/.packages" -name $PKGNAME)
@@ -22,9 +23,9 @@ if [ "$PKGNAME" = "" ]; then
 	echo "package $PKGNAME not found"
 	exit -1
 elif [ -d $PKGNAME ]; then
-	echo "removing all packages in group: $(basename $PKGNAME)"
+	echo "removing all packages in group: $PKGNAME"
 else
-	echo "removing single package: $(basename $PKGNAME)"
+	echo "removing single package: $PKGNAME"
 fi
 
 echo "press any key to remove package(s) from $PKGINSTALL"
