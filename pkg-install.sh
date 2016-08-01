@@ -83,16 +83,30 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 
 	if [ "$EXISTS" != "0" ]; then
 		# TODO we should scan packages to find which one owns file << TODO!
+		# no owner should default to a "world" package.
 		echo "-----------------------------------------------------------------"
 		echo "$PKGNAME: $EXISTS file(s) already exist in $PKGINSTALL"
-		echo "you have 3 possible actions"
-		echo "(s)kip, (o)verwrite (this is currently dangerous if file"
-		echo "is being used by another package since we do not scan yet),"
-		echo "or press any other key to quit installation"
+		echo "you have 4 possible actions:"
+		echo ""
+		echo "(s)kip installing $PKGNAME"
+		echo "(r)emove duplicates -- this is destructive so you may want to quit"
+		echo "                       and backup pkgdist/$PKGNAME first."
+		echo "(o)verwrite files   -- overwrite currently disastrous if file is"
+		echo "                       used by another package."
+		echo "(q)uit installation."
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
 			continue
+		elif [ "$ACK" == "r" ] || [ "$ACK" == "R" ]; then
+			## remove existing files from pkgdir
+			for FILE in $(find . -mindepth 1); do
+				if [ ! -d "$FILE" ]; then
+					if [ -e "$PKGINSTALL/$FILE" ]; then
+						rm -v $FILE
+					fi
+				fi
+			done
 		elif [ "$ACK" != "o" ] && [ "$ACK" != "O" ]; then
 			echo "installation failed."
 			exit -1
