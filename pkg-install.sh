@@ -91,8 +91,11 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		echo "(s)kip installing $PKGNAME"
 		echo "(r)emove duplicates -- this is destructive so you may want to quit"
 		echo "                       and backup pkgdist/$PKGNAME first."
-		echo "(o)verwrite files   -- overwrite currently disastrous if file is"
+		echo "(o)verwrite files   -- overwrite currently disastrous if files"
 		echo "                       used by another package."
+		# TODO  i guess either remove the file or figure out what tool is
+		# responsible for managing it
+		echo "                       for now just overwrite /usr/share/info/dir."
 		echo "(q)uit installation."
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
