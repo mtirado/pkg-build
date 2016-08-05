@@ -25,13 +25,13 @@ fi
 # download remote source packages. check sigs, checksums, filesize.
 #-----------------------------------------------------------------------------
 while read LINE; do
+	PASS=$(echo $LINE | cut -d " " -f 1)
 	PKGNAME=$(echo $LINE | cut -d " " -f 2)
 	ARCHIVE=$(echo $LINE | cut -d " " -f 3)
 	PKGARCHIVE=${ARCHIVE%.tar.*}
 	PKGARCHIVE=$(basename $PKGARCHIVE)
-
 	#skip extraction if build directory exists and is marked as built
-	if [ -e "$PKGBUILDDIR/$PKGARCHIVE" ]; then
+	if [ -e "$PKGBUILDDIR/$PKGARCHIVE" ] || [ "$PASS" = "0" ]; then
 		continue
 	fi
 
