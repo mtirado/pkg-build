@@ -48,7 +48,6 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		if [ -z "$PKGAUTOMATE" ]; then
 			echo "------------------------------------------------"
 			echo "$ITEM has been installed, skipping..."
-			sleep 3
 		fi
 		continue;
 	fi
@@ -117,7 +116,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#----------- create directories --------------------------------------
-	echo "creating directories..."
+	echo "creating directories for $PKGNAME ..."
 	for FILE in $(find . -mindepth 1); do
 		DIRNAME=$(dirname "$PKGINSTALL/$FILE")
 		if [ ! -e "$DIRNAME" ]; then
