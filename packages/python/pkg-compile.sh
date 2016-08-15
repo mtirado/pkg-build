@@ -3,7 +3,7 @@ set -e
 case "$PKGARCHIVE" in
 	setuptools*)
 		mkdir -p $PKGROOT/lib/python2.7/site-packages
-		PYTHONPATH=$PKGROOT/lib/python2.7/site-packages/		\
+		PYTHONPATH=$PKGROOT/lib/python2.7/site-packages/	\
 		python setup.py install --prefix=$PKGROOT
 		exit 0
 	;;
