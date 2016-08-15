@@ -6,32 +6,31 @@ case "$PKGARCHIVE" in
 		export BUILD_ZLIB=False
 		export BUILD_BZIP2=0
 		sh Configure 	-des                               \
-				-Dprefix=$PKGROOT                  \
-				-Dvendorprefix=$PKGROOT            \
-				-Dman1dir=$PKGROOT/share/man/man1  \
-				-Dman3dir=$PKGROOT/share/man/man3  \
+				-Dprefix=/usr           	   \
+				-Dvendorprefix=/usr	           \
+				-Dman1dir=/usr/share/man/man1      \
+				-Dman3dir=/usr/share/man/man3  	   \
 				-Dpager="/usr/bin/less -isR"       \
 				-Duseshrplib
 		unset BUILD_ZLIB BUILD_BZIP2
-	;;
-	bison*)
-		./configure 			\
-			--prefix=$PKGROOT
 	;;
 	pkgconf*)
 		./configure                                      \
 			--with-system-libdir=/usr/lib            \
 			--with-system-includedir=/usr/include    \
 			--with-pkg-config-dir=/usr/lib/pkgconfig \
-			--prefix=$PKGROOT
+			--prefix=/usr
 	;;
 	*)
 		./configure 			\
-			--prefix=$PKGROOT
+			--prefix=/usr
 esac
 
 make -j$JOBS
-make install
+DESTDIR=$PKGROOT    \
+	make install
+cp -r $PKGROOT/usr/* $PKGROOT/
+rm -rf $PKGROOT/usr
 
 case "$PKGARCHIVE" in
 pkgconf*)
