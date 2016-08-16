@@ -4,31 +4,43 @@ case "$PKGARCHIVE" in
 	inetutils*)
 		# logger is included in util-linux
 		./configure 			\
-			--prefix=$PKGROOT	\
+			--prefix=/usr		\
 			--disable-logger
 	;;
-	iproute2*)
-		./configure 			\
-			--prefix=$PKGROOT
+	gnutls*)
+		./configure 				\
+			--prefix=/usr			\
+			--disable-static		\
+			--disable-heartbeat-support	\
+			--enable-openssl-compatibility
 	;;
-	iptables*)
+	lynx*)
 		./configure 			\
 			--prefix=$PKGROOT
 	;;
 	*)
 		./configure 			\
-			--prefix=$PKGROOT
+			--prefix=/usr
 	;;
 esac
 
 make -j$JOBS
 case "$PKGARCHIVE" in
-	iproute2*)
+	iproute2*|lynx*)
 		DESTDIR=$PKGROOT		\
 		make install
 	;;
+	gnutls*)
+		DESTDIR=$PKGROOT    \
+			make install
+		cp -r $PKGROOT/usr/* $PKGROOT/
+		rm -rf $PKGROOT/usr
+	;;
 	*)
-		make install
+		DESTDIR=$PKGROOT    \
+			make install
+		cp -r $PKGROOT/usr/* $PKGROOT/
+		rm -rf $PKGROOT/usr
 	;;
 esac
 

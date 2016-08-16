@@ -118,8 +118,8 @@ while read LINE ;do
 	export PKGARCHIVE
 	mkdir -vp $PKGROOT
 	$PKGDIR/$PKGCOMPILE || {
+		echo "build failed."
 		rm -rf $PKGROOT
-		echo "build failed"
 		exit -1
 	}
 

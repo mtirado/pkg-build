@@ -6,7 +6,6 @@
 2 libgcrypt libgcrypt-1.7.1.tar.bz2 local 0
 1 libtasn1 libtasn1-4.8.tar.gz local 0
 2 p11-kit p11-kit-0.23.2.tar.gz local 0
-1 freetype freetype-2.6.5.tar.gz local 0
 1 expat expat-2.2.0.tar.bz2 local 0
-1 libpng libpng-1.6.23.tar.xz local 0
-0 libffi libffi-3.2.1.tar.gz local 0
+1 libalsa alsa-lib-1.1.2.tar.bz2 local 0
+0 pcre2 pcre2-10.22.tar.bz2 local 0
