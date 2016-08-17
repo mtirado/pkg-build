@@ -14,11 +14,6 @@ case "$PKGARCHIVE" in
 			--disable-heartbeat-support	\
 			--enable-openssl-compatibility
 	;;
-	links*)
-		./configure 			\
-			--prefix=/usr
-		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT/|" Makefile
-	;;
 	dhcp*)
 		JOBS=1
 		./configure 			\
