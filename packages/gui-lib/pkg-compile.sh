@@ -39,7 +39,6 @@ case "$PKGARCHIVE" in
 			--enable-xkb
 
 	;;
-	
 	*)
 		./configure 			\
 			--disable-static	\
