@@ -5,10 +5,12 @@ case "$PKGARCHIVE" in
 	#;;
 	*)
 		./configure 			\
-			--prefix=$PKGROOT
+			--prefix=/usr
 esac
 
-make -j$JOBS
-make install
-
+#empty /usr
+DESTDIR=$PKGROOT    \
+	make install
+cp -r $PKGROOT/usr/* $PKGROOT/
+rm -rf $PKGROOT/usr
 
