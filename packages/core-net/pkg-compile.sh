@@ -14,9 +14,15 @@ case "$PKGARCHIVE" in
 			--disable-heartbeat-support	\
 			--enable-openssl-compatibility
 	;;
-	lynx*)
+	links*)
 		./configure 			\
-			--prefix=$PKGROOT
+			--prefix=/usr
+		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT/|" Makefile
+	;;
+	dhcp*)
+		JOBS=1
+		./configure 			\
+			--prefix=/usr
 	;;
 	*)
 		./configure 			\
@@ -26,15 +32,9 @@ esac
 
 make -j$JOBS
 case "$PKGARCHIVE" in
-	iproute2*|lynx*)
+	iproute2*)
 		DESTDIR=$PKGROOT		\
-		make install
-	;;
-	gnutls*)
-		DESTDIR=$PKGROOT    \
 			make install
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
 	;;
 	*)
 		DESTDIR=$PKGROOT    \
