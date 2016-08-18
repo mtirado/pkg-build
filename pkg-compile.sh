@@ -8,9 +8,10 @@ case "$PKGARCHIVE" in
 			--prefix=/usr
 esac
 
-#empty /usr
+make -j$JOBS
 DESTDIR=$PKGROOT    \
 	make install
+#empty /usr
 cp -r $PKGROOT/usr/* $PKGROOT/
 rm -rf $PKGROOT/usr
 
