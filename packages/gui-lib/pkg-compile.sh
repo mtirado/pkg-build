@@ -39,11 +39,27 @@ case "$PKGARCHIVE" in
 			--enable-xkb
 
 	;;
+	pixman*)
+		./configure 			\
+		--prefix=/usr			\
+		--disable-static		\
+		--disable-openmp		\
+		--disable-longsoon-mmi		\
+		--disable-arm-simd		\
+		--disable-arm-neon		\
+		--disable-arm-iwmmxt		\
+		--disable-arm-iwmmxt2		\
+		--disable-mips-dspr2		\
+		--disable-gtk			\
+		--disable-libpng		\
+		--disable-timers
+	;;
 	*)
 		./configure 			\
 			--disable-static	\
 			--prefix=/usr
 	;;
+
 esac
 
 make -j$JOBS

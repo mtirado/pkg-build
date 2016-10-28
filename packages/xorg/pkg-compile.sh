@@ -5,6 +5,7 @@ case "$PKGARCHIVE" in
 	pixman*)
 		./configure 			\
 		--prefix=/usr			\
+		--disable-static		\
 		--disable-openmp		\
 		--disable-longsoon-mmi		\
 		--disable-arm-simd		\
@@ -52,7 +53,8 @@ case "$PKGARCHIVE" in
 	libSM*|libICE*|libXfont*)
 		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
 		./configure						\
-			--prefix=/usr
+			--prefix=/usr		\
+			--disable-static
 	;;
 	libdmx*)
 
@@ -61,7 +63,8 @@ case "$PKGARCHIVE" in
 		DEFSTR="HAVE__XEATDATAWORDS"
 		sed -i "s|.*$DEFSTR.*|#define $DEFSTR 1|" config.h.in
 		./configure			\
-			--prefix=/usr
+			--prefix=/usr		\
+			--disable-static
 	;;
 	libepoxy*)
 		#  NO CONFIGURE???
@@ -70,12 +73,14 @@ case "$PKGARCHIVE" in
 		./autogen.sh
 		#set -e
 		./configure			\
-			--prefix=/usr
+			--prefix=/usr		\
+			--disable-static
 	;;
 	xorg-server*)
 		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
 		./configure 			\
 		--prefix=/usr			\
+		--disable-static		\
 		--disable-largefile		\
 		--disable-visibility		\
 		--disable-aiglx			\
@@ -101,7 +106,6 @@ case "$PKGARCHIVE" in
 		--disable-config-udev-kms	\
 		--disable-wscons		\
 		--disable-windowswm		\
-		--disable-xwayland		\
 		--disable-xwin			\
 		--disable-linux-acpi		\
 		--disable-linux-apm		\
@@ -127,6 +131,7 @@ case "$PKGARCHIVE" in
 		--disable-dga			\
 		--enable-xv			\
 		--enable-xorg			\
+		--disable-xwayland		\
 		--with-xkb-output=/var/lib/xkb
 		#--enable-xv needed for xf86-video-modesetting driver
 
@@ -154,21 +159,25 @@ case "$PKGARCHIVE" in
 		#--disable-xfree86-utils	\
 	;;
 	xkbcomp*)
-		./configure 			\
-		--prefix=/usr
+		./configure 		\
+		--prefix=/usr		\
+		--disable-static
 	;;
 	xtrans*)
-		./configure 			\
-		--prefix=$PKGROOT
+		./configure 		\
+		--prefix=$PKGROOT	\
+		--disable-static
 	;;
 	libXt*)
-		./configure 			\
-		--prefix=/usr			\
-		--disable-xkb			\
+		./configure 		\
+		--prefix=/usr		\
+		--disable-static	\
+		--disable-xkb		\
 		--without-glib
 	;;
 	*)
-		./configure 			\
+		./configure 		\
+		--disable-static	\
 		--prefix=/usr
 	;;
 esac

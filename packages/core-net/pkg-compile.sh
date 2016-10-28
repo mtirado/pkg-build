@@ -19,6 +19,13 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix=/usr
 	;;
+	curl-*)
+		# TODO install some certs
+		./configure 					\
+			--prefix=/usr				\
+			--with-ca-bundle=/etc/ssl/cacert.pem	\
+			--with-ca-path=/etc/ssl/certs
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr

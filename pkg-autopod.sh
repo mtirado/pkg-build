@@ -66,7 +66,7 @@ while true; do
 	;;
 	esac
 
-	./pkg-install.sh \
+	pkg-install.sh \
 		/opt/pods/$USER/$PODCONFIG/podhome/pkgbuild-$PKGNAME/pkgdist \
 		$PKGNAME
 

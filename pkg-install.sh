@@ -155,12 +155,12 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#----------- copy files to install destination  ----------------------
-	for FILE in $(find . -type f -mindepth 1); do
+	for FILE in $(find . -mindepth 1 -type f); do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
 	#----------- copy symlinks to install destination  -------------------
-	for FILE in $(find . -type l -mindepth 1); do
+	for FILE in $(find . -mindepth 1 -type l); do
 		cp -rv $FILE $PKGINSTALL/$FILE
 	done
 
