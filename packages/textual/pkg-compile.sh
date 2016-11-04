@@ -15,21 +15,27 @@ case "$PKGARCHIVE" in
 		#parallel breakage
 		JOBS=1
 	;;
-	*)
+	bash*)
 		./configure 			\
+			--prefix=$PKGROOT	\
+			--without-bash-malloc
+	;;
+	*)
+		./configure 		\
 			--prefix=/usr
 esac
 
 make -j$JOBS $DOTEST
-DESTDIR=$PKGROOT    \
-	make install
-#empty /usr
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
 
 case "$PKGARCHIVE" in
 	vim*)
-		#don't overwrite ex with vim, ex works better on TERM=dumb
+
+		DESTDIR=$PKGROOT    \
+			make install
+		cp -r $PKGROOT/usr/* $PKGROOT/
+		rm -rf $PKGROOT/usr
+
+		#don't overwrite ex with vim
 		if [ -e "$PKGROOT/bin/ex" ]; then
 			rm $PKGROOT/bin/ex
 			rm $PKGROOT/bin/view
@@ -40,4 +46,16 @@ case "$PKGARCHIVE" in
 		mkdir -vp $PKGROOT/etc
 		cp -fv $PKGROOT/share/vim/vim74/vimrc_example.vim $PKGROOT/etc/vimrc
 	;;
+	#TODO move this to a package that installs to /bin, copy manually from /usr/bin > /bin for now
+	bash*)
+		DESTDIR=$PKGROOT    \
+			make install
+	;;
+	*)
+		DESTDIR=$PKGROOT    \
+			make install
+		cp -r $PKGROOT/usr/* $PKGROOT/
+		rm -rf $PKGROOT/usr
+	;;
+
 esac

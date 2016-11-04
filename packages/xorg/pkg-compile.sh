@@ -175,6 +175,12 @@ case "$PKGARCHIVE" in
 		--disable-xkb		\
 		--without-glib
 	;;
+	xkeyboard-config*)
+		./configure 		\
+		--disable-static	\
+		--prefix=/usr		\
+		--disable-nls
+	;;
 	*)
 		./configure 		\
 		--disable-static	\

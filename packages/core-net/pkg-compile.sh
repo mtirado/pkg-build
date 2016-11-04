@@ -11,8 +11,7 @@ case "$PKGARCHIVE" in
 		./configure 				\
 			--prefix=/usr			\
 			--disable-static		\
-			--disable-heartbeat-support	\
-			--enable-openssl-compatibility
+			--disable-heartbeat-support
 	;;
 	dhcp*)
 		JOBS=1

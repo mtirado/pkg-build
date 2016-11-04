@@ -48,10 +48,10 @@
 8 xkbcomp apps/xkbcomp-1.3.1.tar.gz local 0
 8 xauth xauth-1.0.9.tar.gz local 0
 9 xkbdata xkbdata-1.0.1.tar.gz local 0
-0 xkeyboard-config xkeyboard-config-1.0.tar.gz local 0
-0 font-bitstream-type1 font/font-bitstream-type1-1.0.3.tar.gz local 0
+0 xkeyboard-config xkeyboard-config-2.18.tar.gz local 0
+9 font-bitstream-type1 font/font-bitstream-type1-1.0.3.tar.gz local 0
 0 font-ibm-type1 font/font-ibm-type1-1.0.3.tar.gz local 0
-9 font-xfree86-type1 font/font-xfree86-type1-1.0.4.tar.gz local 0
+0 font-xfree86-type1 font/font-xfree86-type1-1.0.4.tar.gz local 0
 9 xf86-input-keyboard driver/xf86-input-keyboard-1.8.1.tar.gz local 0
 9 xf86-input-mouse driver/xf86-input-mouse-1.9.1.tar.gz local 0
 0 xf86-video-vesa driver/xf86-video-vga-4.1.0.tar.gz local 0
