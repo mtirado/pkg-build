@@ -1,6 +1,0 @@
-1 cairo cairo-1.14.6.tar.xz local 0
-1 gdk-pixbuf gdk-pixbuf-2.35.2.tar.xz local 0
-1 atk atk-2.20.0.tar.xz local 0
-2 pango pango-1.40.1.tar.xz local 0
-3 gtk2 gtk+-2.24.30.tar.xz local 0
-0 gtk3 gtk+-3.21.4.tar.xz local 0
