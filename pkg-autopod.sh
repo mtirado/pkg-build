@@ -3,6 +3,7 @@
 #
 # automated jettisoned multipass package builder
 #
+# TODO check if installed before compiling
 # depends on jettison compiled with PODROOT_HOME_OVERRIDE
 #-----------------------------------------------------------------------------
 set -e
