@@ -3,6 +3,7 @@
 1 gdk-pixbuf gdk-pixbuf-2.35.2.tar.xz local 0
 1 atk        atk-2.20.0.tar.xz local 0
 1 json-glib  json-glib-1.2.2.tar.xz local 0
+1 intltool   intltool-0.51.0.tar.gz local 0
 2 libcroco   libcroco-0.6.11.tar.xz local 0
 2 pango      pango-1.40.1.tar.xz local 0
 3 gtk2       gtk+-2.24.30.tar.xz local 0

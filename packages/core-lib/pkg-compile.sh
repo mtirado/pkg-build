@@ -12,6 +12,11 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix=$PKGROOT
 	;;
+	#perl XML::Parser
+	XML-Parser*)
+		mkdir -p $PKGROOT/usr
+		perl Makefile.PL PREFIX=$PKGROOT/usr INSTALLDIRS=perl
+	;;
 	#
 	#libiconv*)
 	#	# patch glibc C11 error

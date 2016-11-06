@@ -46,8 +46,7 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	# TODO clean this extra file up if distributing package contents
 	if [ -e $PKGDIR/$ITEM/.pkg-installed ]; then
 		if [ -z "$PKGAUTOMATE" ]; then
-			echo "------------------------------------------------"
-			echo "$ITEM has been installed, skipping..."
+			echo "skipping $ITEM"
 		fi
 		continue;
 	fi
@@ -79,22 +78,18 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			fi
 		fi
 	done
-
 	if [ "$EXISTS" != "0" ]; then
 		# TODO we should scan packages to find which one owns file << TODO!
 		# no owner should default to a "world" package.
 		echo "-----------------------------------------------------------------"
 		echo "$PKGNAME: $EXISTS file(s) already exist in $PKGINSTALL"
-		echo "you have 4 possible actions:"
+		echo "you have 5 possible actions:"
 		echo ""
 		echo "(s)kip installing $PKGNAME"
-		echo "(r)emove duplicates -- this is destructive so you may want to quit"
-		echo "                       and backup pkgdist/$PKGNAME first."
+		echo "(r)emove duplicates -- destroys the newer package files"
 		echo "(o)verwrite files   -- overwrite currently disastrous if files"
 		echo "                       used by another package."
-		# TODO  i guess either remove the file or figure out what tool is
-		# responsible for managing it
-		echo "                       for now just overwrite /usr/share/info/dir."
+		echo "(b)ackup file       -- create file.stale-time before overwriting"
 		echo "(q)uit installation."
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
@@ -106,6 +101,19 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 				if [ ! -d "$FILE" ]; then
 					if [ -e "$PKGINSTALL/$FILE" ]; then
 						rm -v $FILE
+					fi
+				fi
+			done
+		elif [ "$ACK" == "b" ] || [ "$ACK" == "B" ]; then
+			echo "backup duplicate files."
+			# backup duplicate files before overwriting
+			# TODO maybe put backups in .packages dir to limit clutter
+			for FILE in $(find . -mindepth 1); do
+				if [ ! -d "$FILE" ]; then
+					if [ -e "$PKGINSTALL/$FILE" ]; then
+						FNAME=$PKGINSTALL/$FILE
+						cp -v $FNAME \
+						      $FNAME\.stale-$(date -Iseconds)
 					fi
 				fi
 			done
