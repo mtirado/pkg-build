@@ -1,8 +1,9 @@
-1 libpng  libpng-1.6.23.tar.xz local 0
-1 libjpg  jpeg-9b.tar.xz local 0
-1 libffi  libffi-3.2.1.tar.gz local 0
-1 texinfo texinfo-6.1.tar.xz local 0
-1 sqlite  sqlite-autoconf-3130000.tar.gz local 0
-2 gettext gettext-0.19.7.tar.xz local 0
-1 libjson json-c-0.12.1.tar.gz local 0
-3 glib    glib-2.49.4.tar.xz local 0
+1 libpng      libpng-1.6.23.tar.xz local 0
+1 libjpg      jpeg-9b.tar.xz local 0
+1 libffi      libffi-3.2.1.tar.gz local 0
+1 texinfo     texinfo-6.1.tar.xz local 0
+1 sqlite      sqlite-autoconf-3130000.tar.gz local 0
+1 libreadline readline-7.0.tar.gz local 0
+2 gettext     gettext-0.19.7.tar.xz local 0
+1 libjson     json-c-0.12.1.tar.gz local 0
+3 glib        glib-2.49.4.tar.xz local 0

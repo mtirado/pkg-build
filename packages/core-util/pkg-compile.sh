@@ -32,6 +32,23 @@ case "$PKGARCHIVE" in
 		make install
 		exit 0
 	;;
+	util-linux*)
+		./configure 				\
+			--prefix=/usr			\
+			--disable-makeinstall-chown	\
+			--disable-use-tty-group
+	;;
+	htop*)
+		./autogen.sh
+		./configure 			\
+			--prefix=/usr		\
+			--disable-unicode
+	;;
+	gnufdisk*)
+		./configure 			\
+			--prefix=/usr		\
+			--disable-cfdisk
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr
