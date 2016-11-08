@@ -6,5 +6,3 @@
 1 intltool   intltool-0.51.0.tar.gz local 0
 2 libcroco   libcroco-0.6.11.tar.xz local 0
 2 pango      pango-1.40.1.tar.xz local 0
-3 gtk2       gtk+-2.24.30.tar.xz local 0
-0 gtk3       gtk+-3.21.4.tar.xz local 0

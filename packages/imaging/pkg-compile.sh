@@ -29,6 +29,14 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix=/usr
 	;;
+	xpdf*)
+		mkdir -p $PKGROOT/usr
+		./configure 						 \
+			--prefix=$PKGROOT/usr				 \
+			--with-x					 \
+			--with-freetype2-library=/usr/lib/libfreetype.so \
+			--with-freetype2-includes=/usr/include/freetype2
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr
