@@ -2,31 +2,6 @@
 set -e
 
 case "$PKGARCHIVE" in
-	pixman*)
-		./configure 			\
-		--prefix=/usr			\
-		--disable-static		\
-		--disable-openmp		\
-		--disable-longsoon-mmi		\
-		--disable-arm-simd		\
-		--disable-arm-neon		\
-		--disable-arm-iwmmxt		\
-		--disable-arm-iwmmxt2		\
-		--disable-mips-dspr2		\
-		--disable-gtk			\
-		--disable-libpng		\
-		--disable-timers
-	;;
-	libdrm*)
-		./configure 		\
-		--prefix=/usr		\
-		--disable-static	\
-		--disable-intel		\
-		--disable-radeon	\
-		--disable-amdgpu	\
-		--disable-nouveau	\
-		--disable-vmwgfx
-	;;
 	libX11*)
 		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
 		./configure						\

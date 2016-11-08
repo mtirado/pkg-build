@@ -1,8 +1,5 @@
 1 util-macros util-macros-1.19.0.tar.gz local 0
-1 libpciaccess lib/libpciaccess-0.13.4.tar.gz local 0
 1 libpthread-stubs lib/libpthread-stubs-0.3.tar.gz local 0
-1 pixman lib/pixman-0.34.0.tar.gz local 0
-2 libdrm lib/libdrm-2.4.68.tar.gz local 0
 2 xproto proto/xproto-7.0.29.tar.gz local 0
 2 xcb-proto proto/xcb-proto-1.12.tar.gz local 0
 2 xext-proto proto/xextproto-7.3.0.tar.gz local 0
