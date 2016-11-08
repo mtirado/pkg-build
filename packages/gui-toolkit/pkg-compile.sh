@@ -1,14 +1,6 @@
 #!/bin/sh
 set -e
 case "$PKGARCHIVE" in
-
-	gdk-pixbuf*)
-		./configure 			\
-			--disable-static	\
-			--prefix=/usr		\
-			--without-gdiplus	\
-			--without-libtiff
-	;;
 	gtk+-2*)
 		./configure 			\
 			--prefix=/usr		\
@@ -38,21 +30,6 @@ case "$PKGARCHIVE" in
 			--disable-cloud-print	\
 			--enable-xkb
 
-	;;
-	pixman*)
-		./configure 			\
-		--prefix=/usr			\
-		--disable-static		\
-		--disable-openmp		\
-		--disable-longsoon-mmi		\
-		--disable-arm-simd		\
-		--disable-arm-neon		\
-		--disable-arm-iwmmxt		\
-		--disable-arm-iwmmxt2		\
-		--disable-mips-dspr2		\
-		--disable-gtk			\
-		--disable-libpng		\
-		--disable-timers
 	;;
 	*)
 		./configure 			\
