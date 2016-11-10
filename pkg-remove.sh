@@ -31,21 +31,27 @@ fi
 echo "press any key to remove package(s) from $PKGINSTALL"
 read -n 1 -s KEY
 echo removing $PKGNAME...
-#---- TODO remove package directories if empty, otherwise error ------
-#---- user could either continue deleting, or quit and manually repair
-#---- we will need to update the package file to resume after repair!
-#-  if every lib is symlinked we could use a manager to swap global version
-#-  numbers if we handle -L files seperately, pkg-link.sh or somethin.
 #----------- remove files --------------------------------------------
 do_pkgremove() {
 	PKGFILE=$1
-	while read FILE; do
+	FILES=$(cat $PKGFILE)
+	for FILE in $FILES; do
 		FILEPATH="$PKGINSTALL/$FILE"
 		if [ -e "$FILEPATH" ] || [ -L "$FILEPATH" ]; then
 			if [ -f "$FILEPATH" ] || [ -L "$FILEPATH" ]; then
 				rm "$FILEPATH"
 			elif [ -d "$FILEPATH" ]; then
+				set +e
 				rmdir "$FILEPATH"
+				if [ $? -ne 0 ]; then
+					KEY=""
+					echo "(c)ontinue anyway?"
+					read -n 1 -s KEY
+					if [ "$KEY" != "c" ] && [ "$KEY" != "C" ]; then
+						exit -1
+					fi
+				fi
+				set -e
 			else
 				echo "unexpected file: $FILEPATH"
 				exit -1
@@ -53,7 +59,7 @@ do_pkgremove() {
 		else
 			echo "warning: $FILEPATH did not exist"
 		fi
-	done <$PKGFILE
+	done
 
 	#------- remove package file --------------------------------
 	rm $PKGFILE
