@@ -1,7 +1,8 @@
-1 libpciaccess lib/libpciaccess-0.13.4.tar.gz local 0
-1 pixman lib/pixman-0.34.0.tar.gz local 0
-1 freetype freetype-2.6.5.tar.gz local 0
-2 harfbuzz harfbuzz-1.3.0.tar.bz2 local 0
-3 fontconfig fontconfig-2.12.0.tar.gz local 0
-0 directfb DirectFB-DIRECTFB_1_7_7.tar.gz local 0
-2 libdrm lib/libdrm-2.4.68.tar.gz local 0
+1 libpthread-stubs libpthread-stubs-0.3.tar.gz local 0
+1 libpciaccess     libpciaccess-0.13.4.tar.gz local 0
+2 libdrm       libdrm-2.4.68.tar.gz local 0
+1 pixman       pixman-0.34.0.tar.gz local 0
+1 freetype     freetype-2.6.5.tar.gz local 0
+2 harfbuzz     harfbuzz-1.3.0.tar.bz2 local 0
+3 fontconfig   fontconfig-2.12.0.tar.gz local 0
+0 directfb     DirectFB-DIRECTFB_1_7_7.tar.gz local 0

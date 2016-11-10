@@ -1,3 +1,4 @@
 1 motif motif-2.3.6.tar.gz local 0
 1 gtk2  gtk+-2.24.30.tar.xz local 0
 0 gtk3  gtk+-3.21.4.tar.xz local 0
+0 0-- gtkspell

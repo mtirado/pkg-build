@@ -87,11 +87,6 @@ case "$PKGARCHIVE" in
 		--disable-systemd-logind	\
 		--disable-suid-wrapper		\
 		--disable-standalone-xpbproxy	\
-		--disable-xnest			\
-		--disable-xephyr		\
-		--disable-kdrive		\
-		--disable-kdrive-kbd		\
-		--disable-kdrive-mouse		\
 		--disable-kdrive-evdev		\
 		--disable-libunwind		\
 		--disable-xshmfence		\
@@ -104,8 +99,13 @@ case "$PKGARCHIVE" in
 		--disable-xcsecurity		\
 		--disable-libdrm		\
 		--disable-dga			\
+		--disable-xephyr		\
+		--enable-kdrive			\
+		--enable-kdrive-kbd		\
+		--enable-kdrive-mouse		\
 		--enable-xv			\
 		--enable-xorg			\
+		--enable-xnest			\
 		--disable-xwayland		\
 		--with-xkb-output=/var/lib/xkb
 		#--enable-xv needed for xf86-video-modesetting driver
@@ -154,7 +154,6 @@ case "$PKGARCHIVE" in
 		./configure 		\
 		--disable-static	\
 		--prefix=/usr		\
-		--disable-nls
 	;;
 	*)
 		./configure 		\
@@ -180,9 +179,9 @@ case "$PKGARCHIVE" in
 		# flatten /usr
 		cp -r $PKGROOT/usr/* $PKGROOT/
 		rm -rf $PKGROOT/usr
-		# setup base
-		cp $PKGROOT/share/X11/xkb/rules/xorg \
-			$PKGROOT/share/X11/xkb/rules/base
+		# make base if not installing xkeyboard-config
+		#cp $PKGROOT/share/X11/xkb/rules/xorg \
+		#	$PKGROOT/share/X11/xkb/rules/base
 	;;
 #	util-macro*)
 #		make -j$JOBS
