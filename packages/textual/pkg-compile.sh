@@ -7,11 +7,30 @@ case "$PKGARCHIVE" in
 	#case pkgname*)
 	vim*)
 		echo "#define SYS_VIMRC_FILE \"$VIMRCPATH\"" >> src/feature.h
-		./configure --prefix=/usr
-		# XXX this fails reagrding a "not a terminal" type error, which
+		./configure 			\
+			--prefix=/usr		\
+			--disable-netbeans	\
+			--disable-xsmp		\
+			--disable-xim		\
+			--without-x		\
+			--disable-gui		\
+			--disable-xsmp-interact	\
+			--disable-darwin	\
+			--disable-selinux	\
+			--disable-hangulinput	\
+			--disable-fontset
+			#--disable-gpm		\
+			#--disable-sysmouse
+
+		# some x11 stuff gets built in and causes hiccups if textual
+		# is built after installing gui package groups.
+		# make a separate gvim package if you want that (x clipboard)
+
+		# XXX test fails regarding a "not a terminal" type error, which
 		# /could/ be jettison bug regarding glibc not having fall back
 		# to fd 0,1,2 stdio fd's if can't open /proc/self/0,1,2 symlinks
 		#DOTEST="test"
+
 		#parallel breakage
 		JOBS=1
 	;;
