@@ -5,6 +5,7 @@
 1 gdbm       gdbm-1.12.tar.gz local 0
 1 bc         bc-1.06.tar.gz local 0
 1 bin86      bin86-0.16.21.tar.gz local 0
+1 lsof       lsof_4.89.tar.bz2 local 0
 2 lilo       lilo-24.2.tar.gz local 0
 1 lvm2       LVM2.2.02.167.tar.gz local 0
 2 parted     parted-3.2.tar.xz local 0

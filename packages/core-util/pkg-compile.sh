@@ -7,7 +7,23 @@ case "$PKGARCHIVE" in
 		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT|" Makefile
 	;;
 	pciutils*)
-		# this is how you do it.
+		# this is how you do it. ;)
+	;;
+	lsof_*)
+		# this is not how you do it, :(
+		FNAME=${PKGARCHIVE%.tar.gz}
+		TARFILE="${FNAME}_src.tar"
+		tar xf $TARFILE
+		cd "${TARFILE%.tar}"
+		./Configure -n linux
+		make -j$JOBS
+		MANDIR=$PKGROOT/man/man8
+		BINDIR=$PKGROOT/bin
+		mkdir -vp $MANDIR
+		mkdir -vp $BINDIR
+		cp -vf lsof $BINDIR
+		cp -vf lsof.8 $MANDIR
+		exit 0
 	;;
 	lilo-*)
 		# don't install boot images ( needs uuencode/sharutils )
