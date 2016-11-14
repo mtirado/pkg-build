@@ -58,7 +58,7 @@ if [ -z "$PKGPASS" ]; then
 fi
 echo -n "build pass: "
 case "$PKGPASS" in
-	1|2|3|4|5|6|7|8|9)
+	1|2|3|4|5|6|7|8|9|A|B|C)
 		echo "$PKGPASS"
 	;;
 	*)

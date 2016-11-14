@@ -71,7 +71,6 @@ while true; do
 		/opt/pods/$USER/$PODCONFIG/podhome/pkgbuild-$PKGNAME/pkgdist \
 		$PKGNAME
 
-	# if you need more than 9 passes, we have serious problems.
 	# pkg-build also checks this, if you feel compelled to increase limit.
 	case "$PKGPASS" in
 		1) PKGPASS="2"		;;
@@ -82,7 +81,10 @@ while true; do
 		6) PKGPASS="7"		;;
 		7) PKGPASS="8"		;;
 		8) PKGPASS="9"		;;
-		9) exit 0		;;
+		9) PKGPASS="A"		;;
+		A) PKGPASS="B"		;;
+		B) PKGPASS="C"		;;
+		C) exit 0		;;
 		*) echo "multipass error"
 			exit -1 	;;
 	esac

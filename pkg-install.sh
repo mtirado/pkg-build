@@ -112,8 +112,8 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 				if [ ! -d "$FILE" ]; then
 					if [ -e "$PKGINSTALL/$FILE" ]; then
 						FNAME=$PKGINSTALL/$FILE
-						cp -v $FNAME \
-						      $FNAME\.stale-$(date -Iseconds)
+						cp -rv  $FNAME \
+							$FNAME\.stale-$(date -Iseconds)
 					fi
 				fi
 			done
