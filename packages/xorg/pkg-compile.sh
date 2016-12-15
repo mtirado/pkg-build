@@ -55,12 +55,8 @@ case "$PKGARCHIVE" in
 		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
 		./configure 			\
 		--prefix=/usr			\
-		--disable-static		\
-		--disable-largefile		\
 		--disable-visibility		\
 		--disable-aiglx			\
-		--disable-composite		\
-		--disable-mitshm		\
 		--disable-xres			\
 		--disable-record		\
 		--disable-xvmc			\
@@ -89,7 +85,6 @@ case "$PKGARCHIVE" in
 		--disable-standalone-xpbproxy	\
 		--disable-kdrive-evdev		\
 		--disable-libunwind		\
-		--disable-xshmfence		\
 		--disable-tcp-transport		\
 		--disable-ipv6			\
 		--disable-listen-local		\
@@ -99,18 +94,26 @@ case "$PKGARCHIVE" in
 		--disable-xcsecurity		\
 		--disable-libdrm		\
 		--disable-dga			\
+		--disable-xwayland		\
+		--disable-xshmfence		\
+		--disable-glamor		\
 		--disable-xephyr		\
-		--enable-kdrive			\
-		--enable-kdrive-kbd		\
-		--enable-kdrive-mouse		\
+		--enable-composite		\
 		--enable-xv			\
 		--enable-xorg			\
-		--enable-xnest			\
-		--disable-xwayland		\
+		--disable-xnest			\
 		--with-xkb-output=/var/lib/xkb
 		#--enable-xv needed for xf86-video-modesetting driver
 
-		# fbdev might be broken in qemu, TODO test on hardware
+		# TODO don't think weneed these, testing things...
+		#--disable-mitshm		\
+		#--disable-static		\
+		#--disable-largefile		\
+		#--disable-kdrive		\
+		#--disable-kdrive-kbd		\
+		#--disable-kdrive-mouse		\
+
+
 		#--enable-xfbdev		\
 		#--enable-vgahw			\
 		#--enable-pciaccess		\
@@ -155,6 +158,12 @@ case "$PKGARCHIVE" in
 		--disable-static	\
 		--prefix=/usr		\
 	;;
+	xf86-video-dummy*)
+		./configure 		\
+		--disable-static	\
+		--prefix=/usr		\
+		--disable-dga
+	;;
 	*)
 		./configure 		\
 		--disable-static	\
@@ -179,9 +188,9 @@ case "$PKGARCHIVE" in
 		# flatten /usr
 		cp -r $PKGROOT/usr/* $PKGROOT/
 		rm -rf $PKGROOT/usr
-		# make base if not installing xkeyboard-config
-		#cp $PKGROOT/share/X11/xkb/rules/xorg \
-		#	$PKGROOT/share/X11/xkb/rules/base
+		# ugh crash on kbd input if we don't do this...
+		cp $PKGROOT/share/X11/xkb/rules/xorg \
+			$PKGROOT/share/X11/xkb/rules/base
 	;;
 #	util-macro*)
 #		make -j$JOBS

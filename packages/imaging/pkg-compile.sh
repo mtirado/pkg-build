@@ -37,6 +37,11 @@ case "$PKGARCHIVE" in
 			--with-freetype2-library=/usr/lib/libfreetype.so \
 			--with-freetype2-includes=/usr/include/freetype2
 	;;
+	mupdf*)
+		sed -i 's|HAVE_GLFW.*=.*|HAVE_GLFW=no|' Makethird
+		sed -i 's|prefix.*?=.*|prefix=/usr|' Makefile
+		make HAVE_GLFW=no -j$JOBS
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr
