@@ -21,9 +21,14 @@ case "$PKGARCHIVE" in
 			--with-pkg-config-dir=/usr/lib/pkgconfig \
 			--prefix=/usr
 	;;
+	nasm*)
+		./configure 			\
+			--prefix=$PKGROOT/usr
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr
+	;;
 esac
 
 make -j$JOBS

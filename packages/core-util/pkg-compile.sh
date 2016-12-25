@@ -65,9 +65,25 @@ case "$PKGARCHIVE" in
 			--prefix=/usr		\
 			--disable-cfdisk
 	;;
+	cdrtools-*)
+		# patch for 3.01
+		patch -p1 < $PKGDIR/cdrtools-3.01-fix-20151126-mkisofs-isoinfo.patch
+		PREFIX=/usr	 	\
+			make -j$JOBS
+		DESTDIR=$PKGROOT	\
+			make install
+		cp -r $PKGROOT/opt/schily/* $PKGROOT/
+		rm -rf $PKGROOT/opt/schily
+		rm -rf $PKGROOT/share/man/man3
+		rm -rf $PKGROOT/share/man/man5
+		rm -rf $PKGROOT/include
+		rm -rf $PKGROOT/lib
+		exit 0
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr
+	;;
 esac
 
 make -j$JOBS
