@@ -1,6 +1,7 @@
 #!/bin/sh
 # (c) Michael R. Tirado GPL Version 3 or any later version.
 #PKGAUTOMATE silences already installed check
+#PKGOVERWRITE overwrites existing files without prompting
 #-----------------------------------------------------------------------------
 #TODO more informative output on packages installed
 set -e
@@ -92,7 +93,11 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		echo "(b)ackup file       -- create file.stale-time before overwriting"
 		echo "(q)uit installation."
 		echo "-----------------------------------------------------------------"
-		read -n 1 -s ACK
+		if [ -z "$PKGOVERWRITE" ]; then
+			read -n 1 -s ACK
+		else
+			ACK="o"
+		fi
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
 			continue
 		elif [ "$ACK" == "r" ] || [ "$ACK" == "R" ]; then
@@ -123,8 +128,9 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 	fi
 
+	echo "installing $PKGNAME"
+
 	#----------- create directories --------------------------------------
-	echo "creating directories for $PKGNAME ..."
 	for FILE in $(find . -mindepth 1); do
 		DIRNAME=$(dirname "$PKGINSTALL/$FILE")
 		if [ ! -e "$DIRNAME" ]; then
@@ -147,39 +153,31 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	#---------------------------------------------------------------------
 	if [ -d "lib/pkgconfig" ]; then
 		for FILE in $(find lib/pkgconfig -mindepth 1); do
-			echo "-----------------------------------------------"
-			echo "adjusting: $FILE"
-			echo "-----------------------------------------------"
+			echo "adjusting  $FILE"
 			sed -i "s|prefix=/.*|prefix=/usr|" $FILE
 		done
 	fi
 	if [ -d "share/pkgconfig" ]; then
 		for FILE in $(find share/pkgconfig -mindepth 1); do
-			echo "-----------------------------------------------"
-			echo "adjusting: $FILE"
-			echo "-----------------------------------------------"
+			echo "adjusting  $FILE"
 			sed -i "s|prefix=/.*|prefix=/usr|" $FILE
 		done
 	fi
 
+	# TODO links might be destroyed, can use -ax but should
+	# make sure that suid or sgid bits are unset.
 	#----------- copy files to install destination  ----------------------
 	for FILE in $(find . -mindepth 1 -type f); do
-		cp -rv $FILE $PKGINSTALL/$FILE
+		cp -r $FILE $PKGINSTALL/$FILE
 	done
 
 	#----------- copy symlinks to install destination  -------------------
 	for FILE in $(find . -mindepth 1 -type l); do
-		cp -rv $FILE $PKGINSTALL/$FILE
+		cp -r $FILE $PKGINSTALL/$FILE
 	done
 
 	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-	echo ""
-	echo ""
-	echo "$PKGNAME installed."
-	echo ""
 	touch $PKGDIR/$ITEM/.pkg-installed
 	cd $PKGDIR
 done
-
-echo "installation complete"
 
