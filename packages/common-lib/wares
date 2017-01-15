@@ -6,4 +6,4 @@
 1 libreadline readline-7.0.tar.gz local 0
 2 gettext     gettext-0.19.7.tar.xz local 0
 1 libjson     json-c-0.12.1.tar.gz local 0
-3 glib        glib-2.49.4.tar.xz local 0
+3 glib        glib-2.50.2.tar.xz local 0

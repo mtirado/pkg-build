@@ -25,6 +25,19 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix=$PKGROOT/usr
 	;;
+	gcc-*)
+		./configure                     \
+		--prefix=/usr			\
+		--disable-multilib              \
+		--disable-bootstrap             \
+		--with-system-zlib              \
+		--enable-default-pie            \
+		--enable-default-ssp		\
+		--enable-secure-plt		\
+		--enable-targets=all		\
+		--enable-languages=c,c++
+
+	;;
 	*)
 		./configure 			\
 			--prefix=/usr

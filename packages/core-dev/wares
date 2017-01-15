@@ -1,6 +1,8 @@
+1 gcc        gcc-5.4.0.tar.gz local 0
 1 make       make-4.2.1.tar.gz local 0
 2 pkg-config pkgconf-0.9.9.tar.gz local 0
 3 perl       perl-5.24.0.tar.gz local 0
+4 cpio       cpio-2.12.tar.gz local 0
 4 nasm       nasm-2.12.02.tar.xz local 0
 4 bison      bison-3.0.4.tar.xz local 0
 4 gperf      gperf-3.0.4.tar.gz local 0

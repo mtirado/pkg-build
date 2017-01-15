@@ -3,13 +3,12 @@
 set -e
 case "$PKGARCHIVE" in
 	git*)
-		# 1 job because perl is required, and
-		# async PM.stamp / perl.mak fails (git-2.9.3)
-		JOBS="1"
+		autoreconf
 		./configure 			\
 			--prefix=/usr		\
 			--without-iconv		\
 			--without-python	\
+			--without-tcltk		\
 			--with-perl=/usr/bin/perl
 	;;
 	*)

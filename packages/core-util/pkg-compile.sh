@@ -65,6 +65,11 @@ case "$PKGARCHIVE" in
 			--prefix=/usr		\
 			--disable-cfdisk
 	;;
+	parted*)
+		./configure 			\
+			--prefix=/usr		\
+			--without-readline
+	;;
 	cdrtools-*)
 		# patch for 3.01
 		patch -p1 < $PKGDIR/cdrtools-3.01-fix-20151126-mkisofs-isoinfo.patch
