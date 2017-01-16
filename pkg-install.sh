@@ -4,6 +4,7 @@
 #PKGOVERWRITE overwrites existing files without prompting
 #-----------------------------------------------------------------------------
 #TODO more informative output on packages installed
+#TODO support arbitrary prefixes
 set -e
 
 # either this or dump all package files in root package dir?
@@ -38,16 +39,17 @@ if [ ! -d "$PKGFILES" ]; then
 fi
 
 cd $PKGDIR
-for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
+for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 
 	EXISTS=0
-	PKGNAME=$ITEM
-
+	TAROPT=""
+	TARFILES=""
+	cd "$PKGINSTALL"
 	# this is for multipass automation to know what has been installed
 	# TODO clean this extra file up if distributing package contents
-	if [ -e $PKGDIR/$ITEM/.pkg-installed ]; then
+	if [ -e $PKGDIR/$PKGNAME/.pkg-installed ]; then
 		if [ -z "$PKGAUTOMATE" ]; then
-			echo "skipping $ITEM"
+			echo "skipping $PKGNAME"
 		fi
 		continue;
 	fi
@@ -66,14 +68,13 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			echo "installation failed."
 			exit -1
 		fi
-		exit -1
 	fi
-	cd $PKGDIR/$ITEM
 
+	TARFILES=$(tar -tf "$PKGDIR/$PKGNAME/usr.tar")
 	# check for existing files
-	for FILE in $(find . -mindepth 1); do
+	for FILE in $(echo "$TARFILES"); do
 		if [ ! -d "$FILE" ]; then
-			if [ -e "$PKGINSTALL/$FILE" ]; then
+			if [ -L "$PKGINSTALL/$FILE" ] || [ -e "$PKGINSTALL/$FILE" ]; then
 				echo "$PKGINSTALL/$FILE already exists"
 				EXISTS=$((EXISTS + 1))
 			fi
@@ -81,16 +82,17 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	done
 	if [ "$EXISTS" != "0" ]; then
 		# TODO we should scan packages to find which one owns file << TODO!
-		# no owner should default to a "world" package.
+		# no owner should default to default ungrouped package.
+		# TODO long winded prompt for each existing file
 		echo "-----------------------------------------------------------------"
 		echo "$PKGNAME: $EXISTS file(s) already exist in $PKGINSTALL"
 		echo "you have 5 possible actions:"
 		echo ""
 		echo "(s)kip installing $PKGNAME"
-		echo "(r)emove duplicates -- destroys the newer package files"
-		echo "(o)verwrite files   -- overwrite currently disastrous if files"
-		echo "                       used by another package."
-		echo "(b)ackup file       -- create file.stale-time before overwriting"
+		echo "(p)reserve  --  do not overwrite existing files."
+		echo "(b)ackup    --  create backup file before overwriting"
+		echo "(d)estroy   --  overwrite existing files, currently disastrous"
+		echo "                if files are used by another package."
 		echo "(q)uit installation."
 		echo "-----------------------------------------------------------------"
 		if [ -z "$PKGOVERWRITE" ]; then
@@ -98,86 +100,60 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		else
 			ACK="o"
 		fi
+		TAROPT="-overwrite"
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
 			continue
-		elif [ "$ACK" == "r" ] || [ "$ACK" == "R" ]; then
-			## remove existing files from pkgdir
-			for FILE in $(find . -mindepth 1); do
-				if [ ! -d "$FILE" ]; then
-					if [ -e "$PKGINSTALL/$FILE" ]; then
-						rm -v $FILE
-					fi
-				fi
-			done
+		elif [ "$ACK" == "p" ] || [ "$ACK" == "P" ]; then
+			TAROPT="-keep-old-files"
 		elif [ "$ACK" == "b" ] || [ "$ACK" == "B" ]; then
-			echo "backup duplicate files."
 			# backup duplicate files before overwriting
-			# TODO maybe put backups in .packages dir to limit clutter
-			for FILE in $(find . -mindepth 1); do
+			for FILE in $(tar -tf "$PKGDIR/$PKGNAME/usr.tar"); do
 				if [ ! -d "$FILE" ]; then
 					if [ -e "$PKGINSTALL/$FILE" ]; then
 						FNAME=$PKGINSTALL/$FILE
-						cp -rv  $FNAME \
-							$FNAME\.stale-$(date -Iseconds)
+						cp -rav $FNAME \
+						        $FNAME\.stale-$(date -Iseconds)
 					fi
 				fi
 			done
-		elif [ "$ACK" != "o" ] && [ "$ACK" != "O" ]; then
+		elif [ "$ACK" != "d" ] && [ "$ACK" != "D" ]; then
 			echo "installation failed."
 			exit -1
 		fi
 	fi
 
 	echo "installing $PKGNAME"
-
-	#----------- create directories --------------------------------------
-	for FILE in $(find . -mindepth 1); do
-		DIRNAME=$(dirname "$PKGINSTALL/$FILE")
-		if [ ! -e "$DIRNAME" ]; then
-			mkdir -p "$DIRNAME"
-		fi
-	done
-
-	#----------- construct package file list -----------------------------
-	touch $PKGFILES/$PKGNAME
-	for FILE in $(find . -mindepth 1); do
+	# construct package file list, if any errors occur after here
+	# user will need to manually clean up package file
+	for FILE in $(echo "$TARFILES"); do
 		if [ ! -d "$FILE" ]; then
 			echo $FILE >> $PKGFILES/$PKGNAME
 		fi
 	done
 
+	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
+	tar xf "$PKGDIR/$PKGNAME/usr.tar"
 	#---------------- fix prefix paths -----------------------------------
 	# this breaks things pretty badly. needs a way to adjust path for
 	# $PKGINSTALL, currently only works with /usr package installations
-	# TODO can just add another global var if no good solutions $PKGADJUST
+	# TODO can just add another global var if no good solutions $PKGPREFIX
 	#---------------------------------------------------------------------
-	if [ -d "lib/pkgconfig" ]; then
-		for FILE in $(find lib/pkgconfig -mindepth 1); do
-			echo "adjusting  $FILE"
-			sed -i "s|prefix=/.*|prefix=/usr|" $FILE
-		done
-	fi
-	if [ -d "share/pkgconfig" ]; then
-		for FILE in $(find share/pkgconfig -mindepth 1); do
-			echo "adjusting  $FILE"
-			sed -i "s|prefix=/.*|prefix=/usr|" $FILE
-		done
-	fi
-
-	# TODO links might be destroyed, can use -ax but should
-	# make sure that suid or sgid bits are unset.
-	#----------- copy files to install destination  ----------------------
-	for FILE in $(find . -mindepth 1 -type f); do
-		cp -r $FILE $PKGINSTALL/$FILE
+	for FILE in $(echo "$TARFILES"); do
+		if [ -f "$FILE" ]; then
+			if [[ "$FILE" == ./lib/pkgconfig/* ]]; then
+				if [ -d "lib/pkgconfig" ]; then
+					echo "adjusting  $FILE"
+					sed -i "s|prefix=/.*|prefix=/usr|" $FILE
+				fi
+			elif [[ "$FILE" == ./share/pkgconfig/* ]]; then
+				if [ -d "share/pkgconfig" ]; then
+					echo "adjusting  $FILE"
+					sed -i "s|prefix=/.*|prefix=/usr|" $FILE
+				fi
+			fi
+		fi
 	done
 
-	#----------- copy symlinks to install destination  -------------------
-	for FILE in $(find . -mindepth 1 -type l); do
-		cp -r $FILE $PKGINSTALL/$FILE
-	done
-
-	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-	touch $PKGDIR/$ITEM/.pkg-installed
-	cd $PKGDIR
+	touch $PKGDIR/$PKGNAME/.pkg-installed
 done
 

@@ -2,7 +2,7 @@
 # (c) Michael R. Tirado GPL Version 3 or any later version.
 #
 # Creates a compressed snapshot of package state.
-# Package are stored as a line in package group file.
+# Packages are stored as a line in package group file.
 #
 #-----------------------------------------------------------------------------
 set -e
@@ -16,13 +16,16 @@ if [ "$PKGINSTALL" = "" ]; then
 	PKGINSTALL="/usr/local"
 fi
 if [ "$PKGTMP" = "" ]; then
+	# someplace mounted as tmpfs is ideal
 	PKGTMP="/tmp/pkg-migrate-$LOGNAME[$UID]"
 fi
 #-----------------------------------------------------------------------------
 
 FLOCKDIR="$PWD/$1"
 if [ -e "$PKGTMP" ]; then
+	set +e
 	rm -r $PKGTMP
+	set -e
 fi
 mkdir -p $PKGTMP
 
@@ -32,7 +35,8 @@ do_group_migrate() {
 		FILES=$(cat "$PKG")
 		# TODO add version number entry
 		PKGNAME="$PKG-$(date --iso-8601=date).tar"
-		if [ -e "$FLOCKDIR/$PKGNAME.xz" ]; then
+		#if [ -e "$FLOCKDIR/$PKGNAME.xz" ]; then
+		if [ $(find $FLOCKDIR -iname "$PKG*.tar.*") ]; then
 			echo "skipping $PKGNAME.xz"
 			continue
 		elif [ -e "$FLOCKDIR/$PKGNAME" ]; then
@@ -46,11 +50,12 @@ do_group_migrate() {
 		fi
 		mkdir "$PKGTMP/$PKGNAME";
 
-		#copy package files to temp
+
+		FILEGLOB=""
 		cd $PKGINSTALL
 		for FILE in $FILES; do
-			if [ ! -e "$FILE" ]; then
-				echo "package file missing: $FILE"
+			if [ ! -L "$FILE" ] && [ ! -e "$FILE" ]; then
+				echo "package file missing: $PKGINSTALL/$FILE"
 				echo "press c key to continue"
 				read -n 1 KEY
 				if [ "$KEY" != "c" ] && [ "$KEY" != "C" ]; then
@@ -62,12 +67,17 @@ do_group_migrate() {
 			if [ ! -d "$MKPATH" ]; then
 				mkdir -p "$MKPATH"
 			fi
-			# figure out what TODO with links
-			cp -ax "$FILE" "$PKGTMP/$PKGNAME/$FILE"
+			echo "FILE:[$FILE ]"
+			FILEGLOB+="$FILE "
 		done
 
-		# create tar starting with meta data
+		# globbing may be the only way without depending on rsync?
+		tar -cf "$PKGTMP/$PKGNAME/temp.tar" $FILEGLOB
 		cd "$PKGTMP/$PKGNAME"
+		tar xf "temp.tar"
+		rm "temp.tar"
+
+		# now create the real tar starting with metadata
 		cp "$PKGINSTALL/.packages/$PKGGROUP/$PKG" .pkg-contents
 		echo "$PKG" > .pkg-name
 		tar -cf "$FLOCKDIR/$PKGNAME" .pkg-contents

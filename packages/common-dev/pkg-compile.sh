@@ -16,9 +16,13 @@ case "$PKGARCHIVE" in
 			--prefix=/usr
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT    \
+make -j"$JOBS"
+DESTDIR="$PKGROOT"    \
 	make install
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
+
+# TODO add support for arbitrary prefixes
+cd "$PKGROOT/usr"
+tar -cf "$PKGROOT/usr.tar" ./*
+cd ..
+rm -rf ./usr
 

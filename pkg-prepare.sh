@@ -1,6 +1,8 @@
 #!/bin/sh
 # (c) Michael R. Tirado GPL Version 3 or any later version.
-#-----------------------------------------------------------------------------
+# TODO detect failure during decompression don't try to build
+# partially decompressed packages!
+##-----------------------------------------------------------------------------
 set -e
 if [ "$1" = "" ]; then
 	echo "usage: pkg-prepare <pkg-dir>"

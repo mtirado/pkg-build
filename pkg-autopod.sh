@@ -5,6 +5,10 @@
 #
 # TODO check if installed before compiling
 # depends on jettison compiled with PODROOT_HOME_OVERRIDE
+#
+# TODO post-install stage for annoying things
+# like firefox depending on autoconf-213, need to remove that
+# and could also handle splitting packages there
 #-----------------------------------------------------------------------------
 set -e
 if [ "$1" = "" ] || [ "$1" = "-h" ]; then

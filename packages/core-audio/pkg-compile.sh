@@ -12,20 +12,21 @@ case "$PKGARCHIVE" in
 	;;
 esac
 
-make -j$JOBS
+make "-j$JOBS"
 
 case "$PKGARCHIVE" in
 	alsa-util*)
 		#alsactl store saves state here
-		mkdir -p $PKGROOT/var/lib/alsa
+		mkdir -p "$PKGROOT/var/lib/alsa"
 	;;
 esac
-case "$PKGARCHIVE" in
-	*)
-		DESTDIR=$PKGROOT    \
-			make install
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
-	;;
-esac
+
+DESTDIR=$PKGROOT    \
+	make install
+# TODO add support for arbitrary prefixes
+cd "$PKGROOT/usr"
+tar -cf "$PKGROOT/usr.tar" ./*
+cd ..
+rm -rf ./usr
+
 

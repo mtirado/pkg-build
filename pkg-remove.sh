@@ -39,7 +39,7 @@ do_pkgremove() {
 		FILEPATH="$PKGINSTALL/$FILE"
 		if [ -e "$FILEPATH" ] || [ -L "$FILEPATH" ]; then
 			if [ -f "$FILEPATH" ] || [ -L "$FILEPATH" ]; then
-				rm "$FILEPATH"
+				rm -f "$FILEPATH"
 			elif [ -d "$FILEPATH" ]; then
 				set +e
 				rmdir "$FILEPATH"
@@ -62,7 +62,7 @@ do_pkgremove() {
 	done
 
 	#------- remove package file --------------------------------
-	rm $PKGFILE
+	rm -f $PKGFILE
 	echo "package $PKGFILE removed."
 }
 
