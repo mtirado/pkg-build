@@ -35,6 +35,9 @@ else
 	exit -1
 fi
 
+if [ "$PKGINCLUDE" == "" ]; then
+	export PKGINCLUDE="/usr/bin/pkg-include.sh"
+fi
 #-----------------------------------------------------------------------------
 #
 CWD=$(pwd)

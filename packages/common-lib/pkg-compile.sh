@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	#
 	#libiconv*)
@@ -45,6 +46,4 @@ make -j$JOBS
 
 DESTDIR=$PKGROOT    \
 	make install
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
-
+make_tar_prefix "$PKGROOT" /usr

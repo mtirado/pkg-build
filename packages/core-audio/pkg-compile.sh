@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	alsa-util*)
 		./configure 			\
@@ -23,10 +24,4 @@ esac
 
 DESTDIR=$PKGROOT    \
 	make install
-# TODO add support for arbitrary prefixes
-cd "$PKGROOT/usr"
-tar -cf "$PKGROOT/usr.tar" ./*
-cd ..
-rm -rf ./usr
-
-
+make_tar_prefix "$PKGROOT" /usr

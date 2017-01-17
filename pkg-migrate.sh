@@ -3,10 +3,10 @@
 #
 # Creates a compressed snapshot of package state.
 # Packages are stored as a line in package group file.
-#
+# note: running this script on new years eve may result in duplicate packages.
 #-----------------------------------------------------------------------------
 set -e
-umask 0077
+umask 0027
 #-----------------------------------------------------------------------------
 if [ "$1" = "" ]; then
 	echo "usage: pkg-migrate <flockdir>"
@@ -17,32 +17,30 @@ if [ "$PKGINSTALL" = "" ]; then
 fi
 if [ "$PKGTMP" = "" ]; then
 	# someplace mounted as tmpfs is ideal
-	PKGTMP="/tmp/pkg-migrate-$LOGNAME[$UID]"
+	PKGTMP="$HOME/.pkg-migrate"
 fi
 #-----------------------------------------------------------------------------
-
 FLOCKDIR="$PWD/$1"
 if [ -e "$PKGTMP" ]; then
-	set +e
-	rm -r $PKGTMP
-	set -e
+	rm -rf $PKGTMP
 fi
 mkdir -p $PKGTMP
 
 do_group_migrate() {
 	PKGGROUP=$1
+	GROUPDIR="$PKGINSTALL/.packages/$PKGGROUP"
+	cd "$GROUPDIR"
 	for PKG in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
-		FILES=$(cat "$PKG")
+		FILES=$(cat "$GROUPDIR/$PKG")
 		# TODO add version number entry
-		PKGNAME="$PKG-$(date --iso-8601=date).tar"
-		#if [ -e "$FLOCKDIR/$PKGNAME.xz" ]; then
-		if [ $(find $FLOCKDIR -iname "$PKG*.tar.*") ]; then
-			echo "skipping $PKGNAME.xz"
+		PKGNAME="$PKG-$(date +%G).tar"
+		if [ -e "$FLOCKDIR/$PKGNAME.xz" ]; then
+			echo "   skip: $PKGNAME.xz"
 			continue
 		elif [ -e "$FLOCKDIR/$PKGNAME" ]; then
-			rm -fv "$FLOCKDIR/$PKGNAME"
+			rm -f "$FLOCKDIR/$PKGNAME"
 		fi
-		echo "packaging $PKGNAME"
+		echo "archive: $PKGNAME"
 
 		# create temp dir
 		if [ -e "$PKGTMP/$PKGNAME" ]; then
@@ -54,7 +52,9 @@ do_group_migrate() {
 		FILEGLOB=""
 		cd $PKGINSTALL
 		for FILE in $FILES; do
-			if [ ! -L "$FILE" ] && [ ! -e "$FILE" ]; then
+			if [ -d "$FILE" ]; then
+				continue
+			elif [ ! -L "$FILE" ] && [ ! -e "$FILE" ]; then
 				echo "package file missing: $PKGINSTALL/$FILE"
 				echo "press c key to continue"
 				read -n 1 KEY
@@ -67,11 +67,12 @@ do_group_migrate() {
 			if [ ! -d "$MKPATH" ]; then
 				mkdir -p "$MKPATH"
 			fi
-			echo "FILE:[$FILE ]"
 			FILEGLOB+="$FILE "
 		done
 
-		# globbing may be the only way without depending on rsync?
+		# tar globbing may be the only way to handle hardlinks
+		# without depending on rsync?
+		# TODO try --exclude-tag instead of globbing
 		tar -cf "$PKGTMP/$PKGNAME/temp.tar" $FILEGLOB
 		cd "$PKGTMP/$PKGNAME"
 		tar xf "temp.tar"
@@ -85,18 +86,37 @@ do_group_migrate() {
 		rm .pkg-contents
 		rm .pkg-name
 		if [ "$STRIP_BINARIES" != "" ]; then
+			echo "              strip: ELF, ar"
 			for FILE in $(find . -mindepth 1 -type f); do
 				TEST=$(file "$FILE")
 				if [[ "$TEST" == *ELF* ]]; then
-					strip --strip-unneeded "$FILE"
+					if [ -w $FILE ]; then
+						set +e
+						strip --strip-unneeded "$FILE"
+						set -e
+					else
+						chmod u+w "$FILE"
+						set +e
+						strip --strip-unneeded "$FILE"
+						set -e
+						chmod u-w "$FILE"
+					fi
 				elif [[ "$TEST" == *current\ ar\ archive* ]]; then
-					strip --strip-debug "$FILE"
+					if [ -w $FILE ]; then
+						strip --strip-debug "$FILE"
+					else
+						chmod u+w "$FILE"
+						strip --strip-debug "$FILE"
+						chmod u-w "$FILE"
+					fi
 				fi
 			done
+		else
+			echo "            nostrip."
 		fi
 		tar -rf  "$FLOCKDIR/$PKGNAME" ./*
-		cd "$PKGINSTALL/.packages/$PKGGROUP"
 		rm -rf "$PKGTMP/$PKGNAME"
+		echo "           compress: $PKGNAME.xz"
 		xz "$FLOCKDIR/$PKGNAME"
 		# TODO hash and/or sign package
 		rm -fv "$FLOCKDIR/$PKGNAME"
@@ -117,7 +137,10 @@ if [ $(find . -name '*~') ]; then
 	exit -1
 fi
 for PKGGROUP in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
-	cd "$PKGINSTALL/.packages/$PKGGROUP"
-	echo "migrate  $PKGGROUP"
+	echo ""
+	echo "----------------------------------------------------------------"
+	echo "         $PKGGROUP"
+	echo "----------------------------------------------------------------"
+	echo ""
 	do_group_migrate "$PKGGROUP"
 done

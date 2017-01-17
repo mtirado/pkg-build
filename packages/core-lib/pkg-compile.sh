@@ -1,5 +1,7 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
+
 case "$PKGARCHIVE" in
 	p11-kit*)
 		./configure 			\
@@ -36,12 +38,12 @@ case "$PKGARCHIVE" in
 	expat*)
 		#expat doesn't believe in DESTDIR?
 		make install
+		make_tar_without_prefix "$PKGROOT"
 	;;
 	*)
 		DESTDIR=$PKGROOT    \
 			make install
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 esac
 

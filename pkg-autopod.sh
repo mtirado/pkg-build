@@ -50,8 +50,10 @@ JETTISON="$JETTISON /bin/sh $PODCONFIG --blacklist"
 #	JETARGS="$JETARGS --blacklist"
 #fi
 
-# --clear-environ will break this, pass as argument or use file instead
+# --clear-environ will break this,  =(
 PKGPASS=1
+export PATH="/pkg-scripts/:$PATH"
+export PKGINCLUDE="/pkg-scripts/pkg-include.sh"
 while true; do
 	export PKGPASS
 

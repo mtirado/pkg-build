@@ -1,6 +1,6 @@
 #!/bin/sh
-
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	perl*)
 		export BUILD_ZLIB=False
@@ -26,17 +26,16 @@ case "$PKGARCHIVE" in
 			--prefix=$PKGROOT/usr
 	;;
 	gcc-*)
-		./configure                     \
-		--prefix=/usr			\
-		--disable-multilib              \
-		--disable-bootstrap             \
-		--with-system-zlib              \
-		--enable-default-pie            \
-		--enable-default-ssp		\
-		--enable-secure-plt		\
-		--enable-targets=all		\
-		--enable-languages=c,c++
-
+		./configure                             \
+			--prefix=/usr                   \
+			--disable-multilib              \
+			--disable-bootstrap             \
+			--with-system-zlib              \
+			--enable-default-pie            \
+			--enable-default-ssp		\
+			--enable-secure-plt		\
+			--enable-targets=all		\
+			--enable-languages=c,c++
 	;;
 	*)
 		./configure 			\
@@ -47,8 +46,6 @@ esac
 make -j$JOBS
 DESTDIR=$PKGROOT    \
 	make install
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
 
 case "$PKGARCHIVE" in
 pkgconf*)
@@ -57,3 +54,4 @@ pkgconf*)
 ;;
 esac
 
+make_tar_prefix "$PKGROOT" /usr
