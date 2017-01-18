@@ -1,12 +1,11 @@
 #!/bin/sh
 set -e
-
-CURSES_PREFIX=/usr
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	ncurses*)
 		DESTDIR=$PKGROOT				\
 		./configure 					\
-			--prefix=$CURSES_PREFIX			\
+			--prefix=/usr				\
 			--with-shared				\
 			--without-debug				\
 			--without-normal			\
@@ -22,29 +21,30 @@ case "$PKGARCHIVE" in
 	;;
 	procps*)
 		./configure 			\
-			--prefix=$PKGROOT	\
+			--prefix=/usr		\
 			--disable-kill
 	;;
 	# XXX --disable-nls is used because i don't need this.
-	# sorry rest of world  :P
 	kbd-1.15*)
 		./configure 			\
-			--prefix=$PKGROOT	\
+			--prefix=/usr		\
 			--disable-nls
 	;;
 	*)
 		./configure 			\
-			--prefix=$PKGROOT
+			--prefix=/usr
 
 esac
 
-make -j$JOBS
+make "-j$JOBS"
 make install
 
 case "$PKGARCHIVE" in
-	ncurses*)
-		mv -fv $PKGROOT/$CURSES_PREFIX/* $PKGROOT/
-		rm -rfv $PKGROOT/$CURSES_PREFIX
+	ex-*)
+		make_tar_without_prefix "$PKGROOT"
+	;;
+	*)
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 esac
 

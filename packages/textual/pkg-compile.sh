@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 
 VIMRCPATH=/usr/etc/vimrc
 DOTEST=""
@@ -49,32 +50,29 @@ make -j$JOBS $DOTEST
 case "$PKGARCHIVE" in
 	vim*)
 
-		DESTDIR=$PKGROOT    \
-			make install
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
+		DESTDIR=$PKGROOT make install
 
 		#don't overwrite ex with vim
-		if [ -e "$PKGROOT/bin/ex" ]; then
-			rm $PKGROOT/bin/ex
-			rm $PKGROOT/bin/view
-			rm $PKGROOT/share/man/man1/ex.1
-			rm $PKGROOT/share/man/man1/view.1
+		if [ -e "$PKGROOT/usr/bin/ex" ]; then
+			rm $PKGROOT/usr/bin/ex
+			rm $PKGROOT/usr/bin/view
+			rm $PKGROOT/usr/share/man/man1/ex.1
+			rm $PKGROOT/usr/share/man/man1/view.1
 		fi
 		echo "installing default vimrc: $VIMRCPATH"
-		mkdir -vp $PKGROOT/etc
-		cp -fv $PKGROOT/share/vim/vim74/vimrc_example.vim $PKGROOT/etc/vimrc
+		mkdir -vp $PKGROOT/usr/etc
+		cp -fv $PKGROOT/usr/share/vim/vim74/vimrc_example.vim \
+			$PKGROOT/usr/etc/vimrc
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 	#TODO move this to a package that installs to /bin, copy manually from /usr/bin > /bin for now
 	bash*)
-		DESTDIR=$PKGROOT    \
-			make install
+		DESTDIR=$PKGROOT make install
+		make_tar_without_prefix "$PKGROOT"
 	;;
 	*)
-		DESTDIR=$PKGROOT    \
-			make install
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
+		DESTDIR=$PKGROOT make install
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 
 esac

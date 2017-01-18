@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	aalib*)
 		mkdir -p $PKGROOT/usr
@@ -49,18 +50,16 @@ case "$PKGARCHIVE" in
 esac
 
 make -j$JOBS
-DESTDIR=$PKGROOT    \
-	make install
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
+DESTDIR=$PKGROOT make install
 
 # XXX mupdf-lite, instead of static linked blimp by default (over 100MB .xz)
 case "$PKGARCHIVE" in
 	mupdf*)
-		rm -r $PKGROOT/include
-		rm -r $PKGROOT/lib
-		rm $PKGROOT/bin/muraster
-		rm $PKGROOT/bin/mujstest
-		rm $PKGROOT/bin/mupdf-x11-curl
+		rm -r $PKGROOT/usr/include
+		rm -r $PKGROOT/usr/lib
+		rm $PKGROOT/usr/bin/muraster
+		rm $PKGROOT/usr/bin/mujstest
+		rm $PKGROOT/usr/bin/mupdf-x11-curl
 	;;
 esac
+make_tar_prefix "$PKGROOT" /usr

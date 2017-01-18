@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	less-*)
 		./configure 			\
@@ -23,6 +24,7 @@ case "$PKGARCHIVE" in
 		mkdir -vp $BINDIR
 		cp -vf lsof $BINDIR
 		cp -vf lsof.8 $MANDIR
+		make_tar_without_prefix "$PKGROOT"
 		exit 0
 	;;
 	lilo-*)
@@ -37,6 +39,7 @@ case "$PKGARCHIVE" in
 			--prefix=$PKGROOT
 		make -j$JOBS
 		make install
+		make_tar_without_prefix "$PKGROOT"
 		exit 0
 	;;
 	bin86-*)
@@ -46,6 +49,7 @@ case "$PKGARCHIVE" in
 		mkdir -p $PKGROOT/man/man1
 		make -j$JOBS
 		make install
+		make_tar_without_prefix "$PKGROOT"
 		exit 0
 	;;
 	util-linux*)
@@ -83,6 +87,7 @@ case "$PKGARCHIVE" in
 		rm -rf $PKGROOT/share/man/man5
 		rm -rf $PKGROOT/include
 		rm -rf $PKGROOT/lib
+		make_tar_without_prefix "$PKGROOT"
 		exit 0
 	;;
 	*)
@@ -94,7 +99,4 @@ esac
 make -j$JOBS
 DESTDIR=$PKGROOT    \
 	make install
-#empty /usr
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
-
+make_tar_prefix "$PKGROOT" /usr

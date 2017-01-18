@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	inetutils*)
 		# logger is included in util-linux
@@ -36,12 +37,12 @@ case "$PKGARCHIVE" in
 	iproute2*)
 		DESTDIR=$PKGROOT		\
 			make install
+		make_tar_without_prefix "$PKGROOT"
 	;;
 	*)
 		DESTDIR=$PKGROOT    \
 			make install
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 esac
 

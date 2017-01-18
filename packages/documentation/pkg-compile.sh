@@ -1,10 +1,10 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	man-pages*)
 		sed -i "s|DESTDIR=|DESTDIR=$PKGROOT|" Makefile
-		prefix=/usr	  \
-			make
+		prefix=/usr make
 	;;
 	*)
 		./configure 			\
@@ -14,7 +14,5 @@ esac
 make -j$JOBS
 DESTDIR=$PKGROOT    \
 	make install
-#empty /usr
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
+make_tar_prefix "$PKGROOT" /usr
 

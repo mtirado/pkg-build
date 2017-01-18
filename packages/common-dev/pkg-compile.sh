@@ -16,7 +16,6 @@ case "$PKGARCHIVE" in
 			--prefix=/usr
 esac
 
-make -j"$JOBS"
-DESTDIR="$PKGROOT"    \
-	make install
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
 make_tar_prefix "$PKGROOT" /usr

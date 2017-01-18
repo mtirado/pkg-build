@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	setuptools*)
 		mkdir -p $PKGROOT/lib/python2.7/site-packages
@@ -14,8 +15,5 @@ esac
 
 make -j$JOBS
 
-DESTDIR=$PKGROOT    \
-	make install
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
-
+DESTDIR="$PKGROOT" make install
+make_tar_prefix "$PKGROOT" /usr

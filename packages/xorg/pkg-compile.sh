@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 
 case "$PKGARCHIVE" in
 	libX11*)
@@ -180,41 +181,34 @@ case "$PKGARCHIVE" in
 		make install
 		# ugh...
 		make install-data-am
+		make_tar_without_prefix "$PKGROOT"
 	;;
 	xkbdata*)
 		make -j$JOBS
-		DESTDIR=$PKGROOT	\
-		make install
-		# flatten /usr
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
+		DESTDIR=$PKGROOT make install
 		# ugh crash on kbd input if we don't do this...
-		cp $PKGROOT/share/X11/xkb/rules/xorg \
-			$PKGROOT/share/X11/xkb/rules/base
+		cp $PKGROOT/usr/share/X11/xkb/rules/xorg \
+			$PKGROOT/usr/share/X11/xkb/rules/base
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 #	util-macro*)
 #		make -j$JOBS
 #		make install
+#		make_tar_without_prefix "$PKGROOT"
 #	;;
 	xorg-server*)
 		make -j$JOBS
-		DESTDIR=$PKGROOT	\
-			make install
-		# flatten /usr
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
-		mkdir -p $PKGROOT/var/log
+		DESTDIR=$PKGROOT make install
+		mkdir -p $PKGROOT/usr/var/log
+		make_tar_prefix "$PKGROOT" /usr
 		# XXX right now you have to manually chmod +s /usr/bin/Xorg
 		# or else it will be unable to do certain ioctl's ?
 		# i'm not 100% sure yet what the hurdle for securing Xorg is.
 	;;
 	*)
 		make -j$JOBS
-		DESTDIR=$PKGROOT	\
-		make install
-		# flatten /usr
-		cp -r $PKGROOT/usr/* $PKGROOT/
-		rm -rf $PKGROOT/usr
+		DESTDIR=$PKGROOT make install
+		make_tar_prefix "$PKGROOT" /usr
 	;;
 esac
 

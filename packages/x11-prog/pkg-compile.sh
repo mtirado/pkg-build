@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	#case pkgname*)
 	#;;
@@ -21,8 +22,7 @@ case "$PKGARCHIVE" in
 esac
 
 #empty /usr
-DESTDIR=$PKGROOT    \
-	make install DESTDIR=$PKGROOT
-cp -r $PKGROOT/usr/* $PKGROOT/
-rm -rf $PKGROOT/usr
+make "-j$JOBS"
+DESTDIR=$PKGROOT make install
+make_tar_prefix "$PKGROOT" /usr
 
