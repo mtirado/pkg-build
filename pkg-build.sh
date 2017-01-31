@@ -38,6 +38,9 @@ fi
 if [ "$PKGINCLUDE" == "" ]; then
 	export PKGINCLUDE="/usr/bin/pkg-include.sh"
 fi
+if [ "$PKGPREFIX" == "" ]; then
+	export PKGPREFIX="/usr"
+fi
 #-----------------------------------------------------------------------------
 #
 CWD=$(pwd)
@@ -79,7 +82,6 @@ fi
 cd $PKGBUILDDIR
 
 # extract packages
-echo "running prep script..."
 $PKGPREPARE $PKGDIR || {
 	RETVAL=$?
 	case "$RETVAL" in

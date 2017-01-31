@@ -4,19 +4,19 @@ source "$PKGINCLUDE"
 
 case "$PKGARCHIVE" in
 	libX11*)
-		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
-		./configure						\
-		--prefix=/usr						\
-		--disable-static					\
-		--disable-tcp-transport					\
-		--disable-ipv6						\
-		--disable-local-transport				\
-		--disable-secure-rpc					\
-		--disable-xf86bigfont					\
-		--disable-loadable-xcursor				\
-		--disable-loadable-il8n					\
-		--enable-xlocale					\
-		--enable-xthreads					\
+		PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGPREFIX/share/pkgconfig"	\
+		./configure							\
+		--prefix="$PKGPREFIX"						\
+		--disable-static						\
+		--disable-tcp-transport						\
+		--disable-ipv6							\
+		--disable-local-transport					\
+		--disable-secure-rpc						\
+		--disable-xf86bigfont						\
+		--disable-loadable-xcursor					\
+		--disable-loadable-il8n						\
+		--enable-xlocale						\
+		--enable-xthreads						\
 		--disable-xlocaledir
 		#xkbcomp needs xlocale
 		# glibc, whyunodothiis
@@ -27,9 +27,9 @@ case "$PKGARCHIVE" in
 
 	;;
 	libSM*|libICE*|libXfont*)
-		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
-		./configure						\
-			--prefix=/usr		\
+		PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGPREFIX/share/pkgconfig"	\
+		./configure							\
+			--prefix="$PKGPREFIX"					\
 			--disable-static
 	;;
 	libdmx*)
@@ -39,23 +39,23 @@ case "$PKGARCHIVE" in
 		DEFSTR="HAVE__XEATDATAWORDS"
 		sed -i "s|.*$DEFSTR.*|#define $DEFSTR 1|" config.h.in
 		./configure			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-static
 	;;
 	libepoxy*)
 		#  NO CONFIGURE???
-		export ACLOCAL="aclocal -I/usr/share/aclocal"
+		export ACLOCAL="aclocal -I$PKGPREFIX/share/aclocal"
 		#set +e
 		./autogen.sh
 		#set -e
 		./configure			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-static
 	;;
 	xorg-server*)
-		PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/share/pkgconfig	\
+		PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGPREFIX/share/pkgconfig"	\
 		./configure 			\
-		--prefix=/usr			\
+		--prefix="$PKGPREFIX"		\
 		--disable-visibility		\
 		--disable-aiglx			\
 		--disable-xres			\
@@ -139,17 +139,17 @@ case "$PKGARCHIVE" in
 	;;
 	xkbcomp*)
 		./configure 		\
-		--prefix=/usr		\
+		--prefix="$PKGPREFIX"	\
 		--disable-static
 	;;
 	xtrans*)
 		./configure 		\
-		--prefix=$PKGROOT	\
+		--prefix="$PKGROOT"	\
 		--disable-static
 	;;
 	libXt*)
 		./configure 		\
-		--prefix=/usr		\
+		--prefix="$PKGPREFIX"	\
 		--disable-static	\
 		--disable-xkb		\
 		--without-glib
@@ -157,18 +157,18 @@ case "$PKGARCHIVE" in
 	xkeyboard-config*)
 		./configure 		\
 		--disable-static	\
-		--prefix=/usr		\
+		--prefix="$PKGPREFIX"	\
 	;;
 	xf86-video-dummy*)
 		./configure 		\
 		--disable-static	\
-		--prefix=/usr		\
+		--prefix="$PKGPREFIX"	\
 		--disable-dga
 	;;
 	*)
 		./configure 		\
 		--disable-static	\
-		--prefix=/usr
+		--prefix="$PKGPREFIX"
 	;;
 esac
 
@@ -177,19 +177,19 @@ esac
 case "$PKGARCHIVE" in
 	xtrans*)
 		# xtrans ignores DESTDIR?
-		make -j$JOBS
+		make "-j$JOBS"
 		make install
 		# ugh...
 		make install-data-am
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 	;;
 	xkbdata*)
-		make -j$JOBS
-		DESTDIR=$PKGROOT make install
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
 		# ugh crash on kbd input if we don't do this...
-		cp $PKGROOT/usr/share/X11/xkb/rules/xorg \
-			$PKGROOT/usr/share/X11/xkb/rules/base
-		make_tar_prefix "$PKGROOT" /usr
+		cp "$PKGROOT/$PKGPREFIX/share/X11/xkb/rules/xorg" \
+			"$PKGROOT/$PKGPREFIX/share/X11/xkb/rules/base"
+		make_tar_flatten_subdirs "$PKGROOT"
 	;;
 #	util-macro*)
 #		make -j$JOBS
@@ -197,18 +197,18 @@ case "$PKGARCHIVE" in
 #		make_tar_without_prefix "$PKGROOT"
 #	;;
 	xorg-server*)
-		make -j$JOBS
-		DESTDIR=$PKGROOT make install
-		mkdir -p $PKGROOT/usr/var/log
-		make_tar_prefix "$PKGROOT" /usr
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		mkdir -p "$PKGROOT/$PKGPREFIX/var/log"
+		make_tar_flatten_subdirs "$PKGROOT"
 		# XXX right now you have to manually chmod +s /usr/bin/Xorg
 		# or else it will be unable to do certain ioctl's ?
 		# i'm not 100% sure yet what the hurdle for securing Xorg is.
 	;;
 	*)
-		make -j$JOBS
-		DESTDIR=$PKGROOT make install
-		make_tar_prefix "$PKGROOT" /usr
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		make_tar_flatten_subdirs "$PKGROOT"
 	;;
 esac
 

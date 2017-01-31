@@ -6,10 +6,15 @@
 # note: running this script on new years eve may result in duplicate packages.
 #-----------------------------------------------------------------------------
 set -e
-umask 0027
+umask 0022
 #-----------------------------------------------------------------------------
 if [ "$1" = "" ]; then
 	echo "usage: pkg-migrate <flockdir>"
+	echo "to select what packages to use use migrate PKGPREFIX"
+	echo "PKGPREFIX=/root    -- /.packages "
+	echo "PKGPREFIX=/usr     -- /usr/.packages "
+	echo "anything deeper than 1 level is currently unsupported"
+#	echo "PKGPREFIX=/local   -- /usr/local/.packages "
 	exit -1
 fi
 if [ "$PKGINSTALL" = "" ]; then
@@ -21,13 +26,24 @@ if [ "$PKGTMP" = "" ]; then
 fi
 #-----------------------------------------------------------------------------
 FLOCKDIR="$PWD/$1"
+# this temp dir is needed for stripping binaries
 if [ -e "$PKGTMP" ]; then
-	rm -rf $PKGTMP
+	rm -rvf "$PKGTMP"
 fi
-mkdir -p $PKGTMP
+mkdir -p "$PKGTMP"
+
+# this is a bit of a hack
+# pkgconfig adjustment needed and i'm undecided on how to handle that.
+# TODO how to support deep prefixes like /usr/local/and/wherever/else
+if [ "$PKGPREFIX" == "" ]; then
+	PKGPREFIX="/usr"
+elif [ "$PKGPREFIX" == "/" ]; then
+	PKGPREFIX="/root"
+fi
+TARPREFIX="$(basename "$PKGPREFIX").tar"
 
 do_group_migrate() {
-	PKGGROUP=$1
+	PKGGROUP="$1"
 	GROUPDIR="$PKGINSTALL/.packages/$PKGGROUP"
 	cd "$GROUPDIR"
 	for PKG in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
@@ -42,12 +58,11 @@ do_group_migrate() {
 		fi
 		echo "archive: $PKGNAME"
 
-		# create temp dir
+		# create temp dir for stripping binaries
 		if [ -e "$PKGTMP/$PKGNAME" ]; then
-			rm -rv "$PKGTMP/$PKGNAME"
+			rm -rfv "$PKGTMP/$PKGNAME"
 		fi
 		mkdir "$PKGTMP/$PKGNAME";
-
 
 		FILEGLOB=""
 		cd $PKGINSTALL
@@ -70,21 +85,11 @@ do_group_migrate() {
 			FILEGLOB+="$FILE "
 		done
 
-		# tar globbing may be the only way to handle hardlinks
-		# without depending on rsync?
-		# TODO try --exclude-tag instead of globbing
 		tar -cf "$PKGTMP/$PKGNAME/temp.tar" $FILEGLOB
 		cd "$PKGTMP/$PKGNAME"
 		tar xf "temp.tar"
 		rm "temp.tar"
 
-		# now create the real tar starting with metadata
-		cp "$PKGINSTALL/.packages/$PKGGROUP/$PKG" .pkg-contents
-		echo "$PKG" > .pkg-name
-		tar -cf "$FLOCKDIR/$PKGNAME" .pkg-contents
-		tar -rf "$FLOCKDIR/$PKGNAME" .pkg-name
-		rm .pkg-contents
-		rm .pkg-name
 		if [ "$STRIP_BINARIES" != "" ]; then
 			echo "              strip: ELF, ar"
 			for FILE in $(find . -mindepth 1 -type f); do
@@ -114,12 +119,16 @@ do_group_migrate() {
 		else
 			echo "            nostrip."
 		fi
-		tar -rf  "$FLOCKDIR/$PKGNAME" ./*
+
+		# maybe it can use --exclude-tag instead of globbing
+		tar -rf  "$FLOCKDIR/$TARPREFIX" ./*
+		cd "$FLOCKDIR"
+		tar -cf  "$FLOCKDIR/$PKGNAME" "$TARPREFIX"
+		rm "$FLOCKDIR/$TARPREFIX"
 		rm -rf "$PKGTMP/$PKGNAME"
 		echo "           compress: $PKGNAME.xz"
 		xz "$FLOCKDIR/$PKGNAME"
 		# TODO hash and/or sign package
-		rm -fv "$FLOCKDIR/$PKGNAME"
 		#add package to group file
 		echo "$PKG $PKGNAME.xz" >> "$FLOCKDIR/$PKGGROUP"
 	done
@@ -144,3 +153,4 @@ for PKGGROUP in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	echo ""
 	do_group_migrate "$PKGGROUP"
 done
+rm -rf "$PKGTMP"

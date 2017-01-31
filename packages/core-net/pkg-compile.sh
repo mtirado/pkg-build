@@ -5,44 +5,48 @@ case "$PKGARCHIVE" in
 	inetutils*)
 		# logger is included in util-linux
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-logger
 	;;
 	gnutls*)
 		./configure 				\
-			--prefix=/usr			\
+			--prefix="$PKGPREFIX"		\
 			--disable-static		\
 			--disable-heartbeat-support
 	;;
 	dhcp*)
 		JOBS=1
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 	curl-*)
 		# TODO install some certs
 		./configure 					\
-			--prefix=/usr				\
+			--prefix="$PKGPREFIX"			\
 			--with-ca-bundle=/etc/ssl/cacert.pem	\
 			--with-ca-path=/etc/ssl/certs
 	;;
+	iana-etc*)
+		PKGPREFIX="/"
+		make
+		make DESTDIR="$PKGROOT" install
+		make_tar "$PKGROOT"
+		exit 0
+	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 esac
 
-make -j$JOBS
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
 case "$PKGARCHIVE" in
 	iproute2*)
-		DESTDIR=$PKGROOT		\
-			make install
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 	;;
 	*)
-		DESTDIR=$PKGROOT    \
-			make install
-		make_tar_prefix "$PKGROOT" /usr
+		make_tar_flatten_subdirs "$PKGROOT"
 	;;
 esac
 

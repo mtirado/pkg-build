@@ -10,15 +10,15 @@ case "$PKGARCHIVE" in
 #;;
 gst-libav*)
 	./configure 			\
-		--prefix=/usr		\
+		--prefix="$PKGPREFIX"	\
 		--disable-static-plugins
 ;;
 *)
 	./configure 			\
-		--prefix=/usr
+		--prefix="$PKGPREFIX"
 ;;
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT make install
-make_tar_prefix "$PKGROOT" /usr
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"

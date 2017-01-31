@@ -4,15 +4,14 @@ source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	man-pages*)
 		sed -i "s|DESTDIR=|DESTDIR=$PKGROOT|" Makefile
-		prefix=/usr make
+		prefix="$PKGPREFIX" make
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT    \
-	make install
-make_tar_prefix "$PKGROOT" /usr
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"
 

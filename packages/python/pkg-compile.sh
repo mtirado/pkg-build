@@ -3,17 +3,16 @@ set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	setuptools*)
-		mkdir -p $PKGROOT/lib/python2.7/site-packages
-		PYTHONPATH=$PKGROOT/lib/python2.7/site-packages/	\
-		python setup.py install --prefix=$PKGROOT
+		mkdir -p "$PKGROOT/lib/python2.7/site-packages"
+		PYTHONPATH="$PKGROOT/lib/python2.7/site-packages/"	\
+			python setup.py install --prefix="$PKGROOT"
 		exit 0
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 esac
 
-make -j$JOBS
-
+make "-j$JOBS"
 DESTDIR="$PKGROOT" make install
-make_tar_prefix "$PKGROOT" /usr
+make_tar_flatten_subdirs "$PKGROOT"

@@ -3,63 +3,64 @@ set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	aalib*)
-		mkdir -p $PKGROOT/usr
-		./configure 			\
-			--prefix=$PKGROOT/usr	\
+		mkdir -p "$PKGROOT/$PKGPREFIX"
+		./configure 				\
+			--prefix="$PKGROOT/$PKGPREFIX"	\
 	;;
 	librsvg*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--enable-introspection=no
 	;;
 	gimp*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-glibtest	\
 			--disable-gtktest	\
 			--disable-python
 	;;
 	gegl*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-glibtest	\
 			--disable-nls
 	;;
 	libmypaint*)
 		./autogen.sh
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 	xpdf*)
-		mkdir -p $PKGROOT/usr
-		./configure 						 \
-			--prefix=$PKGROOT/usr				 \
-			--with-x					 \
-			--with-freetype2-library=/usr/lib/libfreetype.so \
-			--with-freetype2-includes=/usr/include/freetype2
+		mkdir -p "$PKGROOT/$PKGPREFIX"
+		./configure 						 	 \
+			--prefix="$PKGROOT/$PKGPREFIX"				 \
+			--with-x						 \
+			--with-freetype2-library="$PKGPREFIX/lib/libfreetype.so" \
+			--with-freetype2-includes="$PKGPREFIX/include/freetype2"
 	;;
 	mupdf*)
-		sed -i 's|HAVE_GLFW.*=.*|HAVE_GLFW=no|' Makethird
-		sed -i 's|prefix.*?=.*|prefix=/usr|' Makefile
-		make HAVE_GLFW=no -j$JOBS
+		sed -i "s|HAVE_GLFW.*=.*|HAVE_GLFW=no|" Makethird
+		sed -i "s|prefix.*?=.*|prefix=$PKGPREFIX|" Makefile
+		make HAVE_GLFW=no "-j$JOBS"
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT make install
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
 
 # XXX mupdf-lite, instead of static linked blimp by default (over 100MB .xz)
+# is there a disable static option?
 case "$PKGARCHIVE" in
 	mupdf*)
-		rm -r $PKGROOT/usr/include
-		rm -r $PKGROOT/usr/lib
-		rm $PKGROOT/usr/bin/muraster
-		rm $PKGROOT/usr/bin/mujstest
-		rm $PKGROOT/usr/bin/mupdf-x11-curl
+		rm -r "$PKGROOT/$PKGPREFIX/include"
+		rm -r "$PKGROOT/$PKGPREFIX/lib"
+		rm    "$PKGROOT/$PKGPREFIX/bin/muraster"
+		rm    "$PKGROOT/$PKGPREFIX/bin/mujstest"
+		rm    "$PKGROOT/$PKGPREFIX/bin/mupdf-x11-curl"
 	;;
 esac
-make_tar_prefix "$PKGROOT" /usr
+make_tar_flatten_subdirs "$PKGROOT"

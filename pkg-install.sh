@@ -4,7 +4,6 @@
 #PKGOVERWRITE overwrites existing files without prompting
 #-----------------------------------------------------------------------------
 #TODO more informative output on packages installed
-#TODO support arbitrary prefixes
 set -e
 
 # either this or dump all package files in root package dir?
@@ -31,12 +30,8 @@ if [ "$PKGINSTALL" = "" ]; then
 fi
 
 CWD=$(pwd)
-PKGFILES="$PKGINSTALL/.packages/$PKGGROUP"
 
 #---------- create pkgs directory if needed --------------------------
-if [ ! -d "$PKGFILES" ]; then
-	mkdir -p $PKGFILES
-fi
 
 cd $PKGDIR
 for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
@@ -54,8 +49,28 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		continue;
 	fi
 
+	# prefix is stored as tar file name, root is special case
+	COUNT=$(find "$PKGDIR/$PKGNAME" -type f -iname '*.tar' | wc -l)
+	if [ "$COUNT" != "1" ]; then
+		echo "error: pkg-install.sh expects a single tar file"
+		echo "$PKGDIR/$PKGNAME has $COUNT tar files"
+		exit -1
+	fi
+	TARFILE=$(find "$PKGDIR/$PKGNAME" -type f -iname '*.tar')
+	TARFILE=$(basename "$TARFILE")
+	PREFIX=${TARFILE%.tar}
+	if [ "$PREFIX" == "root" ]; then
+		PREFIX="/"
+	fi
+	DEST="$PKGINSTALL/$PREFIX"
+	cd "$DEST"
+
+
+	if [ ! -e "$DEST/.packages" ]; then
+		mkdir -p "$DEST/.packages"
+	fi
 	#----------- check if package name is in use -------------------------
-	FIND=$(find "$PKGINSTALL/.packages" -mindepth 1 -maxdepth 2 -name "$PKGNAME" -printf '%f\n')
+	FIND=$(find "$DEST/.packages" -mindepth 1 -maxdepth 2 -name "$PKGNAME" -printf '%f\n')
 	if [ "$FIND" != "" ]; then
 		echo "-----------------------------------------------------------------"
 		echo " package $PKGNAME already installed. try  running pkg-remove"
@@ -70,12 +85,12 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 	fi
 
-	TARFILES=$(tar -tf "$PKGDIR/$PKGNAME/usr.tar")
+	TARFILES=$(tar -tf "$PKGDIR/$PKGNAME/$TARFILE")
 	# check for existing files
 	for FILE in $(echo "$TARFILES"); do
 		if [ ! -d "$FILE" ]; then
-			if [ -L "$PKGINSTALL/$FILE" ] || [ -e "$PKGINSTALL/$FILE" ]; then
-				echo "$PKGINSTALL/$FILE already exists"
+			if [ -L "$DEST/$FILE" ] || [ -e "$DEST/$FILE" ]; then
+				echo "$DEST/$FILE already exists"
 				EXISTS=$((EXISTS + 1))
 			fi
 		fi
@@ -85,7 +100,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		# no owner should default to default ungrouped package.
 		# TODO long winded prompt for each existing file
 		echo "-----------------------------------------------------------------"
-		echo "$PKGNAME: $EXISTS file(s) already exist in $PKGINSTALL"
+		echo "$PKGNAME: $EXISTS file(s) already exist in $DEST"
 		echo "you have 5 possible actions:"
 		echo ""
 		echo "(s)kip installing $PKGNAME"
@@ -107,10 +122,10 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			TAROPT="-keep-old-files"
 		elif [ "$ACK" == "b" ] || [ "$ACK" == "B" ]; then
 			# backup duplicate files before overwriting
-			for FILE in $(tar -tf "$PKGDIR/$PKGNAME/usr.tar"); do
+			for FILE in $(tar -tf "$PKGDIR/$PKGNAME/$TARFILE"); do
 				if [ ! -d "$FILE" ]; then
-					if [ -e "$PKGINSTALL/$FILE" ]; then
-						FNAME=$PKGINSTALL/$FILE
+					if [ -e "$DEST/$FILE" ]; then
+						FNAME=$DEST/$FILE
 						cp -rav $FNAME \
 						        $FNAME\.stale-$(date -Iseconds)
 					fi
@@ -122,7 +137,38 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 	fi
 
+	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
+	tar xf "$PKGDIR/$PKGNAME/$TARFILE"
 	echo "installing $PKGNAME"
+	PKGFILES="$DEST/.packages/$PKGGROUP"
+	if [ ! -d "$PKGFILES" ]; then
+		mkdir -p $PKGFILES
+	fi
+
+	#---------------- fix prefix paths -----------------------------------
+	# this breaks things still!
+	# TODO /usr/local will not work or any other deep prefixes, not sure
+	# what the best way to do this is now. maybe use backslashes in the
+	# tar filename then convert to slashes, or add a prefix file? argh.
+	# ALSO, i suppose we should let user override these pkgconfig
+	# adjustments, or at least the option to prepend PKGINSTALL
+	#---------------------------------------------------------------------
+	for FILE in $(echo "$TARFILES"); do
+		if [ -f "$FILE" ]; then
+			if [[ "$FILE" == ./lib/pkgconfig/* ]]; then
+				if [ -d "lib/pkgconfig" ]; then
+					echo "adjusting  $FILE"
+					sed -i "s|prefix=/.*|prefix=/$PREFIX|" $FILE
+				fi
+			elif [[ "$FILE" == ./share/pkgconfig/* ]]; then
+				if [ -d "share/pkgconfig" ]; then
+					echo "adjusting  $FILE"
+					sed -i "s|prefix=/.*|prefix=/$PREFIX|" $FILE
+				fi
+			fi
+		fi
+	done
+
 	# construct package file list, if any errors occur after here
 	# user will need to manually clean up package file
 	for FILE in $(echo "$TARFILES"); do
@@ -130,30 +176,6 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			echo $FILE >> $PKGFILES/$PKGNAME
 		fi
 	done
-
-	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-	tar xf "$PKGDIR/$PKGNAME/usr.tar"
-	#---------------- fix prefix paths -----------------------------------
-	# this breaks things pretty badly. needs a way to adjust path for
-	# $PKGINSTALL, currently only works with /usr package installations
-	# TODO can just add another global var if no good solutions $PKGPREFIX
-	#---------------------------------------------------------------------
-	for FILE in $(echo "$TARFILES"); do
-		if [ -f "$FILE" ]; then
-			if [[ "$FILE" == ./lib/pkgconfig/* ]]; then
-				if [ -d "lib/pkgconfig" ]; then
-					echo "adjusting  $FILE"
-					sed -i "s|prefix=/.*|prefix=/usr|" $FILE
-				fi
-			elif [[ "$FILE" == ./share/pkgconfig/* ]]; then
-				if [ -d "share/pkgconfig" ]; then
-					echo "adjusting  $FILE"
-					sed -i "s|prefix=/.*|prefix=/usr|" $FILE
-				fi
-			fi
-		fi
-	done
-
 	touch $PKGDIR/$PKGNAME/.pkg-installed
 done
 

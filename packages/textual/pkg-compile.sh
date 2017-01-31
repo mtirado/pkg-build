@@ -2,14 +2,14 @@
 set -e
 source "$PKGINCLUDE"
 
-VIMRCPATH=/usr/etc/vimrc
+VIMRCPATH="$PKGPREFIX/etc/vimrc"
 DOTEST=""
 case "$PKGARCHIVE" in
 	#case pkgname*)
 	vim*)
 		echo "#define SYS_VIMRC_FILE \"$VIMRCPATH\"" >> src/feature.h
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-netbeans	\
 			--disable-xsmp		\
 			--disable-xim		\
@@ -37,42 +37,38 @@ case "$PKGARCHIVE" in
 	;;
 	bash*)
 		./configure 			\
-			--prefix=$PKGROOT	\
+			--prefix="$PKGROOT"	\
 			--without-bash-malloc
 	;;
 	*)
-		./configure 		\
-			--prefix=/usr
+		./configure 			\
+			--prefix="$PKGPREFIX"
 esac
 
-make -j$JOBS $DOTEST
+make "-j$JOBS" "$DOTEST"
+DESTDIR="$PKGROOT" make install
 
 case "$PKGARCHIVE" in
 	vim*)
-
-		DESTDIR=$PKGROOT make install
-
 		#don't overwrite ex with vim
-		if [ -e "$PKGROOT/usr/bin/ex" ]; then
-			rm $PKGROOT/usr/bin/ex
-			rm $PKGROOT/usr/bin/view
-			rm $PKGROOT/usr/share/man/man1/ex.1
-			rm $PKGROOT/usr/share/man/man1/view.1
+		if [ -e "$PKGROOT/$PKGPREFIX/bin/ex" ]; then
+			rm "$PKGROOT/$PKGPREFIX/bin/ex"
+			rm "$PKGROOT/$PKGPREFIX/bin/view"
+			rm "$PKGROOT/$PKGPREFIX/share/man/man1/ex.1"
+			rm "$PKGROOT/$PKGPREFIX/share/man/man1/view.1"
 		fi
 		echo "installing default vimrc: $VIMRCPATH"
-		mkdir -vp $PKGROOT/usr/etc
-		cp -fv $PKGROOT/usr/share/vim/vim74/vimrc_example.vim \
-			$PKGROOT/usr/etc/vimrc
-		make_tar_prefix "$PKGROOT" /usr
+		mkdir -vp "$PKGROOT/$PKGPREFIX/etc"
+		cp -fv "$PKGROOT/$PKGPREFIX/share/vim/vim74/vimrc_example.vim" \
+			"$PKGROOT/$PKGPREFIX/etc/vimrc"
+		make_tar_prefix "$PKGROOT" "$PKGPREFIX"
 	;;
-	#TODO move this to a package that installs to /bin, copy manually from /usr/bin > /bin for now
+	#TODO move this to a package that installs to /bin, copy manually from "$PKGPREFIX"/bin > /bin for now
 	bash*)
-		DESTDIR=$PKGROOT make install
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 	;;
 	*)
-		DESTDIR=$PKGROOT make install
-		make_tar_prefix "$PKGROOT" /usr
+		make_tar_flatten_subdirs "$PKGROOT"
 	;;
 
 esac

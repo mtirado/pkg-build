@@ -20,6 +20,20 @@ if [ -z "$PKGPASS" ]; then
 	exit -1
 fi
 
+# this doesn't have any effect unless build scripts implement it.
+# there are a few specific packages that trigger:  make[2]: write error: stdout
+# this eases the pain of recompiling the large packages gcc,browsers,etc
+# by allowing scripts to re-enter make without overwriting configuration.
+#
+# if using this you will probably need to make numerous retries before success =(
+#
+# NOTE: for this to work troublesome packages need to implement the check
+#       this echo notice is mainly for documentation purposes
+#	problems seen on i686 \usually\ with parallel builds.
+#       if anyone out there figures out wtf causes this, send me a line.
+if [ "$PKGNOCONF" != "" ]; then
+	echo "PKGNOCONF IS SET"
+fi
 #-----------------------------------------------------------------------------
 # download / extract packages
 #-----------------------------------------------------------------------------
@@ -32,7 +46,7 @@ while read LINE; do
 	ARCHIVE=$(echo $LINE | cut -d " " -f 3)
 	PKGARCHIVE=${ARCHIVE%.tar.*}
 	PKGARCHIVE=$(basename $PKGARCHIVE)
-	#skip extraction if build directory exists and is marked as built
+	#skip extraction if build directory exists
 	if [ -e "$PKGBUILDDIR/$PKGARCHIVE" ] || [ "$PASS" = "0" ]; then
 		continue
 	fi

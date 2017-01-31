@@ -4,7 +4,7 @@ source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	gnupg-*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-agent		\
 			--disable-scdaemon	\
 			--enable-gpgtar
@@ -13,10 +13,10 @@ case "$PKGARCHIVE" in
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT make install
-make_tar_prefix "$PKGROOT" /usr
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"

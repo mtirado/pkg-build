@@ -4,7 +4,7 @@ source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	gtk+-2*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-static	\
 			--disable-shm		\
 			--disable-xinerama	\
@@ -20,7 +20,7 @@ case "$PKGARCHIVE" in
 	;;
 	gtk+-3*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-static	\
 			--disable-static	\
 			--disable-shm		\
@@ -35,11 +35,11 @@ case "$PKGARCHIVE" in
 	*)
 		./configure 			\
 			--disable-static	\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT make install
-make_tar_prefix "$PKGROOT" /usr
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"

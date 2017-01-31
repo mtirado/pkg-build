@@ -3,19 +3,20 @@ set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	git*)
+		PERL="/usr/bin/perl"
 		autoreconf
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--without-iconv		\
 			--without-python	\
 			--without-tcltk		\
-			--with-perl=/usr/bin/perl
+			--with-perl="$PERL"
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 esac
 
 make "-j$JOBS"
 DESTDIR="$PKGROOT" make install
-make_tar_prefix "$PKGROOT" /usr
+make_tar_flatten_subdirs "$PKGROOT"

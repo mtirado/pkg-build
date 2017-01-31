@@ -4,12 +4,12 @@ source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	alsa-util*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"		\
 			--disable-xmlto
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 esac
 
@@ -22,6 +22,5 @@ case "$PKGARCHIVE" in
 	;;
 esac
 
-DESTDIR=$PKGROOT    \
-	make install
-make_tar_prefix "$PKGROOT" /usr
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"

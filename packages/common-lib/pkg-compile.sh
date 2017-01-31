@@ -16,12 +16,12 @@ case "$PKGARCHIVE" in
 			-DSQLITE_SECURE_DELETE=1		\
 			-DSQLITE_ENABLE_DBSTAT_VTAB=1"		\
 			./configure				\
-				--prefix=/usr			\
+				--prefix="$PKGPREFIX"		\
 
 	;;
 	glib*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-static	\
 			--disable-libsystemd	\
 			--disable-libelf	\
@@ -33,17 +33,15 @@ case "$PKGARCHIVE" in
 			# mem pools could improve performance, benchmark it.
 	;;
 	readline*)
-		mkdir -p $PKGROOT/usr
-		./configure 			\
-			--prefix=$PKGROOT/usr
+		mkdir -p "$PKGROOT/$PKGPREFIX"
+		./configure 				\
+			--prefix="$PKGROOT/$PKGPREFIX"
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 esac
 
-make -j$JOBS
-
-DESTDIR=$PKGROOT    \
-	make install
-make_tar_prefix "$PKGROOT" /usr
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"

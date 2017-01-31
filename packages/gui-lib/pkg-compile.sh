@@ -4,7 +4,7 @@ source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	pixman*)
 		./configure 			\
-		--prefix=/usr			\
+		--prefix="$PKGPREFIX"		\
 		--disable-static		\
 		--disable-openmp		\
 		--disable-longsoon-mmi		\
@@ -19,7 +19,7 @@ case "$PKGARCHIVE" in
 	;;
 	libdrm*)
 		./configure 		\
-		--prefix=/usr		\
+		--prefix="$PKGPREFIX"	\
 		--disable-static	\
 		--disable-intel		\
 		--disable-radeon	\
@@ -29,17 +29,17 @@ case "$PKGARCHIVE" in
 	;;
 	SDL2*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 			#--disable-static broken
 	;;
 	*)
 		./configure 			\
 			--disable-static	\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 
 esac
 
-make -j$JOBS
-DESTDIR=$PKGROOT make install
-make_tar_prefix "$PKGROOT" /usr
+make "-j$JOBS"
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"

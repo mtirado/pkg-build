@@ -3,15 +3,20 @@ set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	less-*)
-		./configure 			\
-			--prefix=/usr
+		PKGPREFIX="/"
+			./configure 			\
+			--prefix="$PKGPREFIX"
 		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT|" Makefile
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
 	;;
 	pciutils*)
-		# this is how you do it. ;)
+		PKGPREFIX="/"
+		sed -i "s|PREFIX=/usr/local|PREFIX=/usr|" Makefile
 	;;
 	lsof_*)
-		# this is not how you do it, :(
 		FNAME=${PKGARCHIVE%.tar.gz}
 		TARFILE="${FNAME}_src.tar"
 		tar xf $TARFILE
@@ -24,22 +29,27 @@ case "$PKGARCHIVE" in
 		mkdir -vp $BINDIR
 		cp -vf lsof $BINDIR
 		cp -vf lsof.8 $MANDIR
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 		exit 0
 	;;
 	lilo-*)
+		PKGPREFIX="/"
 		# don't install boot images ( needs uuencode/sharutils )
 		sed -i "/.*images.*/d" Makefile
 		# do not want debian specifics
 		sed -i "/.*hooks.*/d" Makefile
 		sed -i "/.*scripts.*/d" Makefile
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
 	;;
 	bc-*)
 		./configure 			\
 			--prefix=$PKGROOT
 		make -j$JOBS
 		make install
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 		exit 0
 	;;
 	bin86-*)
@@ -49,35 +59,42 @@ case "$PKGARCHIVE" in
 		mkdir -p $PKGROOT/man/man1
 		make -j$JOBS
 		make install
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 		exit 0
 	;;
 	util-linux*)
+		PKGPREFIX="/"
 		./configure 				\
-			--prefix=/usr			\
+			--prefix="$PKGPREFIX"		\
 			--disable-makeinstall-chown	\
 			--disable-use-tty-group
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
+
 	;;
 	htop*)
 		./autogen.sh
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-unicode
 	;;
 	gnufdisk*)
+		PKGPREFIX="/"
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--disable-cfdisk
 	;;
 	parted*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--without-readline
 	;;
 	cdrtools-*)
 		# patch for 3.01
 		patch -p1 < $PKGDIR/cdrtools-3.01-fix-20151126-mkisofs-isoinfo.patch
-		PREFIX=/usr	 	\
+		PREFIX="$PKGPREFIX"	 \
 			make -j$JOBS
 		DESTDIR=$PKGROOT	\
 			make install
@@ -87,16 +104,30 @@ case "$PKGARCHIVE" in
 		rm -rf $PKGROOT/share/man/man5
 		rm -rf $PKGROOT/include
 		rm -rf $PKGROOT/lib
-		make_tar_without_prefix "$PKGROOT"
+		make_tar "$PKGROOT"
 		exit 0
+	;;
+	LVM*)
+		PKGPREFIX="/"
+		./configure 			\
+			--prefix="$PKGPREFIX"
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
+	;;
+	coreutils-*|lsscsi-*)
+		PKGPREFIX="/"
+		./configure 			\
+			--prefix=/usr
 	;;
 	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
 	;;
 esac
 
 make -j$JOBS
-DESTDIR=$PKGROOT    \
-	make install
-make_tar_prefix "$PKGROOT" /usr
+DESTDIR="$PKGROOT" make install
+#make_tar "$PKGROOT"
+make_tar_flatten_subdirs "$PKGROOT"

@@ -45,7 +45,7 @@ export PKGAUTOMATE="auto"
 #trap 'echo SIGTERM' SIGTERM
 
 # jettison arguments, TODO add --clear-environ & --init for setting pod environ
-JETTISON="$JETTISON /bin/sh $PODCONFIG --blacklist"
+JETTISON="$JETTISON $SHELL $PODCONFIG --blacklist"
 #if [ ! -z "$BLACKLIST" ]; then
 #	JETARGS="$JETARGS --blacklist"
 #fi

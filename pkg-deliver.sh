@@ -6,6 +6,8 @@ set -e
 #-----------------------------------------------------------------------------
 if [ -z "$1" ] || [ "$1" = "-h" ]; then
 	echo "usage: pkg-deliver <flockdir>"
+	echo "PKGINSTALL should point to the base directory"
+	echo "and not to any specific package prefix"
 	exit -1
 fi
 # make absolute path
@@ -15,14 +17,24 @@ else
 	FLOCKDIR="$1"
 fi
 # install packages into this location.
-if [ "$PKGINSTALL" = "" ]; then
+if [ "$PKGINSTALL" == "" ]; then
 	PKGINSTALL="/usr/local"
 fi
+
+if [ "$PKGTMP" == "" ]; then
+	# someplace mounted as tmpfs is ideal
+	PKGTMP="$HOME/.pkg-deliver"
+fi
+if [ -e "$PKGTMP" ]; then
+	rm -rvf "$PKGTMP"
+fi
+mkdir -p "$PKGTMP"
+
+#
 #-----------------------------------------------------------------------------
 
 
-CWD=$(pwd)
-cd $FLOCKDIR
+cd "$FLOCKDIR"
 for ITEM in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
 	if [[ "$ITEM" != *.tar.* ]]; then
 		#build pkgdist
@@ -30,24 +42,20 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
 		while read LINE ;do
 			PKGNAME="$(echo $LINE | cut -d " " -f 1)"
 			PKGTAR="$(echo $LINE | cut -d " " -f 2)"
-			PKGDIR="$CWD/$PKGDIST/$PKGNAME"
+			PKGDIR="$PKGTMP/$PKGDIST/$PKGNAME"
 			if [ -e "$PKGDIR" ]; then
-				if [ -e "$PKGDIR/.pkg-name" ]; then
-					rm -rvf "./$PKGDIR"
-				else
-					continue
-				fi
+				rm -rvf "./$PKGDIR"
 			fi
 			echo "extracing $PKGTAR"
-			mkdir -p $PKGDIR
-			cd $PKGDIR
-			tar xf $FLOCKDIR/$PKGTAR
-			rm -f podhome/.pkg-contents
-			rm -f podhome/.pkg-name
-			cd $FLOCKDIR
+			mkdir -p "$PKGDIR"
+			cd "$PKGDIR"
+			tar xf "$FLOCKDIR/$PKGTAR"
+			cd "$FLOCKDIR"
 		done < "$ITEM"
-		pkg-install.sh $CWD/$PKGDIST $ITEM
+		pkg-install.sh "$PKGTMP/$PKGDIST" "$ITEM"
+		rm -r "$PKGDIR"
 	fi
-	cd $FLOCKDIR
+	cd "$FLOCKDIR"
 done
+rm -r "$PKGTMP"
 echo "delivered."

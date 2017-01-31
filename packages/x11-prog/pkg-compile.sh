@@ -18,11 +18,10 @@ case "$PKGARCHIVE" in
 			--disable-paste64
 			#--disable-freetype
 			#--with-own-terminfo=
-
+		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT/$PKGPREFIX|" Makefile
+	;;
 esac
 
-#empty /usr
 make "-j$JOBS"
-DESTDIR=$PKGROOT make install
-make_tar_prefix "$PKGROOT" /usr
-
+DESTDIR="$PKGROOT" make install
+make_tar_flatten_subdirs "$PKGROOT"
