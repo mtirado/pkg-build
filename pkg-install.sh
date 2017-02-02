@@ -3,7 +3,6 @@
 #PKGAUTOMATE silences already installed check
 #PKGOVERWRITE overwrites existing files without prompting
 #-----------------------------------------------------------------------------
-#TODO more informative output on packages installed
 set -e
 
 # either this or dump all package files in root package dir?
@@ -11,7 +10,11 @@ PKGGROUP="ungrouped"
 #-----------------------------------------------------------------------------
 if [ -z "$1" ] || [ "$1" = "-h" ]; then
 	echo "usage: pkg-install <pkgdist-dir> <pkg-group>"
-	echo "set PKGINSTALL=\"/new/path\" to install to specific directories"
+	echo ""
+	echo "set PKGINSTALL=\"/home/user/blah\" to install to a user owned root."
+	echo "prefix is determined by tar filename and can be set when calling"
+	echo "pkg-migrate with PKGPREFIX=/flock1 or some other top level directory set"
+	echo "deeper prefixes like /usr/local are not supported, yet"
 	exit -1
 fi
 #-----------------------------------------------------------------------------
@@ -24,16 +27,16 @@ fi
 if [ ! -z "$2" ]; then
 	PKGGROUP=$2
 fi
-# install packages into this location.
+# install packages into this base dir.
 if [ "$PKGINSTALL" = "" ]; then
-	PKGINSTALL="/usr/local"
+	PKGINSTALL="/"
 fi
 
-CWD=$(pwd)
+CWD="$(pwd)"
 
 #---------- create pkgs directory if needed --------------------------
 
-cd $PKGDIR
+cd "$PKGDIR"
 for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 
 	EXISTS=0
@@ -42,7 +45,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	cd "$PKGINSTALL"
 	# this is for multipass automation to know what has been installed
 	# TODO clean this extra file up if distributing package contents
-	if [ -e $PKGDIR/$PKGNAME/.pkg-installed ]; then
+	if [ -e "$PKGDIR/$PKGNAME/.pkg-installed" ]; then
 		if [ -z "$PKGAUTOMATE" ]; then
 			echo "skipping $PKGNAME"
 		fi
@@ -86,11 +89,13 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	TARFILES=$(tar -tf "$PKGDIR/$PKGNAME/$TARFILE")
+	DUPLICATES=""
 	# check for existing files
 	for FILE in $(echo "$TARFILES"); do
 		if [ ! -d "$FILE" ]; then
 			if [ -L "$DEST/$FILE" ] || [ -e "$DEST/$FILE" ]; then
 				echo "$DEST/$FILE already exists"
+				DUPLICATES+="$FILE "
 				EXISTS=$((EXISTS + 1))
 			fi
 		fi
@@ -99,6 +104,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		# TODO we should scan packages to find which one owns file << TODO!
 		# no owner should default to default ungrouped package.
 		# TODO long winded prompt for each existing file
+		echo ""
 		echo "-----------------------------------------------------------------"
 		echo "$PKGNAME: $EXISTS file(s) already exist in $DEST"
 		echo "you have 5 possible actions:"
@@ -115,19 +121,34 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		else
 			ACK="o"
 		fi
-		TAROPT="-overwrite"
+		TAROPT="--overwrite"
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
 			continue
 		elif [ "$ACK" == "p" ] || [ "$ACK" == "P" ]; then
-			TAROPT="-keep-old-files"
+			#XXX if entire package is preserved no contents file is written
+			#though the package will otherwise "succeede", undecided on if
+			#this should be considered an error or not...
+			FILTER=""
+			TAROPT="--skip-old-files"
+			# prune preserved files
+			for FILE in $(echo "$TARFILES"); do
+				for PFILE in $(echo "$DUPLICATES"); do
+					if [ "$PFILE" == "$FILE" ]; then
+						TARFILES=$(echo "$TARFILES" | sed "\|$PFILE|d")
+						echo "preserving $PFILE"
+					else
+						continue
+					fi
+				done
+			done
 		elif [ "$ACK" == "b" ] || [ "$ACK" == "B" ]; then
 			# backup duplicate files before overwriting
 			for FILE in $(tar -tf "$PKGDIR/$PKGNAME/$TARFILE"); do
 				if [ ! -d "$FILE" ]; then
-					if [ -e "$DEST/$FILE" ]; then
-						FNAME=$DEST/$FILE
-						cp -rav $FNAME \
-						        $FNAME\.stale-$(date -Iseconds)
+					if [ -L "$DEST/$FILE" ] || [ -e "$DEST/$FILE" ]; then
+						FNAME="$DEST/$FILE"
+						cp -rav "$FNAME" \
+						        "$FNAME\.stale-$(date -Iseconds)"
 					fi
 				fi
 			done
@@ -138,11 +159,11 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-	tar xf "$PKGDIR/$PKGNAME/$TARFILE"
+	tar -x $TAROPT -f "$PKGDIR/$PKGNAME/$TARFILE"
 	echo "installing $PKGNAME"
 	PKGFILES="$DEST/.packages/$PKGGROUP"
 	if [ ! -d "$PKGFILES" ]; then
-		mkdir -p $PKGFILES
+		mkdir -p "$PKGFILES"
 	fi
 
 	#---------------- fix prefix paths -----------------------------------
@@ -158,12 +179,12 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			if [[ "$FILE" == ./lib/pkgconfig/* ]]; then
 				if [ -d "lib/pkgconfig" ]; then
 					echo "adjusting  $FILE"
-					sed -i "s|prefix=/.*|prefix=/$PREFIX|" $FILE
+					sed -i "s|prefix=/.*|prefix=/$PREFIX|" "$FILE"
 				fi
 			elif [[ "$FILE" == ./share/pkgconfig/* ]]; then
 				if [ -d "share/pkgconfig" ]; then
 					echo "adjusting  $FILE"
-					sed -i "s|prefix=/.*|prefix=/$PREFIX|" $FILE
+					sed -i "s|prefix=/.*|prefix=/$PREFIX|" "$FILE"
 				fi
 			fi
 		fi
@@ -173,9 +194,9 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	# user will need to manually clean up package file
 	for FILE in $(echo "$TARFILES"); do
 		if [ ! -d "$FILE" ]; then
-			echo $FILE >> $PKGFILES/$PKGNAME
+			echo "$FILE" >> "$PKGFILES/$PKGNAME"
 		fi
 	done
-	touch $PKGDIR/$PKGNAME/.pkg-installed
+	touch "$PKGDIR/$PKGNAME/.pkg-installed"
 done
 
