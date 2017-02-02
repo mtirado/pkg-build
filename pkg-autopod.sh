@@ -24,7 +24,7 @@ elif test "$2" -lt 128; then
 else
 	exit -1
 fi
-PKGNAME=$1
+PKGNAME="$1"
 # jettison program built with PODROOT_HOME_OVERRIDE
 if [ -z "$JETTISON" ]; then
 	JETTISON="jettison_autopod"
@@ -57,8 +57,8 @@ export PKGINCLUDE="/pkg-scripts/pkg-include.sh"
 while true; do
 	export PKGPASS
 
-	$JETTISON pkg-build.sh $PKGREPO/$PKGNAME $JOBS
-	RETVAL=$?
+	$JETTISON pkg-build.sh "$PKGREPO/$PKGNAME" "$JOBS"
+	RETVAL="$?"
 	case "$RETVAL" in
 	0)
 		echo "pass $PKGPASS completed."
@@ -74,8 +74,8 @@ while true; do
 	esac
 
 	pkg-install.sh \
-		/opt/pods/$USER/$PODCONFIG/podhome/pkgbuild-$PKGNAME/pkgdist \
-		$PKGNAME
+		"/opt/pods/$USER/$PODCONFIG/podhome/pkgbuild-$PKGNAME/pkgdist" \
+		"$PKGNAME"
 
 	# pkg-build also checks this, if you feel compelled to increase limit.
 	case "$PKGPASS" in
@@ -94,7 +94,6 @@ while true; do
 		*) echo "multipass error"
 			exit -1 	;;
 	esac
-
 done
 
 

@@ -75,15 +75,15 @@ case "$PKGPASS" in
 esac
 
 # directory where compilation occurs
-if [ ! -e $PKGBUILDDIR ]; then
-	mkdir $PKGBUILDDIR
+if [ ! -e "$PKGBUILDDIR" ]; then
+	mkdir "$PKGBUILDDIR"
 fi
 
-cd $PKGBUILDDIR
+cd "$PKGBUILDDIR"
 
 # extract packages
-$PKGPREPARE $PKGDIR || {
-	RETVAL=$?
+"$PKGPREPARE" "$PKGDIR" || {
+	RETVAL="$?"
 	case "$RETVAL" in
 	1)
 		echo "package built."
@@ -103,11 +103,11 @@ echo " prepared."
 # rename the archive.tar.* file to match the expected dirname. archives with no
 # main subdirectory will not work with this script and should be recreated. =(
 while read LINE ;do
-	cd $PKGBUILDDIR
+	cd "$PKGBUILDDIR"
 	export PKGROOT="$PKGDISTDIR/$(echo $LINE | cut -d " " -f 2)"
 	PKGARCHIVE=$(echo $LINE | cut -d " " -f 3)
 	PKGARCHIVE=${PKGARCHIVE%.tar.*}
-	PKGARCHIVE=$(basename $PKGARCHIVE)
+	PKGARCHIVE=$(basename "$PKGARCHIVE")
 	if [ ! -d "$PKGARCHIVE" ]; then
 		echo "archive dir $PKGARCHIVE is missing"
 		exit -1
@@ -117,14 +117,14 @@ while read LINE ;do
 		continue
 	fi
 
-	cd $PKGARCHIVE
+	cd "$PKGARCHIVE"
 
 	echo "archive dir $PKGARCHIVE"
 	export PKGARCHIVE
-	mkdir -vp $PKGROOT
-	$PKGDIR/$PKGCOMPILE || {
+	mkdir -vp "$PKGROOT"
+	"$PKGDIR/$PKGCOMPILE" || {
 		echo "build failed."
-		rm -rf $PKGROOT
+		rm -rf "$PKGROOT"
 		exit -1
 	}
 

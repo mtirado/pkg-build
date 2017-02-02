@@ -57,8 +57,8 @@ while read LINE; do
 	fi
 	echo "extracting $ARCHIVE"
 	rm -rf "$PKGBUILDDIR/pkgdist/$PKGNAME"
-	tar xf $PKGDIR/$ARCHIVE
-done <$PKGDIR/wares
+	tar xf "$PKGDIR/$ARCHIVE"
+done < "$PKGDIR/wares"
 
 #filter for current pass
 cp "$PKGDIR/wares" "$PKGBUILDDIR/multipass"

@@ -40,8 +40,8 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
 		#build pkgdist
 		PKGDIST="pkgdist-$ITEM"
 		while read LINE ;do
-			PKGNAME="$(echo $LINE | cut -d " " -f 1)"
-			PKGTAR="$(echo $LINE | cut -d " " -f 2)"
+			PKGNAME="$(echo "$LINE" | cut -d " " -f 1)"
+			PKGTAR="$(echo "$LINE" | cut -d " " -f 2)"
 			PKGDIR="$PKGTMP/$PKGDIST/$PKGNAME"
 			if [ -e "$PKGDIR" ]; then
 				rm -rvf "./$PKGDIR"

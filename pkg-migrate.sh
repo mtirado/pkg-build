@@ -65,7 +65,7 @@ do_group_migrate() {
 		mkdir "$PKGTMP/$PKGNAME";
 
 		FILEGLOB=""
-		cd $PKGINSTALL
+		cd "$PKGINSTALL"
 		for FILE in $FILES; do
 			if [ -d "$FILE" ]; then
 				continue
@@ -85,6 +85,7 @@ do_group_migrate() {
 			FILEGLOB+="$FILE "
 		done
 
+		#is there another way to do this?
 		tar -cf "$PKGTMP/$PKGNAME/temp.tar" $FILEGLOB
 		cd "$PKGTMP/$PKGNAME"
 		tar xf "temp.tar"
@@ -95,7 +96,7 @@ do_group_migrate() {
 			for FILE in $(find . -mindepth 1 -type f); do
 				TEST=$(file "$FILE")
 				if [[ "$TEST" == *ELF* ]]; then
-					if [ -w $FILE ]; then
+					if [ -w "$FILE" ]; then
 						set +e
 						strip --strip-unneeded "$FILE"
 						set -e
@@ -120,7 +121,6 @@ do_group_migrate() {
 			echo "            nostrip."
 		fi
 
-		# maybe it can use --exclude-tag instead of globbing
 		tar -rf  "$FLOCKDIR/$TARPREFIX" ./*
 		cd "$FLOCKDIR"
 		tar -cf  "$FLOCKDIR/$PKGNAME" "$TARPREFIX"

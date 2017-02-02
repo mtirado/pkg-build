@@ -1,5 +1,6 @@
 #!/bin/sh
 # put all ugly boilerplate functions for pkg-compile scripts in here
+# TODO sanitize paths
 
 make_tar_root()
 {
