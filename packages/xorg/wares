@@ -1,5 +1,6 @@
 1 util-macros util-macros-1.19.0.tar.gz local 0
 2 xproto proto/xproto-7.0.31.tar.gz local 0
+2 glproto proto/glproto-1.4.17.tar.gz local 0
 2 xcb-proto proto/xcb-proto-1.12.tar.gz local 0
 2 xext-proto proto/xextproto-7.3.0.tar.gz local 0
 2 kb-proto proto/kbproto-1.0.7.tar.gz local 0

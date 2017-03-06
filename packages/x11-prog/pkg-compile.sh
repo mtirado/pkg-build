@@ -20,6 +20,9 @@ case "$PKGARCHIVE" in
 			#--with-own-terminfo=
 		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT/$PKGPREFIX|" Makefile
 	;;
+	xev*)
+		./configure 			\
+			--prefix=/usr
 esac
 
 make "-j$JOBS"

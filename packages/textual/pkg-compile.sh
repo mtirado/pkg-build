@@ -45,7 +45,7 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"
 esac
 
-make "-j$JOBS" "$DOTEST"
+make "-j$JOBS" $DOTEST
 DESTDIR="$PKGROOT" make install
 
 case "$PKGARCHIVE" in
@@ -61,7 +61,7 @@ case "$PKGARCHIVE" in
 		mkdir -vp "$PKGROOT/$PKGPREFIX/etc"
 		cp -fv "$PKGROOT/$PKGPREFIX/share/vim/vim74/vimrc_example.vim" \
 			"$PKGROOT/$PKGPREFIX/etc/vimrc"
-		make_tar_prefix "$PKGROOT" "$PKGPREFIX"
+		make_tar_flatten_subdirs "$PKGROOT"
 	;;
 	#TODO move this to a package that installs to /bin, copy manually from "$PKGPREFIX"/bin > /bin for now
 	bash*)

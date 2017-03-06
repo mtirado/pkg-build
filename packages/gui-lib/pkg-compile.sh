@@ -27,11 +27,6 @@ case "$PKGARCHIVE" in
 		--disable-nouveau	\
 		--disable-vmwgfx
 	;;
-	SDL2*)
-		./configure 			\
-			--prefix="$PKGPREFIX"
-			#--disable-static broken
-	;;
 	*)
 		./configure 			\
 			--disable-static	\

@@ -7,13 +7,15 @@
 #-----------------------------------------------------------------------------
 set -e
 umask 0022
+SINGLEPKG=""
 #-----------------------------------------------------------------------------
-if [ "$1" = "" ]; then
-	echo "usage: pkg-migrate <flockdir>"
+if [ "$1" == "" ]; then
+	echo "usage: pkg-migrate <flockdir> <optional pkg-name>"
 	echo "to select what packages to use use migrate PKGPREFIX"
 	echo "PKGPREFIX=/root    -- /.packages "
 	echo "PKGPREFIX=/usr     -- /usr/.packages "
 	echo "anything deeper than 1 level is currently unsupported"
+	echo "optionally specify pkgname instead of full migration"
 #	echo "PKGPREFIX=/local   -- /usr/local/.packages "
 	exit -1
 fi
@@ -23,6 +25,14 @@ fi
 if [ "$PKGTMP" = "" ]; then
 	# someplace mounted as tmpfs is ideal
 	PKGTMP="$HOME/.pkg-migrate"
+fi
+if [ "$2" != "" ]; then
+	SINGLEPKG=$(find "$PKGINSTALL/.packages" -type f -name "$2")
+	if [ "$SINGLEPKG" == "" ]; then
+		echo "package $2 not found"
+		exit -1
+	fi
+	SINGLEPKG="$2"
 fi
 #-----------------------------------------------------------------------------
 FLOCKDIR="$PWD/$1"
@@ -47,6 +57,12 @@ do_group_migrate() {
 	GROUPDIR="$PKGINSTALL/.packages/$PKGGROUP"
 	cd "$GROUPDIR"
 	for PKG in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
+		if [ "$SINGLEPKG" ]; then
+			if [ "$PKG" != "$SINGLEPKG" ]; then
+				#TODO add a full pkg-group too
+				continue
+			fi
+		fi
 		FILES=$(cat "$GROUPDIR/$PKG")
 		# TODO add version number entry
 		PKGNAME="$PKG-$(date +%G).tar"

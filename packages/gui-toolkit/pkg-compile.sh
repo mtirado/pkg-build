@@ -32,6 +32,27 @@ case "$PKGARCHIVE" in
 			--enable-xkb
 
 	;;
+	mesa-*)
+		./configure 				\
+			--prefix="$PKGPREFIX"		\
+			--disable-dri			\
+			--disable-driglx-direct		\
+			--disable-dri3			\
+			--disable-gbm			\
+			--disable-egl			\
+			--disable-drm			\
+			--disable-gles1			\
+			--disable-gles2			\
+			--enable-glx=xlib		\
+			--disable-llvm-shared-libs	\
+			--disable-gallium-llvm		\
+			--with-gallium-drivers=swrast
+	;;
+	SDL2*)
+		./configure 			\
+			--prefix="$PKGPREFIX"
+			#--disable-static is/was broken
+	;;
 	*)
 		./configure 			\
 			--disable-static	\
