@@ -42,18 +42,18 @@ for ITEM in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
 		while read LINE ;do
 			PKGNAME="$(echo "$LINE" | cut -d " " -f 1)"
 			PKGTAR="$(echo "$LINE" | cut -d " " -f 2)"
-			PKGDIR="$PKGTMP/$PKGDIST/$PKGNAME"
-			if [ -e "$PKGDIR" ]; then
-				rm -rvf "./$PKGDIR"
+			_PKG_DIR="$PKGTMP/$PKGDIST/$PKGNAME"
+			if [ -e "$_PKG_DIR" ]; then
+				rm -rvf "./$_PKG_DIR"
 			fi
 			echo "extracing $PKGTAR"
-			mkdir -p "$PKGDIR"
-			cd "$PKGDIR"
+			mkdir -p "$_PKG_DIR"
+			cd "$_PKG_DIR"
 			tar xf "$FLOCKDIR/$PKGTAR"
 			cd "$FLOCKDIR"
 		done < "$ITEM"
 		pkg-install.sh "$PKGTMP/$PKGDIST" "$ITEM"
-		rm -r "$PKGDIR"
+		rm -r "$_PKG_DIR"
 	fi
 	cd "$FLOCKDIR"
 done

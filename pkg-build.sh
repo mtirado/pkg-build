@@ -1,7 +1,7 @@
 #!/bin/sh
 # (c) Michael R. Tirado GPL Version 3 or any later version.
 #
-# the main assumption here is all packages are package.tar.* files in PKGDIR
+# the main assumption here is all packages are package.tar.* files in _PKG_DIR
 #-----------------------------------------------------------------------------
 set -e
 print_usage()
@@ -19,9 +19,9 @@ fi
 
 # make absolute path
 if [[ "$1" != /* ]]; then
-	PKGDIR="$(pwd)/$1"
+	_PKG_DIR="$(pwd)/$1"
 else
-	PKGDIR="$1"
+	_PKG_DIR="$1"
 fi
 
 # number of parallel jobs for make to use
@@ -46,12 +46,12 @@ fi
 CWD=$(pwd)
 PKGPREPARE="pkg-prepare.sh"
 PKGCOMPILE="pkg-compile.sh"
-PKGGROUP=$(basename $PKGDIR)
+PKGGROUP=$(basename $_PKG_DIR)
 PKGBUILDDIR="$CWD/pkgbuild-$PKGGROUP"
 PKGDISTDIR="$PKGBUILDDIR/pkgdist"
 export PKGBUILDDIR
 export PKGDISTDIR
-export PKGDIR
+export _PKG_DIR
 export JOBS
 
 # pass is mandatory for all packages right now, might decide to fallback to 1
@@ -82,7 +82,7 @@ fi
 cd "$PKGBUILDDIR"
 
 # extract packages
-"$PKGPREPARE" "$PKGDIR" || {
+"$PKGPREPARE" "$_PKG_DIR" || {
 	RETVAL="$?"
 	case "$RETVAL" in
 	1)
@@ -122,7 +122,7 @@ while read LINE ;do
 	echo "archive dir $PKGARCHIVE"
 	export PKGARCHIVE
 	mkdir -vp "$PKGROOT"
-	"$PKGDIR/$PKGCOMPILE" || {
+	"$_PKG_DIR/$PKGCOMPILE" || {
 		echo "build failed."
 		rm -rf "$PKGROOT"
 		exit -1

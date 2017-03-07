@@ -9,9 +9,9 @@ if [ "$1" = "" ]; then
 	exit -1
 fi
 
-PKGDIR="$1"
+_PKG_DIR="$1"
 
-if [ ! -f "$PKGDIR/wares" ]; then
+if [ ! -f "$_PKG_DIR/wares" ]; then
 	echo "missing package wares file"
 	exit -1
 fi
@@ -51,18 +51,18 @@ while read LINE; do
 		continue
 	fi
 
-	if [ ! -f "$PKGDIR/$ARCHIVE" ]; then
-		echo "missing package archive $PKGDIR/$ARCHIVE"
+	if [ ! -f "$_PKG_DIR/$ARCHIVE" ]; then
+		echo "missing package archive $_PKG_DIR/$ARCHIVE"
 		exit -1
 	fi
 	echo "extracting $ARCHIVE"
 	rm -rf "$PKGBUILDDIR/pkgdist/$PKGNAME"
-	tar xf "$PKGDIR/$ARCHIVE"
-done < "$PKGDIR/wares"
+	tar xf "$_PKG_DIR/$ARCHIVE"
+done < "$_PKG_DIR/wares"
 
 #filter for current pass
-cp "$PKGDIR/wares" "$PKGBUILDDIR/multipass"
-cp "$PKGDIR/wares" "$PKGBUILDDIR/wares"
+cp "$_PKG_DIR/wares" "$PKGBUILDDIR/multipass"
+cp "$_PKG_DIR/wares" "$PKGBUILDDIR/wares"
 sed -i "/^[^$PKGPASS]/d" "$PKGBUILDDIR/wares"
 if [ ! -s "$PKGBUILDDIR/wares" ]; then
 	echo "pass is empty, build complete"

@@ -3,5 +3,8 @@
 0 motif      motif-2.3.6.tar.gz local 0
 0 gtk3       gtk+-3.21.4.tar.xz local 0
 2 sdl2       SDL2-2.0.5.tar.gz local 0
-0 mesa-demos mesa-demos-8.3.0.tar.gz local 0
+2 glew       glew-2.0.0.tar.gz local 0
+2 glu        glu-9.0.0.tar.gz local 0
+0 glut       glut-3.7.tar.gz local 0
+3 mesa-demos mesa-demos-8.3.0.tar.gz local 0
 0 0-- gtkspell

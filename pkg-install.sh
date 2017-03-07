@@ -20,9 +20,9 @@ fi
 #-----------------------------------------------------------------------------
 # make absolute path
 if [[ "$1" != /* ]]; then
-	PKGDIR="$(pwd)/$1"
+	_PKG_DIR="$(pwd)/$1"
 else
-	PKGDIR="$1"
+	_PKG_DIR="$1"
 fi
 if [ ! -z "$2" ]; then
 	PKGGROUP=$2
@@ -36,7 +36,7 @@ CWD="$(pwd)"
 
 #---------- create pkgs directory if needed --------------------------
 
-cd "$PKGDIR"
+cd "$_PKG_DIR"
 for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 
 	EXISTS=0
@@ -45,7 +45,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	cd "$PKGINSTALL"
 	# this is for multipass automation to know what has been installed
 	# TODO clean this extra file up if distributing package contents
-	if [ -e "$PKGDIR/$PKGNAME/.pkg-installed" ]; then
+	if [ -e "$_PKG_DIR/$PKGNAME/.pkg-installed" ]; then
 		if [ -z "$PKGAUTOMATE" ]; then
 			echo "skipping $PKGNAME"
 		fi
@@ -53,13 +53,13 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	# prefix is stored as tar file name, root is special case
-	COUNT=$(find "$PKGDIR/$PKGNAME" -type f -iname '*.tar' | wc -l)
+	COUNT=$(find "$_PKG_DIR/$PKGNAME" -type f -iname '*.tar' | wc -l)
 	if [ "$COUNT" != "1" ]; then
 		echo "error: pkg-install.sh expects a single tar file"
-		echo "$PKGDIR/$PKGNAME has $COUNT tar files"
+		echo "$_PKG_DIR/$PKGNAME has $COUNT tar files"
 		exit -1
 	fi
-	TARFILE=$(find "$PKGDIR/$PKGNAME" -type f -iname '*.tar')
+	TARFILE=$(find "$_PKG_DIR/$PKGNAME" -type f -iname '*.tar')
 	TARFILE=$(basename "$TARFILE")
 	PREFIX=${TARFILE%.tar}
 	if [ "$PREFIX" == "root" ]; then
@@ -88,7 +88,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 	fi
 
-	TARFILES=$(tar -tf "$PKGDIR/$PKGNAME/$TARFILE")
+	TARFILES=$(tar -tf "$_PKG_DIR/$PKGNAME/$TARFILE")
 	DUPLICATES=""
 	# check for existing files
 	for FILE in $(echo "$TARFILES"); do
@@ -143,7 +143,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			done
 		elif [ "$ACK" == "b" ] || [ "$ACK" == "B" ]; then
 			# backup duplicate files before overwriting
-			for FILE in $(tar -tf "$PKGDIR/$PKGNAME/$TARFILE"); do
+			for FILE in $(tar -tf "$_PKG_DIR/$PKGNAME/$TARFILE"); do
 				if [ ! -d "$FILE" ]; then
 					if [ -L "$DEST/$FILE" ] || [ -e "$DEST/$FILE" ]; then
 						FNAME="$DEST/$FILE"
@@ -159,7 +159,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-	tar -x $TAROPT -f "$PKGDIR/$PKGNAME/$TARFILE"
+	tar -x $TAROPT -f "$_PKG_DIR/$PKGNAME/$TARFILE"
 	echo "installing $PKGNAME"
 	PKGFILES="$DEST/.packages/$PKGGROUP"
 	if [ ! -d "$PKGFILES" ]; then
@@ -197,6 +197,6 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			echo "$FILE" >> "$PKGFILES/$PKGNAME"
 		fi
 	done
-	touch "$PKGDIR/$PKGNAME/.pkg-installed"
+	touch "$_PKG_DIR/$PKGNAME/.pkg-installed"
 done
 

@@ -32,6 +32,12 @@ case "$PKGARCHIVE" in
 			--enable-xkb
 
 	;;
+	mesa-demos*)
+		./configure 			\
+			--disable-static	\
+			--without-glut		\
+			--prefix="$PKGPREFIX"
+	;;
 	mesa-*)
 		./configure 				\
 			--prefix="$PKGPREFIX"		\
@@ -52,6 +58,8 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix="$PKGPREFIX"
 			#--disable-static is/was broken
+	;;
+	glew-*)
 	;;
 	*)
 		./configure 			\
