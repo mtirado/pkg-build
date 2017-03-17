@@ -119,7 +119,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		if [ -z "$PKGOVERWRITE" ]; then
 			read -n 1 -s ACK
 		else
-			ACK="o"
+			ACK="d"
 		fi
 		TAROPT="--overwrite"
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then

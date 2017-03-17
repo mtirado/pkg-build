@@ -6,7 +6,7 @@ case "$PKGARCHIVE" in
 	#;;
 	xterm*)
 		./configure 			\
-			--prefix=/usr		\
+			--prefix="$PKGPREFIX"	\
 			--without-xinerama	\
 			--without-Xaw3d		\
 			--without-Xaw3dxft	\
@@ -18,11 +18,13 @@ case "$PKGARCHIVE" in
 			--disable-paste64
 			#--disable-freetype
 			#--with-own-terminfo=
-		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT/$PKGPREFIX|" Makefile
+		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT|" Makefile
 	;;
-	xev*)
+	*)
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
+	;;
+
 esac
 
 make "-j$JOBS"
