@@ -159,7 +159,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	fi
 
 	#-- TODO some way to chown, prompt for set caps, detect suid/gid bit --
-	tar -x $TAROPT -f "$_PKG_DIR/$PKGNAME/$TARFILE"
+	tar --no-same-owner -x $TAROPT -f "$_PKG_DIR/$PKGNAME/$TARFILE"
 	echo "installing $PKGNAME"
 	PKGFILES="$DEST/.packages/$PKGGROUP"
 	if [ ! -d "$PKGFILES" ]; then

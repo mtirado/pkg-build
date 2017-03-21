@@ -25,6 +25,10 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"			\
 			--with-ca-bundle=/etc/ssl/cacert.pem	\
 			--with-ca-path=/etc/ssl/certs
+
+			#--without-ssl				\
+			#--with-gnutls				\
+
 	;;
 	iana-etc*)
 		PKGPREFIX="/"
