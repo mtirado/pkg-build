@@ -12,9 +12,31 @@ case "$PKGARCHIVE" in
 			--without-tcltk		\
 			--with-perl="$PERL"
 	;;
+	cmake-*)
+		./bootstrap 			\
+			--prefix="$PKGPREFIX"	\
+			--system-curl		\
+			--system-zlib		\
+			--system-expat		\
+			--system-libarchive	\
+			--parallel=$JOBS
+	;;
+	ruby-*)
+		./configure 			\
+			--prefix="$PKGPREFIX"	\
+			--with-destdir="$PKGROOT"
+	;;
+	nim-*)
+		# i guess throw it in /usr/bundles
+		./build.sh
+		./install.sh "$PKGROOT/bundles"
+		make_tar "$PKGROOT"
+		exit 0
+	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"
+	;;
 esac
 
 make "-j$JOBS"

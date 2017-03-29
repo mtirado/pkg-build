@@ -4,3 +4,4 @@
 0 alsa-tools alsa-tools-1.1.0.tar.bz2 local 0
 0 alsa-firmware alsa-firmware-1.0.29.tar.bz2 local 0
 3 portaudio portaudio-20161030.tar.xz local 0
+3 libsndfile libsndfile-1.0.27.tar.gz local 0

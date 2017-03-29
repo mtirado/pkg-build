@@ -37,6 +37,11 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
+	iproute2*)
+		PKGPREFIX="/"
+		./configure 			\
+			--prefix="$PKGPREFIX"
+	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"
@@ -46,9 +51,9 @@ esac
 make "-j$JOBS"
 DESTDIR="$PKGROOT" make install
 case "$PKGARCHIVE" in
-	#iproute2*)
-	#	make_tar "$PKGROOT"
-	#;;
+	iproute2*)
+		make_tar "$PKGROOT"
+	;;
 	*)
 		make_tar_flatten_subdirs "$PKGROOT"
 	;;

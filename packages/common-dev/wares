@@ -1,1 +1,5 @@
-1 git git-2.11.0.tar.gz local 0
+1 git         git-2.11.0.tar.gz local 0
+0 2nim         nim-0.16.0.tar.xz local 0
+0 1ruby       ruby-2.4.0.tar.gz local 0
+0 1libarchive libarchive-3.3.1.tar.gz local 0
+0 2cmake      cmake-3.7.2.tar.gz local 0

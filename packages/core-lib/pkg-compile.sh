@@ -55,6 +55,12 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
+	libusb-*)
+		./bootstrap.sh
+		./configure 			\
+			--prefix="$PKGPREFIX"	\
+			--disable-udev
+	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"

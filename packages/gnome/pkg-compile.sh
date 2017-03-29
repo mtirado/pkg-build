@@ -24,11 +24,13 @@ DESTDIR="$PKGROOT" make install
 case "$PKGARCHIVE" in
 	gdk-pixbuf*)
 		PFXDEST="$PKGROOT$PKGPREFIX"
-		# adjust loader infos...
+		# fix loader info
 		LD_LIBRARY_PATH="$PFXDEST/lib"                                     \
 		GDK_PIXBUF_MODULEDIR=$PFXDEST/lib/gdk-pixbuf-2.0/2.10.0/loaders/   \
 		"$PFXDEST/bin/gdk-pixbuf-query-loaders" >                          \
 			"$PFXDEST/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+		#cp "$PFXDEST/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" \
+		#	"$PFXDEST/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.old"
 		sed -i "s|$PKGROOT$PKGPREFIX|$PKGPREFIX|" \
 			"$PFXDEST/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
 

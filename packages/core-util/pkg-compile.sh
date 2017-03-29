@@ -17,6 +17,7 @@ case "$PKGARCHIVE" in
 		sed -i "s|PREFIX=/usr/local|PREFIX=/usr|" Makefile
 	;;
 	lsof_*)
+		PKGPREFIX="/"
 		FNAME=${PKGARCHIVE%.tar.gz}
 		TARFILE="${FNAME}_src.tar"
 		tar xf $TARFILE
@@ -93,7 +94,7 @@ case "$PKGARCHIVE" in
 	;;
 	cdrtools-*)
 		# patch for 3.01
-		patch -p1 < $PKGDIR/cdrtools-3.01-fix-20151126-mkisofs-isoinfo.patch
+		patch -p1 < $_PKG_DIR/cdrtools-3.01-fix-20151126-mkisofs-isoinfo.patch
 		PREFIX="$PKGPREFIX"	 \
 			make -j$JOBS
 		DESTDIR=$PKGROOT	\
@@ -116,7 +117,25 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
-	coreutils-*|lsscsi-*)
+	bzip2-*)
+		PKGPREFIX="/"
+		make "-j$JOBS" -f Makefile-libbz2_so
+		make clean
+		make "-j$JOBS"
+		make PREFIX="$PKGROOT" install
+		mkdir -vp "$PKGROOT/usr/lib"
+		cp -vf bzip2-shared "$PKGROOT/bin/bzip2"
+		cp -avf libbz2.so* "$PKGROOT/lib"
+		ln -svf /lib/libbz2.so.1.0 "$PKGROOT/usr/lib/libbz2.so"
+		#rm -vf /usr/bin/{bunzip2,bzcat,bzip2}
+		ln -svf bzip2 "$PKGROOT/bin/bunzip2"
+		ln -svf bzip2 "$PKGROOT/bin/bzcat"
+		mv -v "$PKGROOT/man" "$PKGROOT/usr/man"
+		mv -v "$PKGROOT/include" "$PKGROOT/usr/include"
+		make_tar "$PKGROOT"
+		exit 0
+	;;
+	coreutils-*|lsscsi-*|findutils-*|diffutils-*|e2fsprogs-*|grep-*|gzip-*|tar-*|grep-*|sed-*)
 		PKGPREFIX="/"
 		./configure 			\
 			--prefix=/usr

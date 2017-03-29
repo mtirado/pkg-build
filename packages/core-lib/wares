@@ -2,6 +2,7 @@
 1 libpipeline  libpipeline-1.4.1.tar.gz local 0
 1 libmnl       libmnl-1.0.3.tar.bz2 local 0
 2 libnftnl     libnftnl-1.0.6.tar.bz2 local 0
+2 libusb       libusb-1.0.21.tar.gz local 0
 1 nettle       nettle-3.2.tar.gz local 0
 1 libtasn1     libtasn1-4.8.tar.gz local 0
 2 p11-kit      p11-kit-0.23.2.tar.gz local 0
