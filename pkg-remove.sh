@@ -34,6 +34,15 @@ echo removing "$PKGNAME..."
 #----------- remove files --------------------------------------------
 do_pkgremove() {
 	PKGFILE=$1
+
+	#remove anything with a dot or ~
+	case "$PKGFILE" in *.*|*~)
+		echo "removing unexpected file: $PKGFILE"
+		rm "$PKGFILE"
+		return 0
+		;;
+	esac
+
 	FILES=$(cat "$PKGFILE")
 	for FILE in $FILES; do
 		FILEPATH="$PKGINSTALL/$FILE"
