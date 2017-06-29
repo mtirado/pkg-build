@@ -1,7 +1,10 @@
-1 libpng      libpng-1.6.23.tar.xz local 0
-1 libjpg      jpeg-9b.tar.xz local 0
-1 libffi      libffi-3.2.1.tar.gz local 0
-1 sqlite      sqlite-autoconf-3130000.tar.gz local 0
-1 libreadline readline-7.0.tar.gz local 0
-1 libjson     json-c-0.12.1.tar.gz local 0
-2 glib        glib-2.50.2.tar.xz local 0
+1 libpng      libpng-1.6.29.tar.xz
+1 libjpg      jpeg-9b.tar.xz
+1 libffi      libffi-3.2.1.tar.gz
+1 sqlite      sqlite-autoconf-3190300.tar.gz
+1 libreadline readline-7.0.tar.gz
+1 libjson     json-c-0.12.1.tar.gz
+1 libxslt     libxslt-1.1.29.tar.gz
+2 glib        glib-2.53.2.tar.xz
+2 kerberos    krb5-1.15.1.tar.gz
+2 boost       boost_1_63_0.tar.gz

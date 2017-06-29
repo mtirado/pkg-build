@@ -38,7 +38,18 @@ case "$PKGARCHIVE" in
 	bash*)
 		./configure 			\
 			--prefix="$PKGROOT"	\
-			--without-bash-malloc
+			--disable-rpath		\
+			--without-bash-malloc	\
+			--disable-net-redirection
+		#--enable-mem-scramble
+		#--disable-largefile
+		#--enable-static-link
+
+	;;
+	hunspell-*)
+		autoreconf -vfi
+		./configure 			\
+			--prefix="$PKGPREFIX"
 	;;
 	*)
 		./configure 			\
@@ -63,7 +74,6 @@ case "$PKGARCHIVE" in
 			"$PKGROOT/$PKGPREFIX/etc/vimrc"
 		make_tar_flatten_subdirs "$PKGROOT"
 	;;
-	#TODO move this to a package that installs to /bin, copy manually from "$PKGPREFIX"/bin > /bin for now
 	bash*)
 		make_tar "$PKGROOT"
 	;;

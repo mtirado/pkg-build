@@ -6,10 +6,11 @@
 # TODO check if installed before compiling
 # depends on jettison compiled with PODROOT_HOME_OVERRIDE
 #
-# TODO post-install stage for annoying things
-# like firefox depending on autoconf-213, need to remove that
-# and could also handle splitting packages there
 #-----------------------------------------------------------------------------
+
+# need pkg-build scripts for autopod, use home rx /pkg-scripts
+PKGSCRIPT_DIR="/pkg-scripts"
+
 set -e
 if [ "$1" = "" ] || [ "$1" = "-h" ]; then
 	echo "usage: pkg-autopod <package-group> [numjobs]"
@@ -52,7 +53,7 @@ JETTISON="$JETTISON $SHELL $PODCONFIG --blacklist"
 
 # --clear-environ will break this,  =(
 PKGPASS=1
-export PATH="/pkg-scripts/:$PATH"
+export PATH="/$PKGSCRIPT_DIR/:$PATH"
 export PKGINCLUDE="/pkg-scripts/pkg-include.sh"
 while true; do
 	export PKGPASS

@@ -1,2 +1,4 @@
-1 strace strace-4.14.tar.xz local 0
-1 gdb gdb-7.12.1.tar.xz local 0
+1 libelf libelf-0.8.13.tar.gz local 0
+2 ltrace ltrace-0.7.3.tar.bz2 local 0
+2 strace strace-4.17.tar.xz local 0
+2 gdb gdb-7.12.1.tar.xz local 0

@@ -4,8 +4,9 @@ source "$PKGINCLUDE"
 
 # XXX gcc install has some sort of race condition? but seriously i don't know what
 # causes the failure and strace doesn't offer much helpful info either.
-# if you set PKGNOCONF=y and rerun it many times, eventually it will install.
-if [ "$PKGNOCONF" == "" ]; then
+# to fix it you have to enter pod and DESTDIR=$PKGROOT make install,
+# then cd $PKGROOT/usr && tar -cf ../usr.tar ./* && ../ && rm -rf usr && touch /podhome/pkgbuild-core-dev/gcc-*/.pkg-built-gcc
+# until i figure out what the f is causing ferror on stdout (in make source)
 case "$PKGARCHIVE" in
 	perl*)
 		export BUILD_ZLIB=False
@@ -19,30 +20,63 @@ case "$PKGARCHIVE" in
 				-Duseshrplib
 		unset BUILD_ZLIB BUILD_BZIP2
 	;;
+	Archive-Zip*)
+		perl Makefile.PL
+		sed -i "s#DESTDIR = #DESTDIR = $PKGROOT#" Makefile
+	;;
 	pkgconf*)
+		./autogen.sh
 		./configure							\
-			--with-system-libdir="$PKGPREFIX/lib"			\
+			--prefix="$PKGPREFIX"					\
+			--with-system-libdir="/lib:$PKGPREFIX/lib"		\
 			--with-system-includedir="$PKGPREFIX/include"		\
-			--with-pkg-config-dir="$PKGPREFIX/lib/pkgconfig"	\
-			--prefix="$PKGPREFIX"
+			--with-pkg-config-dir="$PKGPREFIX/lib/pkgconfig"
 	;;
 	nasm*)
 		./configure				\
 			--prefix="$PKGROOT/$PKGPREFIX"
 	;;
 	gcc-*)
-		./configure				\
-			--prefix="$PKGPREFIX"		\
-			--disable-multilib		\
-			--disable-bootstrap		\
-			--with-system-zlib		\
-			--enable-default-pie		\
-			--enable-default-ssp		\
-			--enable-secure-plt		\
-			--enable-targets=all		\
-			--enable-languages=c,c++
-		# XXX how to turn on default relro?
-		# --enable-default-pie doesnt work on 5.4 :(
+		# TODO handle version numbers globally somehow!!!
+		#GCC_VERSION=${PKGARCHIVE#gcc-}
+		#GCC_VERSION=${GCC_VERSION%.tar*}
+		# TODO support subpackages for extra languages, gnat, objc, etc
+		# and gcc-specs option in later pass after gcc has been installed
+		case "$PKGDISTNAME" in
+		gcc)
+		if [ "$PKGNOCONF" == "" ]; then
+			./configure				\
+				--prefix="$PKGPREFIX"		\
+				--disable-multilib		\
+				--disable-bootstrap		\
+				--with-system-zlib		\
+				--enable-default-pie		\
+				--enable-default-ssp		\
+				--enable-secure-plt		\
+				--enable-targets=all		\
+				--enable-languages=c,c++
+			# --enable-default-pie doesnt work on 5.4, use specs
+		fi
+		;;
+		gcc-specs*)
+		echo "no spec modifications to be made."
+		exit -1
+		##############################################################
+		# adjust gcc specs
+		# e.g: https://wiki.gentoo.org/wiki/Hardened/Toolchain
+		# commented because my toolchain handles this
+		# before the real userland build starts
+		##############################################################
+		# enable relro linker flag by default
+		#gcc -dumpspecs | sed 's#%{pie:-pie}#%{pie:-pie} %{!norelro: -z relro} %{relro: }#' > \
+		#	`dirname $(gcc --print-libgcc-file-name)`/specs
+
+		;;
+		*)
+			echo "unknown gcc subpackage"
+			exit -1
+		;;
+		esac
 	;;
 	binutils-*)
 		./configure				\
@@ -74,9 +108,8 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"
 	;;
 esac
-fi
 
-make "-j$JOBS"
+make "-j$JOBS" "$PKGBUILD_MAKE_FLAGS"
 DESTDIR="$PKGROOT" make install
 
 case "$PKGARCHIVE" in
@@ -85,5 +118,5 @@ pkgconf*)
 	ln -sv pkgconf "$PKGROOT/$PKGPREFIX/bin/pkg-config"
 ;;
 esac
-
 make_tar_flatten_subdirs "$PKGROOT"
+ls -lah "$PKGROOT"

@@ -2,6 +2,8 @@
 # put all ugly boilerplate functions for pkg-compile scripts in here
 # TODO sanitize paths
 
+export PKGBUILD_MAKE_FLAGS="-output-sync=target"
+
 make_tar_root()
 {
 	PACKAGE_ROOT="$1"

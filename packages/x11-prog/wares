@@ -1,2 +1,5 @@
-1 xterm xterm-325.tar.gz local 0
-1 xev xev-1.2.2.tar.gz local 0
+1 xterm     xterm-325.tar.gz
+1 xev       xev-1.2.2.tar.gz
+1 fox       fox-1.6.54.tar.gz
+2 xfe       xfe-1.42.tar.gz
+2 nautilus  nautilus-3.25.1.tar.xz

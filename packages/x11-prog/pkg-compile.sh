@@ -2,8 +2,6 @@
 set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
-	#case pkgname*)
-	#;;
 	xterm*)
 		./configure 			\
 			--prefix="$PKGPREFIX"	\
@@ -19,6 +17,10 @@ case "$PKGARCHIVE" in
 			#--disable-freetype
 			#--with-own-terminfo=
 		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT|" Makefile
+	;;
+	URI*)
+		mkdir -p "$PKGROOT/$PKGPREFIX"
+		perl Makefile.PL PREFIX="$PKGROOT/$PKGPREFIX" INSTALLDIRS=perl
 	;;
 	*)
 		./configure 			\

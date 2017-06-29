@@ -27,10 +27,22 @@ case "$PKGARCHIVE" in
 		--disable-nouveau	\
 		--disable-vmwgfx
 	;;
-	SDL2*)
+	fontconfig*)
+		patch -s -p1 < "$_PKG_DIR/0001-Avoid-conflicts-with-integer-width-macros-from-TS-18.patch"
 		./configure 			\
+			--disable-static	\
 			--prefix="$PKGPREFIX"
-			#--disable-static broken
+	;;
+	icu*)
+		cd source
+		./configure 			\
+			--disable-static	\
+			--prefix="$PKGPREFIX"
+	;;
+	graphite*)
+		cmake -G 'Unix Makefiles' 		\
+			-DCPACK_SET_DESTDIR="$PKGROOT"	\
+			-DCMAKE_INSTALL_PREFIX="$PKGPREFIX"
 	;;
 	*)
 		./configure 			\
@@ -41,5 +53,5 @@ case "$PKGARCHIVE" in
 esac
 
 make "-j$JOBS"
-DESTDIR="$PKGROOT" make install
+make DESTDIR="$PKGROOT" install
 make_tar_flatten_subdirs "$PKGROOT"

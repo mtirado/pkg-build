@@ -22,14 +22,21 @@ case "$PKGARCHIVE" in
 			--parallel=$JOBS
 	;;
 	ruby-*)
-		./configure 			\
-			--prefix="$PKGPREFIX"	\
-			--with-destdir="$PKGROOT"
+		./configure 				\
+			--prefix="$PKGPREFIX"		\
+			--with-destdir="$PKGROOT"	\
+			--disable-install-rdoc
+		# rdoc broke during build?
 	;;
 	nim-*)
 		# i guess throw it in /usr/bundles
 		./build.sh
 		./install.sh "$PKGROOT/bundles"
+		make_tar "$PKGROOT"
+		exit 0
+	;;
+	scons*)
+		python setup.py install --prefix="$PKGROOT"
 		make_tar "$PKGROOT"
 		exit 0
 	;;

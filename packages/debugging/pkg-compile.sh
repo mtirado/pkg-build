@@ -7,9 +7,19 @@ case "$PKGARCHIVE" in
 		./configure 				\
 			--prefix="$PKGPREFIX/gdb"
 	;;
+	libelf*)
+		./configure 				\
+			--prefix="$PKGROOT/usr"
+	;;
+	ltrace*)
+		patch -s -p1 < "$_PKG_DIR/ltrace-0.7.3-fixes.patch"
+		./configure 				\
+			--prefix="$PKGPREFIX"
+	;;
 	*)
 		./configure 				\
 			--prefix="$PKGPREFIX"
+	;;
 esac
 
 make "-j$JOBS"

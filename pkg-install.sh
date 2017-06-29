@@ -88,6 +88,10 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 	fi
 
+	echo ""
+	echo "-----------------------------------------------------------------"
+	echo " >>> $PKGNAME <<<  "
+	echo "-----------------------------------------------------------------"
 	TARFILES=$(tar -tf "$_PKG_DIR/$PKGNAME/$TARFILE")
 	DUPLICATES=""
 	# check for existing files
@@ -101,17 +105,18 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 	done
 	if [ "$EXISTS" != "0" ]; then
-		# TODO we should scan packages to find which one owns file << TODO!
-		# no owner should default to default ungrouped package.
-		# TODO long winded prompt for each existing file
-		echo ""
+		# TODO when destroying, scan packages to find which one owns file
+		# and remove from package file, will need to use a lock file.
+		# TODO long winded prompt option, for each existing file
 		echo "-----------------------------------------------------------------"
-		echo "$PKGNAME: $EXISTS file(s) already exist in $DEST"
+		echo " >>> $PKGNAME <<<  "
+		echo "-----------------------------------------------------------------"
+		echo "$EXISTS file(s) already exist in $DEST"
 		echo "you have 5 possible actions:"
 		echo ""
 		echo "(s)kip installing $PKGNAME"
 		echo "(p)reserve  --  do not overwrite existing files."
-		echo "(b)ackup    --  create backup file before overwriting"
+		echo "(b)ackup    --  create timestamped backup file before overwriting."
 		echo "(d)estroy   --  overwrite existing files, currently disastrous"
 		echo "                if files are used by another package."
 		echo "(q)uit installation."
@@ -120,6 +125,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			read -n 1 -s ACK
 		else
 			ACK="d"
+			echo "destroying..."
 		fi
 		TAROPT="--overwrite"
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then

@@ -12,7 +12,8 @@ case "$PKGARCHIVE" in
 		./configure 				\
 			--prefix="$PKGPREFIX"		\
 			--disable-static		\
-			--disable-heartbeat-support
+			--disable-heartbeat-support	\
+			--with-included-unistring
 	;;
 	dhcp*)
 		JOBS=1

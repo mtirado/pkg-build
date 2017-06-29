@@ -29,17 +29,20 @@ case "$PKGARCHIVE" in
 	#		--prefix=$PKGROOT
 	#;;
 	glibc-*)
+		# JOBS=1 because write stdout error make install bug
+		JOBS=1
 		ORIGPREFIX="$PKGPREFIX"
 		PKGPREFIX="/"
 		ETCDIR="$PKGROOT/$PKGPREFIX/etc"
 		BDIR=".unrelated-build-dir"
-		mkdir "$BDIR"
+		mkdir -vp "$BDIR"
 		cd "$BDIR"
 		../configure 					\
 			--prefix="$ORIGPREFIX"			\
 			--disable-profile			\
 			--enable-kernel="$KERN"			\
 			--enable-stackguard-randomization	\
+			--enable-stack-protector=strong		\
 			--enable-bind-now
 		make "-j$JOBS"
 		DESTDIR="$PKGROOT" make install
@@ -56,7 +59,6 @@ case "$PKGARCHIVE" in
 		exit 0
 	;;
 	libusb-*)
-		./bootstrap.sh
 		./configure 			\
 			--prefix="$PKGPREFIX"	\
 			--disable-udev

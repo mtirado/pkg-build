@@ -7,6 +7,10 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"		\
 			--disable-xmlto
 	;;
+	openal-*)
+		# FIXME, this is installing to /usr/local
+		cmake -G 'Unix Makefiles'
+	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"

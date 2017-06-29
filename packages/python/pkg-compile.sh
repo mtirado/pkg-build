@@ -11,6 +11,7 @@ case "$PKGARCHIVE" in
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"
+	;;
 esac
 
 make "-j$JOBS"

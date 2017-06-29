@@ -2,6 +2,23 @@
 set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
+	cups-*)
+		JOBS=1
+		# might need this if kerberos is not installed
+		#sed -i '/kerberized/,$ d' conf/cupsd.conf.in
+		aclocal  -I config-scripts
+		autoconf -I config-scripts
+		./configure 					\
+			--prefix="$PKGROOT/usr"			\
+			--with-rcdir="/tmp/cupsjunk$$"		\
+			--with-menudir="/tmp/cupsjunk$$"	\
+			--with-icondir="/tmp/cupsjunk$$"	\
+			--disable-systemd			\
+			--disable-unit-tests
+		# make config file?
+		#echo "ServerName /var/run/cups/cups.sock" > <usr?>/etc/cups/client.conf
+	;;
+
 	aalib*)
 		mkdir -p "$PKGROOT/$PKGPREFIX"
 		./configure 				\
@@ -9,8 +26,7 @@ case "$PKGARCHIVE" in
 	;;
 	librsvg*)
 		./configure 			\
-			--prefix="$PKGPREFIX"	\
-			--enable-introspection=no
+			--prefix="$PKGPREFIX"
 	;;
 	gimp*)
 		./configure 			\
@@ -52,8 +68,7 @@ esac
 make "-j$JOBS"
 DESTDIR="$PKGROOT" make install
 
-# XXX mupdf-lite, instead of static linked blimp by default (over 100MB .xz)
-# is there a disable static option?
+# prune mupdf, instead of static linked blimp by default (over 100MB .xz)
 case "$PKGARCHIVE" in
 	mupdf*)
 		rm -r "$PKGROOT/$PKGPREFIX/include"

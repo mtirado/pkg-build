@@ -4,8 +4,8 @@ source "$PKGINCLUDE"
 
 KARCH="i386"
 ARCHDIR="x86"
-KCONFIG="$PKGDIR/linux-x86-config"
-KPATCH="$PKGDIR/linux-x86-drm-fix.patch"
+KCONFIG="$_PKG_DIR/linux-x86-config"
+KPATCH="$_PKG_DIR/linux-x86-drm-fix.patch"
 
 case "$PKGARCHIVE" in
 	linux-*)
@@ -19,7 +19,7 @@ case "$PKGARCHIVE" in
 		make "-j$JOBS"
 
 		# notes:
-		# if you configure for signed modules don't strip binaries!
+		# if you configure for signed modules don't strip debug info!
 		#
 		# build may fail during LD module.ko, use -j1 or manually restart
 		# and install. there's no good way to do this automatically and
@@ -33,6 +33,8 @@ case "$PKGARCHIVE" in
 		mkdir -pv "$PKGROOT/boot"
 		cp -v "arch/$ARCHDIR/boot/bzImage" "$PKGROOT/boot/$PKGARCHIVE"
 		cp -v "$KCONFIG" "$PKGROOT/boot/$(basename "$KCONFIG")"
+		# what are these files hanging around for?
+		find -name '*.install*' -exec rm ./{} \;
 		make_tar "$PKGROOT"
 	;;
 	*)

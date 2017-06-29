@@ -1,2 +1,4 @@
-1 which which-2.21.tar.gz local 0
-1 qemu  qemu-2.6.2.tar.bz2 local 0
+1 zip zip30.tar.gz local 0
+1 unzip unzip60.tar.gz local 0
+1 which which-2.21.tar.gz
+0 moveme to some later package qemu  qemu-2.9.0.tar.xz

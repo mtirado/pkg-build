@@ -1,83 +1,91 @@
-1 util-macros util-macros-1.19.0.tar.gz local 0
-2 xproto proto/xproto-7.0.31.tar.gz local 0
-2 glproto proto/glproto-1.4.17.tar.gz local 0
-2 xcb-proto proto/xcb-proto-1.12.tar.gz local 0
-2 xext-proto proto/xextproto-7.3.0.tar.gz local 0
-2 kb-proto proto/kbproto-1.0.7.tar.gz local 0
-2 input-proto proto/inputproto-2.3.2.tar.gz local 0
-2 fixes-proto proto/fixesproto-5.0.tar.gz local 0
-2 damage-proto proto/damageproto-1.2.1.tar.gz local 0
-2 xcmisc-proto proto/xcmiscproto-1.2.2.tar.gz local 0
-2 bigreqs-proto proto/bigreqsproto-1.1.2.tar.gz local 0
-2 randr-proto proto/randrproto-1.5.0.tar.gz local 0
-2 render-proto proto/renderproto-0.11.1.tar.gz local 0
-0 record-proto proto/recordproto-1.14.2.tar.gz local 0
-2 fonts-proto proto/fontsproto-2.1.3.tar.gz local 0
-2 video-proto proto/videoproto-2.3.3.tar.gz local 0
-0 dga-proto proto/xf86dgaproto-2.1.tar.gz local 0
-2 dri-proto proto/xf86driproto-2.1.1.tar.gz local 0
-2 composite-proto proto/compositeproto-0.4.2.tar.gz local 0
-2 xf86vidmode-proto proto/xf86vidmodeproto-2.3.1.tar.gz local 0
-0 dmx-proto proto/dmxproto-2.3.tar.gz local 0
-3 libxau lib/libXau-1.0.8.tar.gz local 0
-3 libxtrans lib/xtrans-1.3.5.tar.gz local 0
-4 libxcb lib/libxcb-1.12.tar.gz local 0
-4 libfontenc lib/libfontenc-1.1.3.tar.gz local 0
-4 libice lib/libICE-1.0.9.tar.gz local 0
-5 libx11 lib/libX11-1.6.4.tar.gz local 0
-5 libsm lib/libSM-1.2.2.tar.gz local 0
-6 libxfixes lib/libXfixes-5.0.tar.gz local 0
-0 libepoxy lib/libepoxy-1.3.1.tar.gz local 0
-6 libxfont lib/libXfont-1.5.1.tar.gz local 0
-6 libxfont2 lib/libXfont2-2.0.1.tar.gz local 0
-6 libxext lib/libXext-1.3.3.tar.gz local 0
-6 libxkbfile lib/libxkbfile-1.0.9.tar.gz local 0
-6 libxt lib/libXt-1.1.5.tar.gz local 0
-6 libxpm lib/libXpm-3.5.11.tar.gz local 0
-7 libxmu lib/libXmu-1.1.2.tar.gz local 0
-0 libxi lib/libXi-1.7.6.tar.gz local 0
-0 libdmx lib/libdmx-1.1.3.tar.gz local 0
-7 libxdamage lib/libXdamage-1.1.4.tar.gz local 0
-7 libxrender lib/libXrender-0.9.9.tar.gz local 0
-7 libxcomposite lib/libXcomposite-0.4.4.tar.gz local 0
-0 libxtst lib/libXtst-1.2.3.tar.gz local 0
-8 libxrandr lib/libXrandr-1.5.0.tar.gz local 0
-8 libxft lib/libXft-2.3.2.tar.gz local 0
-8 libxaw lib/libXaw-1.0.13.tar.gz local 0
-8 libxaw3d lib/libXaw3d-1.6.2.tar.gz local 0
-8 xorg-server xorg-server-1.18.4.tar.gz local 0
-8 xbitmaps xbitmaps-1.1.1.tar.gz local 0
-8 font-util font/font-util-1.3.1.tar.gz local 0
-8 mkfontdir font/mkfontdir-1.0.7.tar.gz local 0
-8 mkfontscale font/mkfontscale-1.1.2.tar.gz local 0
-8 bdftopcf font/bdftopcf-1.0.5.tar.gz local 0
-8 xkbcomp apps/xkbcomp-1.3.1.tar.gz local 0
-8 xauth xauth-1.0.9.tar.gz local 0
-0 xkbdata xkbdata-1.0.1.tar.gz local 0
-9 xfontsel apps/xfontsel-1.0.5.tar.gz local 0
-9 fontutil font/font-util-1.3.1.tar.gz local 0
-9 font-bitstream-type1 font/font-bitstream-type1-1.0.3.tar.gz local 0
-9 font-bitstream-100dpi font/font-bitstream-100dpi-1.0.3.tar.gz local 0
-9 font-bitstream-75dpi font/font-bitstream-75dpi-1.0.3.tar.gz local 0
-0 font-ibm-type1 font/font-ibm-type1-1.0.3.tar.gz local 0
-0 font-xfree86-type1 font/font-xfree86-type1-1.0.4.tar.gz local 0
-9 xf86-input-keyboard driver/xf86-input-keyboard-1.8.1.tar.gz local 0
-9 xf86-input-mouse driver/xf86-input-mouse-1.9.1.tar.gz local 0
-9 xf86-input-void driver/xf86-input-void-1.4.1.tar.gz local 0
-0 xf86-video-vga driver/xf86-video-vga-4.1.0.tar.gz local 0
-0 xf86-video-vesa driver/xf86-video-vesa-2.3.4.tar.gz local 0
-0 xf86-video-fbdev driver/xf86-video-fbdev-0.4.4.tar.gz local 0
-9 xf86-video-modesetting driver/xf86-video-modesetting-0.9.0.tar.gz local 0
-9 xf86-video-dummy driver/xf86-video-dummy-0.3.7.tar.gz local 0
-0 xeyes apps/xeyes-1.1.1.tar.gz local 0
-9 xclock apps/xclock-1.0.7.tar.gz local 0
-9 xset apps/xset-1.2.3.tar.gz local 0
-0 xprop apps/xprop-1.2.2.tar.gz local 0
-0 xdpyinfo apps/xdpyinfo-1.3.2.tar.gz local 0
-9 xrdb apps/xrdb-1.1.0.tar.gz local 0
-9 xrandr apps/xrandr-1.5.0.tar.gz local 0
-9 xwd apps/xwd-1.0.6.tar.gz local 0
-9 xwud apps/xwud-1.0.4.tar.gz local 0
-9 xinit xinit-1.3.4.tar.gz local 0
-9 fluxbox fluxbox-1.3.7.tar.xz local 0
-A xkeyboard-config xkeyboard-config-2.5.tar.gz local 0
+1 util-macros              util-macros-1.19.0.tar.gz
+2 xproto                   proto/xproto-7.0.31.tar.gz
+2 glproto                  proto/glproto-1.4.17.tar.gz
+2 xcb-proto                proto/xcb-proto-1.12.tar.gz
+2 xext-proto               proto/xextproto-7.3.0.tar.gz
+2 kb-proto                 proto/kbproto-1.0.7.tar.gz
+2 input-proto              proto/inputproto-2.3.2.tar.gz
+2 fixes-proto              proto/fixesproto-5.0.tar.gz
+2 damage-proto             proto/damageproto-1.2.1.tar.gz
+2 xcmisc-proto             proto/xcmiscproto-1.2.2.tar.gz
+2 bigreqs-proto            proto/bigreqsproto-1.1.2.tar.gz
+2 randr-proto              proto/randrproto-1.5.0.tar.gz
+2 render-proto             proto/renderproto-0.11.1.tar.gz
+2 fonts-proto              proto/fontsproto-2.1.3.tar.gz
+2 video-proto              proto/videoproto-2.3.3.tar.gz
+0 dga-proto                proto/xf86dgaproto-2.1.tar.gz
+2 dri-proto                proto/xf86driproto-2.1.1.tar.gz
+2 composite-proto          proto/compositeproto-0.4.2.tar.gz
+2 xf86vidmode-proto        proto/xf86vidmodeproto-2.3.1.tar.gz
+0 dmx-proto                proto/dmxproto-2.3.tar.gz
+3 libxau                   lib/libXau-1.0.8.tar.gz
+3 libxtrans                lib/xtrans-1.3.5.tar.gz
+4 libxcb                   lib/libxcb-1.12.tar.gz
+4 libfontenc               lib/libfontenc-1.1.3.tar.gz
+4 libice                   lib/libICE-1.0.9.tar.gz
+5 xcb-util                 lib/xcb-util-0.4.0.tar.gz
+5 libx11                   lib/libX11-1.6.4.tar.gz
+5 libsm                    lib/libSM-1.2.2.tar.gz
+6 xcb-util-wm              lib/xcb-util-wm-0.4.1.tar.gz
+6 xcb-util-image           lib/xcb-util-image-0.4.0.tar.gz
+6 xcb-util-keysyms         lib/xcb-util-keysyms-0.4.0.tar.gz
+6 libxfixes                lib/libXfixes-5.0.tar.gz
+0 libepoxy                 lib/libepoxy-1.3.1.tar.gz
+6 libxfont                 lib/libXfont-1.5.1.tar.gz
+6 libxfont2                lib/libXfont2-2.0.1.tar.gz
+6 libxext                  lib/libXext-1.3.3.tar.gz
+6 libxkbfile               lib/libxkbfile-1.0.9.tar.gz
+6 libxt                    lib/libXt-1.1.5.tar.gz
+6 libxpm                   lib/libXpm-3.5.11.tar.gz
+7 libxmu                   lib/libXmu-1.1.2.tar.gz
+7 libxi                    lib/libXi-1.7.6.tar.gz
+0 libdmx                   lib/libdmx-1.1.3.tar.gz
+7 libxdamage               lib/libXdamage-1.1.4.tar.gz
+7 libxrender               lib/libXrender-0.9.9.tar.gz
+7 libxcomposite            lib/libXcomposite-0.4.4.tar.gz
+7 libxcursor               lib/libXcursor-1.1.14.tar.gz
+8 libxrandr                lib/libXrandr-1.5.0.tar.gz
+8 libxft                   lib/libXft-2.3.2.tar.gz
+8 libxaw                   lib/libXaw-1.0.13.tar.gz
+8 libxaw3d                 lib/libXaw3d-1.6.2.tar.gz
+8 xorg-server              xorg-server-1.18.4.tar.gz
+8 xbitmaps                 xbitmaps-1.1.1.tar.gz
+8 font-util                font/font-util-1.3.1.tar.gz
+8 mkfontdir                font/mkfontdir-1.0.7.tar.gz
+8 mkfontscale              font/mkfontscale-1.1.2.tar.gz
+8 bdftopcf                 font/bdftopcf-1.0.5.tar.gz
+8 xkbcomp                  apps/xkbcomp-1.3.1.tar.gz
+8 xauth                    xauth-1.0.9.tar.gz
+0 xkbdata                  xkbdata-1.0.1.tar.gz
+9 xfontsel                 apps/xfontsel-1.0.5.tar.gz
+9 fontutil                 font/font-util-1.3.1.tar.gz
+9 font-bitstream-type1     font/font-bitstream-type1-1.0.3.tar.gz
+9 font-bitstream-100dpi    font/font-bitstream-100dpi-1.0.3.tar.gz
+9 font-bitstream-75dpi     font/font-bitstream-75dpi-1.0.3.tar.gz
+0 font-ibm-type1           font/font-ibm-type1-1.0.3.tar.gz
+0 font-xfree86-type1       font/font-xfree86-type1-1.0.4.tar.gz
+9 xf86-input-keyboard      driver/xf86-input-keyboard-1.8.1.tar.gz
+9 xf86-input-mouse         driver/xf86-input-mouse-1.9.1.tar.gz
+9 xf86-input-void          driver/xf86-input-void-1.4.1.tar.gz
+0 xf86-video-vga           driver/xf86-video-vga-4.1.0.tar.gz
+0 xf86-video-vesa          driver/xf86-video-vesa-2.3.4.tar.gz
+0 xf86-video-fbdev         driver/xf86-video-fbdev-0.4.4.tar.gz
+9 xf86-video-modesetting   driver/xf86-video-modesetting-0.9.0.tar.gz
+9 xf86-video-dummy         driver/xf86-video-dummy-0.3.7.tar.gz
+9 xclock                   apps/xclock-1.0.7.tar.gz
+9 xset                     apps/xset-1.2.3.tar.gz
+0 xprop                    apps/xprop-1.2.2.tar.gz
+0 xdpyinfo                 apps/xdpyinfo-1.3.2.tar.gz
+9 xrdb                     apps/xrdb-1.1.0.tar.gz
+9 xrandr                   apps/xrandr-1.5.0.tar.gz
+9 xwd                      apps/xwd-1.0.6.tar.gz
+9 xwud                     apps/xwud-1.0.4.tar.gz
+9 xinit                    xinit-1.3.4.tar.gz
+9 fluxbox                  fluxbox-1.3.7.tar.xz
+A xkeyboard-config         xkeyboard-config-2.5.tar.gz
+0 -------------------------------------------------------------
+0 this is required by chromium, which i also can't get to build
+0 record-proto             proto/recordproto-1.14.2.tar.gz
+0 libxtst                  lib/libXtst-1.2.3.tar.gz
+0 xeyes                    apps/xeyes-1.1.1.tar.gz
+0 -------------------------------------------------------------
