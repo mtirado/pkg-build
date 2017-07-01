@@ -7,7 +7,9 @@ case "$PKGARCHIVE" in
 			--disable-static	\
 			--prefix="$PKGPREFIX"	\
 			--without-gdiplus	\
-			--without-libtiff
+			--without-libtiff	\
+			--enable-gio-sniffing=no
+			#--with-x11		\
 	;;
 	gtk+-2*)
 		./configure 			\
@@ -103,6 +105,12 @@ case "$PKGARCHIVE" in
 				-no-accessibility 		\
 				-no-glib 			\
 				-no-opengl
+			make "-j$JOBS"
+		;;
+		qt5multimedia)
+			cd qtmultimedia
+			qmake -o Makefile "$QTROOT/qtmultimedia/qtmultimedia.pro" \
+					-qtconf "$QTROOT/qtbase/bin/qt.conf"
 			make "-j$JOBS"
 		;;
 		qt5svg)

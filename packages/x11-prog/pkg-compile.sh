@@ -18,9 +18,16 @@ case "$PKGARCHIVE" in
 			#--with-own-terminfo=
 		sed -i "s|DESTDIR.*=.*|DESTDIR = $PKGROOT|" Makefile
 	;;
-	URI*)
-		mkdir -p "$PKGROOT/$PKGPREFIX"
-		perl Makefile.PL PREFIX="$PKGROOT/$PKGPREFIX" INSTALLDIRS=perl
+	icewm-1*)
+		# what's this do? other than cause build error
+		sed -i "s/icesh\ //" configure
+		./configure 			\
+			--prefix="$PKGROOT/$PKGPREFIX"	\
+			--disable-i18n			\
+			--disable-nls			\
+			--disable-sm			\
+			--disable-xrandr		\
+			--disable-xinerama
 	;;
 	*)
 		./configure 			\

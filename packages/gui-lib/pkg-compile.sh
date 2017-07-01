@@ -34,7 +34,7 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"
 	;;
 	icu*)
-		cd source
+		cd "./source"
 		./configure 			\
 			--disable-static	\
 			--prefix="$PKGPREFIX"

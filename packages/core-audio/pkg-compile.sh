@@ -3,13 +3,15 @@ set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	alsa-util*)
-		./configure 			\
+		./configure 				\
 			--prefix="$PKGPREFIX"		\
 			--disable-xmlto
 	;;
 	openal-*)
-		# FIXME, this is installing to /usr/local
-		cmake -G 'Unix Makefiles'
+
+		cmake -G 'Unix Makefiles'		\
+			-DCPACK_SET_DESTDIR="$PKGROOT"	\
+			-DCMAKE_INSTALL_PREFIX="$PKGPREFIX"
 	;;
 	*)
 		./configure 			\

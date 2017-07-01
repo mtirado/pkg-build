@@ -7,7 +7,8 @@
 7 gst-plugins-good   gst-plugins-good-1.12.0.tar.xz
 8 gst-plugins-ugly   gst-plugins-ugly-1.12.0.tar.xz
 0 gst-plugins-bad    gst-plugins-bad-1.12.0.tar.xz
-0 9 qt-gstreamer     qt-gstreamer-1.2.0.tar.xz
+0 -- cmake cant find qt5...?
+0 qt-gstreamer       qt-gstreamer-1.2.0.tar.xz
 2 mplayer            MPlayer-1.3.0.tar.xz
 3 mplayer-hwswskin   hwswskin.tar.bz2
 3 mplayer-xmmplayer  xmmplayer.tar.bz2

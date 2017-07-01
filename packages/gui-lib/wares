@@ -4,7 +4,7 @@
 1 pixman           pixman-0.34.0.tar.gz
 1 freetype         freetype-2.8.tar.gz
 1 intltool         intltool-0.51.0.tar.gz
-0 1 icu            icu4c-59_1-src.tar.xz
+1 icu              icu4c-59_1-src.tar.xz
 2 fontconfig       fontconfig-2.12.1.tar.gz
 3 harfbuzz         harfbuzz-1.4.6.tar.bz2
 0 4 libgraphite    graphite2-1.3.10.tar.gz
