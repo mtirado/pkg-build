@@ -5,7 +5,10 @@
 #-----------------------------------------------------------------------------
 set -e
 
-# either this or dump all package files in root package dir?
+# use '\n' for field separation
+IFS="
+"
+
 PKGGROUP="ungrouped"
 #-----------------------------------------------------------------------------
 if [ -z "$1" ] || [ "$1" = "-h" ]; then
