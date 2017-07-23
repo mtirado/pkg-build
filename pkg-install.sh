@@ -84,6 +84,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		echo "-----------------------------------------------------------------"
 		read -n 1 -s ACK
 		if [ "$ACK" == "y" ] || [ "$ACK" == "Y" ]; then
+			echo "skipping..."
 			continue
 		else
 			echo "installation failed."
@@ -132,11 +133,13 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		fi
 		TAROPT="--overwrite"
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
+			echo "skipping $PKGNAME ..."
 			continue
 		elif [ "$ACK" == "p" ] || [ "$ACK" == "P" ]; then
 			#XXX if entire package is preserved no contents file is written
 			#though the package will otherwise "succeede", undecided on if
 			#this should be considered an error or not...
+			echo "preserve existing..."
 			FILTER=""
 			TAROPT="--skip-old-files"
 			# prune preserved files
@@ -151,6 +154,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 				done
 			done
 		elif [ "$ACK" == "b" ] || [ "$ACK" == "B" ]; then
+			echo "backup existing..."
 			# backup duplicate files before overwriting
 			for FILE in $(tar -tf "$_PKG_DIR/$PKGNAME/$TARFILE"); do
 				if [ ! -d "$FILE" ]; then
@@ -164,6 +168,8 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 		elif [ "$ACK" != "d" ] && [ "$ACK" != "D" ]; then
 			echo "installation failed."
 			exit -1
+		else
+			echo "destroying..."
 		fi
 	fi
 
