@@ -56,7 +56,12 @@ do_group_migrate() {
 	PKGGROUP="$1"
 	GROUPDIR="$PKGINSTALL/.packages/$PKGGROUP"
 	cd "$GROUPDIR"
+
 	for PKG in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
+
+# allow spaces and tabs in filenames
+IFS="
+"
 		if [ "$SINGLEPKG" ]; then
 			if [ "$PKG" != "$SINGLEPKG" ]; then
 				#TODO add a full pkg-group too
@@ -98,7 +103,9 @@ do_group_migrate() {
 			if [ ! -d "$MKPATH" ]; then
 				mkdir -p "$MKPATH"
 			fi
-			FILEGLOB+="$FILE "
+# newline IFS
+FILEGLOB+="$FILE
+"
 		done
 
 		#is there another way to do this?
