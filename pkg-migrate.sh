@@ -97,6 +97,7 @@ IFS="
 				if [ "$KEY" != "c" ] && [ "$KEY" != "C" ]; then
 					exit -1
 				fi
+				echo "continue..."
 				continue
 			fi
 			MKPATH=$(dirname "$PKGTMP/$PKGNAME/$FILE")
