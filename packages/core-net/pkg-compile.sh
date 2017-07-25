@@ -43,6 +43,14 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix="$PKGPREFIX"
 	;;
+	nftables*)
+		./configure 			\
+			--prefix="$PKGPREFIX"	\
+			--without-cli
+		#	--enable-pdf-doc
+		# docbook2man has a bunch of sgml, etc deps i'm not bothering with
+		# so there is no manual for this right now.
+	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"

@@ -51,9 +51,18 @@ case "$PKGARCHIVE" in
 		./configure 			\
 			--prefix="$PKGPREFIX"
 	;;
+	dictionaries)
+		# abiword at least looks in this locations,
+		# not sure about other programs
+		mkdir -vp "$PKGROOT/$PKGPREFIX/share/myspell/dicts"
+		cp -vf ./* "$PKGROOT/$PKGPREFIX/share/myspell/dicts/"
+		make_tar_flatten_subdirs "$PKGROOT"
+		exit 0
+	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"
+	;;
 esac
 
 make "-j$JOBS" $DOTEST

@@ -75,6 +75,31 @@ case "$PKGARCHIVE" in
 		exit 0
 
 	;;
+	kmod-*)
+		PKGPREFIX="/"
+		zlib_CFLAGS="-I/usr/include"		\
+		liblzma_CFLAGS="-I/usr/include"		\
+		zlib_LIBS="-L/lib -lz"			\
+		liblzma_LIBS="-L/lib -llzma"		\
+		./configure 				\
+			--prefix="$PKGPREFIX"		\
+			--bindir=/sbin			\
+			--with-xz			\
+			--with-zlib
+
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+
+		ln -svf /sbin/kmod "$PKGROOT/sbin/modprobe"
+		ln -svf /sbin/kmod "$PKGROOT/sbin/lsmod"
+		ln -svf /sbin/kmod "$PKGROOT/sbin/rmmod"
+		ln -svf /sbin/kmod "$PKGROOT/sbin/depmod"
+		ln -svf /sbin/kmod "$PKGROOT/sbin/insmod"
+		ln -svf /sbin/kmod "$PKGROOT/sbin/modinfo"
+
+		make_tar "$PKGROOT"
+		exit 0
+	;;
 	htop*)
 		./autogen.sh
 		./configure 			\
@@ -135,10 +160,32 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
-	coreutils-*|lsscsi-*|findutils-*|diffutils-*|e2fsprogs-*|grep-*|gzip-*|tar-*|grep-*|sed-*)
+	coreutils-*|lsscsi-*|findutils-*|diffutils-*|gzip-*|tar-*|grep-*|sed-*)
 		PKGPREFIX="/"
 		./configure 			\
-			--prefix=/usr
+			--prefix="$PKGPREFIX"
+	;;
+	e2fsprogs-*)
+		JOBS=1
+		PKGPREFIX="/"
+		./configure 			\
+			--prefix="$PKGPREFIX"	\
+			--bindir=/bin		\
+			--sbindir=/sbin		\
+			--with-root-prefix=""
+		make -j$JOBS
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
+	;;
+	xz-*|zlib-*)
+		PKGPREFIX="/"
+		./configure 			\
+			--prefix="$PKGPREFIX"
+		make -j$JOBS
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
 	;;
 	*)
 		./configure 			\

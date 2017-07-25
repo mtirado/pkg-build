@@ -1,1 +1,2 @@
-1 linux linux-4.9.32.tar.xz local 0
+1 linux-headers linux-4.9.36.tar.xz
+2 linux         linux-4.9.36.tar.xz
