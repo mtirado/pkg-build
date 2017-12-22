@@ -35,6 +35,7 @@ case "$PKGARCHIVE" in
 		PKGPREFIX="/"
 		ETCDIR="$PKGROOT/$PKGPREFIX/etc"
 		BDIR=".unrelated-build-dir"
+		KERN="3.10"
 		mkdir -vp "$BDIR"
 		cd "$BDIR"
 		../configure 					\
