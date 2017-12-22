@@ -8,15 +8,13 @@
 set -e
 umask 0022
 SINGLEPKG=""
+GROUPPKG=""
 #-----------------------------------------------------------------------------
 if [ "$1" == "" ]; then
-	echo "usage: pkg-migrate <flockdir> <optional pkg-name>"
-	echo "to select what packages to use use migrate PKGPREFIX"
-	echo "PKGPREFIX=/root    -- /.packages "
-	echo "PKGPREFIX=/usr     -- /usr/.packages "
-	echo "anything deeper than 1 level is currently unsupported"
-	echo "optionally specify pkgname instead of full migration"
-#	echo "PKGPREFIX=/local   -- /usr/local/.packages "
+	echo "usage: pkg-migrate <flock-name> <optional group-name, pkg-name>"
+	echo "PKGINSTALL=/root    -- /.packages "
+	echo "PKGINSTALL=/usr     -- /usr/.packages "
+	echo "optionally specify pkg-name, or pkg-group-name instead of full migration."
 	exit -1
 fi
 if [ "$PKGINSTALL" = "" ]; then
@@ -27,12 +25,23 @@ if [ "$PKGTMP" = "" ]; then
 	PKGTMP="$HOME/.pkg-migrate"
 fi
 if [ "$2" != "" ]; then
-	SINGLEPKG=$(find "$PKGINSTALL/.packages" -type f -name "$2")
-	if [ "$SINGLEPKG" == "" ]; then
-		echo "package $2 not found"
+	# check group dirs first
+	SINGLEPKG=$(find "$PKGINSTALL/.packages" -maxdepth 1 -type d -name "$2" -printf '%f\n')
+	if [ "$SINGLEPKG" != "" ]; then
+		GROUPPKG=$(basename "$SINGLEPKG")
+		SINGLEPKG=""
+	else
+		SINGLEPKG=$(find "$PKGINSTALL/.packages" -type f -name "$2")
+		if [ "$SINGLEPKG" == "" ]; then
+			echo "package $2 not found"
+			exit -1
+		fi
+		SINGLEPKG="$2"
+	fi
+	if [ "$SINGLEPKG" == "" ] && [ "$GROUPPKG" == "" ]; then
+		echo "could not find group or package $2"
 		exit -1
 	fi
-	SINGLEPKG="$2"
 fi
 #-----------------------------------------------------------------------------
 FLOCKDIR="$PWD/$1"
@@ -64,7 +73,6 @@ IFS="
 "
 		if [ "$SINGLEPKG" ]; then
 			if [ "$PKG" != "$SINGLEPKG" ]; then
-				#TODO add a full pkg-group too
 				continue
 			fi
 		fi
@@ -169,12 +177,19 @@ if [ $(find . -name '*~') ]; then
 	echo "remove files with trailing ~ and try again."
 	exit -1
 fi
-for PKGGROUP in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
-	echo ""
-	echo "----------------------------------------------------------------"
-	echo "         $PKGGROUP"
-	echo "----------------------------------------------------------------"
-	echo ""
-	do_group_migrate "$PKGGROUP"
-done
+
+if [ "$GROUPPKG" ]; then
+	echo GROUP: $GROUPPKG
+	do_group_migrate "$GROUPPKG"
+else
+	for PKGGROUP in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
+		echo ""
+		echo "----------------------------------------------------------------"
+		echo "         $PKGGROUP"
+		echo "----------------------------------------------------------------"
+		echo ""
+
+		do_group_migrate "$PKGGROUP"
+	done
+fi
 rm -rf "$PKGTMP"
