@@ -42,6 +42,9 @@ fi
 #-----------------------------------------------------------------------------
 while read LINE; do
 	PASS=$(echo $LINE | cut -d " " -f 1)
+	if [ "$PASS" = "0" ]; then
+		continue
+	fi
 	PKGNAME=$(echo $LINE | cut -d " " -f 2)
 	ARCHIVE=$(echo $LINE | cut -d " " -f 3)
 	PKGARCHIVE=${ARCHIVE%.tar.*}
