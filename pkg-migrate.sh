@@ -3,7 +3,11 @@
 #
 # Creates a compressed snapshot of package state.
 # Packages are stored as a line in package group file.
-# note: running this script on new years eve may result in duplicate packages.
+#
+# caveats: running this script on new years eve may result in duplicate packages.
+#          PKGPREFIX can only be used for top level directories of / and
+#          it will default to /usr. /root is a special case meaning / and thus
+#          the real /root directory can never be a PKGPREFIX.
 #-----------------------------------------------------------------------------
 set -e
 umask 0022
@@ -11,9 +15,11 @@ SINGLEPKG=""
 GROUPPKG=""
 #-----------------------------------------------------------------------------
 if [ "$1" == "" ]; then
-	echo "usage: pkg-migrate <flock-name> <optional group-name, pkg-name>"
-	echo "PKGINSTALL=/root    -- /.packages "
-	echo "PKGINSTALL=/usr     -- /usr/.packages "
+	echo "PKGINSTALL=/usr"
+	echo "PKGINSTALL=/"
+	echo "PKGINSTALL=/where/is/your/packages/dir"
+	echo ""
+	echo "usage: pkg-migrate <flock-name> <optional group-name or pkg-name>"
 	echo "optionally specify pkg-name, or pkg-group-name instead of full migration."
 	exit -1
 fi
@@ -21,7 +27,7 @@ if [ "$PKGINSTALL" = "" ]; then
 	PKGINSTALL="/usr/local"
 fi
 if [ "$PKGTMP" = "" ]; then
-	# someplace mounted as tmpfs is ideal
+	# someplace mounted as ramfs or tmpfs is ideal
 	PKGTMP="$HOME/.pkg-migrate"
 fi
 if [ "$2" != "" ]; then
@@ -51,9 +57,8 @@ if [ -e "$PKGTMP" ]; then
 fi
 mkdir -p "$PKGTMP"
 
-# this is a bit of a hack
+# this is a bit of a hack, tar filename stores top level install dir.
 # pkgconfig adjustment needed and i'm undecided on how to handle that.
-# TODO how to support deep prefixes like /usr/local/and/wherever/else
 if [ "$PKGPREFIX" == "" ]; then
 	PKGPREFIX="/usr"
 elif [ "$PKGPREFIX" == "/" ]; then
@@ -66,6 +71,15 @@ do_group_migrate() {
 	GROUPDIR="$PKGINSTALL/.packages/$PKGGROUP"
 	cd "$GROUPDIR"
 
+	if [ "$SINGLEPKG" == "" ]; then
+		echo ""
+		echo "----------------------------------------------------------------"
+		echo "         $PKGGROUP"
+		echo "----------------------------------------------------------------"
+		echo ""
+	fi
+
+
 	for PKG in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
 
 # allow spaces and tabs in filenames
@@ -75,7 +89,13 @@ IFS="
 			if [ "$PKG" != "$SINGLEPKG" ]; then
 				continue
 			fi
+			echo ""
+			echo "----------------------------------------------------------------"
+			echo "         $SINGLEPKG"
+			echo "----------------------------------------------------------------"
+			echo ""
 		fi
+
 		FILES=$(cat "$GROUPDIR/$PKG")
 		# TODO add version number entry
 		PKGNAME="$PKG-$(date +%G).tar"
@@ -183,12 +203,6 @@ if [ "$GROUPPKG" ]; then
 	do_group_migrate "$GROUPPKG"
 else
 	for PKGGROUP in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
-		echo ""
-		echo "----------------------------------------------------------------"
-		echo "         $PKGGROUP"
-		echo "----------------------------------------------------------------"
-		echo ""
-
 		do_group_migrate "$PKGGROUP"
 	done
 fi

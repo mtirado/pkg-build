@@ -17,7 +17,7 @@ if [ -z "$1" ] || [ "$1" = "-h" ]; then
 	echo "set PKGINSTALL=\"/home/user/blah\" to install to a user owned root."
 	echo "prefix is determined by tar filename and can be set when calling"
 	echo "pkg-migrate with PKGPREFIX=/flock1 or some other top level directory set"
-	echo "deeper prefixes like /usr/local are not supported, yet"
+	echo "deeper prefixes like /usr/local are not supported"
 	exit -1
 fi
 #-----------------------------------------------------------------------------
