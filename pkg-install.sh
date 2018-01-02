@@ -102,15 +102,24 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 	for FILE in $(echo "$TARFILES"); do
 		if [ ! -d "$FILE" ]; then
 			if [ -L "$DEST/$FILE" ] || [ -e "$DEST/$FILE" ]; then
-				echo "$DEST/$FILE already exists"
-				DUPLICATES+="$FILE "
-				EXISTS=$((EXISTS + 1))
+				case "$DEST/$FILE" in
+				# this is an index file that needs to be merged
+				# FIXME for documentation, ignoring it for now
+				*share/info/dir*)
+					echo "skipping info merge, overwriting file"
+					;;
+				*)
+					echo "$DEST/$FILE already exists"
+					DUPLICATES+="$FILE "
+					EXISTS=$((EXISTS + 1))
+					;;
+				esac
 			fi
 		fi
 	done
 	if [ "$EXISTS" != "0" ]; then
 		# TODO when destroying, scan packages to find which one owns file
-		# and remove from package file, will need to use a lock file.
+		# and remove from package file, may want to start using a lock file.
 		# TODO long winded prompt option, for each existing file
 		echo "-----------------------------------------------------------------"
 		echo " >>> $PKGNAME <<<  "
@@ -131,7 +140,7 @@ for PKGNAME in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
 			ACK="d"
 			echo "destroying..."
 		fi
-		TAROPT="--overwrite"
+		TAROPT=""
 		if [ "$ACK" == "s" ] || [ "$ACK" == "S" ]; then
 			echo "skipping $PKGNAME ..."
 			continue
