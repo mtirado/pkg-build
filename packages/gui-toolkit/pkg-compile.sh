@@ -2,13 +2,15 @@
 set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
+	shared-mime*)
+		./configure 			\
+			--prefix="$PKGPREFIX"
+	;;
 	gdk-pixbuf*)
 		./configure 			\
-			--disable-static	\
 			--prefix="$PKGPREFIX"	\
 			--without-gdiplus	\
-			--without-libtiff	\
-			--enable-gio-sniffing=no
+			--without-libtiff
 			#--with-x11		\
 	;;
 	gtk+-2*)
@@ -170,7 +172,6 @@ case "$PKGARCHIVE" in
 	;;
 	*)
 		./configure 			\
-			--disable-static	\
 			--prefix="$PKGPREFIX"
 	;;
 

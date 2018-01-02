@@ -14,7 +14,11 @@ case "$PKGARCHIVE" in
 	;;
 	pciutils*)
 		PKGPREFIX="/"
-		sed -i "s|PREFIX=/usr/local|PREFIX=/usr|" Makefile
+		sed -i "s|PREFIX=/usr/local|PREFIX=/|" Makefile
+		make "-j$JOBS"
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
 	;;
 	lsof_*)
 		PKGPREFIX="/"
@@ -118,6 +122,7 @@ case "$PKGARCHIVE" in
 			--without-readline
 	;;
 	cdrtools-*)
+		JOBS=1
 		# patch for 3.01
 		patch -p1 < $_PKG_DIR/cdrtools-3.01-fix-20151126-mkisofs-isoinfo.patch
 		PREFIX="$PKGPREFIX"	 \
@@ -148,10 +153,10 @@ case "$PKGARCHIVE" in
 		make clean
 		make "-j$JOBS"
 		make PREFIX="$PKGROOT" install
-		mkdir -vp "$PKGROOT/usr/lib"
+		mkdir -vp "$PKGROOT/usr/include"
 		cp -vf bzip2-shared "$PKGROOT/bin/bzip2"
 		cp -avf libbz2.so* "$PKGROOT/lib"
-		ln -svf /lib/libbz2.so.1.0 "$PKGROOT/usr/lib/libbz2.so"
+		ln -svf /lib/libbz2.so.1.0 "$PKGROOT/lib/libbz2.so"
 		#rm -vf /usr/bin/{bunzip2,bzcat,bzip2}
 		ln -svf bzip2 "$PKGROOT/bin/bunzip2"
 		ln -svf bzip2 "$PKGROOT/bin/bzcat"
@@ -160,10 +165,13 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
-	coreutils-*|lsscsi-*|findutils-*|diffutils-*|gzip-*|tar-*|grep-*|sed-*)
+	coreutils-*|lsscsi-*|findutils-*|diffutils-*|gzip-*|tar-*|grep-*|sed-*|file-*)
 		PKGPREFIX="/"
 		./configure 			\
 			--prefix="$PKGPREFIX"
+		DESTDIR="$PKGROOT" make install
+		make_tar "$PKGROOT"
+		exit 0
 	;;
 	e2fsprogs-*)
 		JOBS=1
@@ -187,6 +195,14 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
+
+	# needs systemd/udev though maybe eudev would work, or mdev?
+	usbutils-*)
+		./configure 			\
+			--prefix="$PKGPREFIX"	\
+			--disable-dependency-tracking
+	;;
+
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"
@@ -195,5 +211,4 @@ esac
 
 make -j$JOBS
 DESTDIR="$PKGROOT" make install
-#make_tar "$PKGROOT"
 make_tar_flatten_subdirs "$PKGROOT"

@@ -28,10 +28,12 @@ case "$PKGARCHIVE" in
 		--disable-vmwgfx
 	;;
 	fontconfig*)
-		patch -s -p1 < "$_PKG_DIR/0001-Avoid-conflicts-with-integer-width-macros-from-TS-18.patch"
+		#sed -i 's/test -z "$ITSTOOL"/test -z "notz"/' configure.ac
+		#autoreconf
 		./configure 			\
 			--disable-static	\
-			--prefix="$PKGPREFIX"
+			--prefix="$PKGPREFIX"	\
+			--disable-docs
 	;;
 	icu*)
 		cd "./source"
@@ -43,6 +45,13 @@ case "$PKGARCHIVE" in
 		cmake -G 'Unix Makefiles' 		\
 			-DCPACK_SET_DESTDIR="$PKGROOT"	\
 			-DCMAKE_INSTALL_PREFIX="$PKGPREFIX"
+	;;
+	intltool*)
+		# wow this is annoying
+		patch -s -p1 < "$_PKG_DIR/perl-5.22-compatibility.patch"
+		./configure 			\
+			--disable-static	\
+			--prefix="$PKGPREFIX"
 	;;
 	*)
 		./configure 			\

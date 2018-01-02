@@ -26,7 +26,8 @@ case "$PKGARCHIVE" in
 	;;
 	librsvg*)
 		./configure 			\
-			--prefix="$PKGPREFIX"
+			--prefix="$PKGPREFIX"	\
+			--disable-introspection
 	;;
 	gimp*)
 		./configure 			\

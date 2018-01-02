@@ -19,7 +19,13 @@ case "$PKGARCHIVE" in
 				--prefix="$PKGPREFIX"		\
 
 	;;
+	libxslt*)
+		./autogen.sh
+		./configure 			\
+			--prefix="$PKGPREFIX"
+	;;
 	glib*)
+		./autogen.sh
 		./configure 			\
 			--prefix="$PKGPREFIX"	\
 			--disable-static	\
@@ -29,7 +35,7 @@ case "$PKGARCHIVE" in
 			--disable-fam		\
 			--disable-selinux	\
 			--disable-mem-pools	\
-			--with-pcre=internal
+			--with-pcre=system
 			# mem pools could improve performance, benchmark it.
 	;;
 	readline*)
@@ -57,6 +63,11 @@ case "$PKGARCHIVE" in
 		patch -p1 < "$_PKG_DIR/json-c-0.12.1.gcc7-case-fallthru.patch"
 		./configure 			\
 			--prefix="$PKGPREFIX"
+	;;
+	pcre-*)
+		./configure 				\
+			--prefix="$PKGPREFIX"		\
+			--enable-unicode-properties
 	;;
 	*)
 		./configure 			\

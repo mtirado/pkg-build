@@ -1,4 +1,4 @@
-1 util-macros              util-macros-1.19.0.tar.gz
+1 util-macros              util-macros-1.19.1.tar.gz
 2 xproto                   proto/xproto-7.0.31.tar.gz
 2 glproto                  proto/glproto-1.4.17.tar.gz
 2 xcb-proto                proto/xcb-proto-1.12.tar.gz
@@ -24,32 +24,32 @@
 4 libfontenc               lib/libfontenc-1.1.3.tar.gz
 4 libice                   lib/libICE-1.0.9.tar.gz
 5 xcb-util                 lib/xcb-util-0.4.0.tar.gz
-5 libx11                   lib/libX11-1.6.4.tar.gz
+5 libx11                   lib/libX11-1.6.5.tar.gz
 5 libsm                    lib/libSM-1.2.2.tar.gz
 6 xcb-util-wm              lib/xcb-util-wm-0.4.1.tar.gz
 6 xcb-util-image           lib/xcb-util-image-0.4.0.tar.gz
 6 xcb-util-keysyms         lib/xcb-util-keysyms-0.4.0.tar.gz
-6 libxfixes                lib/libXfixes-5.0.tar.gz
+6 libxfixes                lib/libXfixes-5.0.3.tar.gz
 0 libepoxy                 lib/libepoxy-1.3.1.tar.gz
-6 libxfont                 lib/libXfont-1.5.1.tar.gz
-6 libxfont2                lib/libXfont2-2.0.1.tar.gz
+6 libxfont                 lib/libXfont-1.5.4.tar.gz
+6 libxfont2                lib/libXfont2-2.0.3.tar.gz
 6 libxext                  lib/libXext-1.3.3.tar.gz
 6 libxkbfile               lib/libxkbfile-1.0.9.tar.gz
 6 libxt                    lib/libXt-1.1.5.tar.gz
-6 libxpm                   lib/libXpm-3.5.11.tar.gz
+6 libxpm                   lib/libXpm-3.5.12.tar.gz
+6 libxrender               lib/libXrender-0.9.10.tar.gz
+7 libxcursor               lib/libXcursor-1.1.15.tar.gz
 7 libxmu                   lib/libXmu-1.1.2.tar.gz
-7 libxi                    lib/libXi-1.7.6.tar.gz
+7 libxi                    lib/libXi-1.7.9.tar.gz
 0 libdmx                   lib/libdmx-1.1.3.tar.gz
 7 libxdamage               lib/libXdamage-1.1.4.tar.gz
-7 libxrender               lib/libXrender-0.9.9.tar.gz
 7 libxcomposite            lib/libXcomposite-0.4.4.tar.gz
-7 libxcursor               lib/libXcursor-1.1.14.tar.gz
 7 libxf86vm                lib/libXxf86vm-1.1.4.tar.gz
-8 libxrandr                lib/libXrandr-1.5.0.tar.gz
+8 libxrandr                lib/libXrandr-1.5.1.tar.gz
 8 libxft                   lib/libXft-2.3.2.tar.gz
 8 libxaw                   lib/libXaw-1.0.13.tar.gz
 8 libxaw3d                 lib/libXaw3d-1.6.2.tar.gz
-8 xorg-server              xorg-server-1.18.4.tar.gz
+8 xorg-server              xorg-server-1.19.6.tar.gz
 8 xbitmaps                 xbitmaps-1.1.1.tar.gz
 8 font-util                font/font-util-1.3.1.tar.gz
 8 mkfontdir                font/mkfontdir-1.0.7.tar.gz
@@ -71,7 +71,8 @@
 0 xf86-video-vga           driver/xf86-video-vga-4.1.0.tar.gz
 0 xf86-video-vesa          driver/xf86-video-vesa-2.3.4.tar.gz
 0 xf86-video-fbdev         driver/xf86-video-fbdev-0.4.4.tar.gz
-9 xf86-video-modesetting   driver/xf86-video-modesetting-0.9.0.tar.gz
+0 i think this is built-in nowadays
+0 xf86-video-modesetting   driver/xf86-video-modesetting-0.9.0.tar.gz
 9 xf86-video-dummy         driver/xf86-video-dummy-0.3.7.tar.gz
 9 xclock                   apps/xclock-1.0.7.tar.gz
 9 xset                     apps/xset-1.2.3.tar.gz
@@ -84,7 +85,7 @@
 9 xwud                     apps/xwud-1.0.4.tar.gz
 9 xinit                    xinit-1.3.4.tar.gz
 9 fluxbox                  fluxbox-1.3.7.tar.xz
-A xkeyboard-config         xkeyboard-config-2.5.tar.gz
+A xkeyboard-config         xkeyboard-config-2.4.1.tar.gz
 0 -------------------------------------------------------------
 0 this is required by chromium, which i also can't get to build
 0 record-proto             proto/recordproto-1.14.2.tar.gz

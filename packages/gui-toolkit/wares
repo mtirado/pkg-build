@@ -1,28 +1,29 @@
-1 gdk-pixbuf      gdk-pixbuf-2.36.6.tar.xz
-1 cairo           cairo-1.14.6.tar.xz
-1 atk             atk-2.20.0.tar.xz
-1 json-glib       json-glib-1.2.2.tar.xz
-2 libcroco        libcroco-0.6.11.tar.xz
-2 pango           pango-1.40.6.tar.xz
-3 mesa            mesa-17.0.1.tar.xz
-3 motif           motif-2.3.6.tar.gz
-4 glew            glew-2.0.0.tar.gz
-4 glu             glu-9.0.0.tar.gz
+1 mime-info       shared-mime-info-1.9.tar.xz
+2 gdk-pixbuf      gdk-pixbuf-2.36.11.tar.xz
+2 cairo           cairo-1.14.6.tar.xz
+2 atk             atk-2.20.0.tar.xz
+2 json-glib       json-glib-1.2.2.tar.xz
+3 libcroco        libcroco-0.6.11.tar.xz
+3 pango           pango-1.40.6.tar.xz
+4 gtk2            gtk+-2.24.31.tar.xz
+4 mesa            mesa-17.0.1.tar.xz
+4 motif           motif-2.3.6.tar.gz
+5 glew            glew-2.0.0.tar.gz
+5 glu             glu-9.0.0.tar.gz
 0 glut            glut-3.7.tar.gz
-5 sdl2            SDL2-2.0.5.tar.gz
-5 fox             fox-1.6.54.tar.gz
-5 imlib           imlib2-1.4.10.tar.gz
-5 mesa-demos      mesa-demos-8.3.0.tar.gz
-6 qt5             qt-everywhere-opensource-src-5.9.0.tar.xz
-7 qt5svg          qt-everywhere-opensource-src-5.9.0.tar.xz
-7 qt5declarative  qt-everywhere-opensource-src-5.9.0.tar.xz
+6 sdl2            SDL2-2.0.5.tar.gz
+6 fox             fox-1.6.54.tar.gz
+6 imlib           imlib2-1.4.10.tar.gz
+6 mesa-demos      mesa-demos-8.3.0.tar.gz
+7 qt5             qt-everywhere-opensource-src-5.9.0.tar.xz
+8 qt5svg          qt-everywhere-opensource-src-5.9.0.tar.xz
+8 qt5declarative  qt-everywhere-opensource-src-5.9.0.tar.xz
 0 qt5multimedia   qt-everywhere-opensource-src-5.9.0.tar.xz
 0 qt5webchannel   qt-everywhere-opensource-src-5.9.0.tar.xz
 0 -- busted template code....
 0 qt5webengine    qt-everywhere-opensource-src-5.9.0.tar.xz
 0 0-- gtkspell
 0 gtk-doc         gtk-doc-1.25.tar.xz
-3 gtk2            gtk+-2.24.31.tar.xz
 0 --- this stuff is a mess, i wouldn't even bother... ---
 0 1 gobj-int      gobject-introspection-1.53.2.tar.gz lol
 0 2 gtk-atk       atk-2.24.0.tar.xz

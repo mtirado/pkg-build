@@ -4,7 +4,6 @@ source "$PKGINCLUDE"
 
 case "$PKGARCHIVE" in
 	libX11*)
-		PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGPREFIX/share/pkgconfig"	\
 		./configure							\
 		--prefix="$PKGPREFIX"						\
 		--disable-static						\
@@ -27,7 +26,6 @@ case "$PKGARCHIVE" in
 
 	;;
 	libSM*|libICE*|libXfont*)
-		PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGPREFIX/share/pkgconfig"	\
 		./configure							\
 			--prefix="$PKGPREFIX"					\
 			--disable-static
@@ -53,7 +51,6 @@ case "$PKGARCHIVE" in
 			--disable-static
 	;;
 	xorg-server*)
-		PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PKGPREFIX/share/pkgconfig"	\
 		./configure 			\
 		--prefix="$PKGPREFIX"		\
 		--disable-visibility		\
@@ -155,6 +152,7 @@ case "$PKGARCHIVE" in
 		--without-glib
 	;;
 	xkeyboard-config*)
+		./autogen.sh
 		./configure 		\
 		--disable-static	\
 		--prefix="$PKGPREFIX"	\

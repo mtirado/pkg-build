@@ -12,8 +12,9 @@ linux-*)
 	case "$PKGDISTNAME" in
 	linux-headers)
 		make mrproper
-		make headers_install ARCH="$KARCH" INSTALL_HDR_PATH="$PKGROOT"
-		make_tar_flatten_subdirs "$PKGROOT"
+		make headers_install ARCH="$KARCH" INSTALL_HDR_PATH="$PKGROOT/usr"
+		#make_tar_flatten_subdirs "$PKGROOT"
+		make_tar "$PKGROOT"
 		exit 0
 	;;
 	linux)

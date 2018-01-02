@@ -5,7 +5,7 @@ source "$PKGINCLUDE"
 # XXX gcc install has some sort of race condition? but seriously i don't know what
 # causes the failure and strace doesn't offer much helpful info either.
 # to fix it you have to enter pod and DESTDIR=$PKGROOT make install,
-# then cd $PKGROOT/usr && tar -cf ../usr.tar ./* && ../ && rm -rf usr && touch /podhome/pkgbuild-core-dev/gcc-*/.pkg-built-gcc
+# then cd $PKGROOT/usr && tar -cf ../usr.tar ./* && cd .. && rm -rf usr && touch /podhome/pkgbuild-core-dev/gcc-*/.pkg-built-gcc
 # until i figure out what the f is causing ferror on stdout (in make source)
 case "$PKGARCHIVE" in
 	perl*)
@@ -30,7 +30,7 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"					\
 			--with-system-libdir="/lib:$PKGPREFIX/lib"		\
 			--with-system-includedir="$PKGPREFIX/include"		\
-			--with-pkg-config-dir="$PKGPREFIX/lib/pkgconfig"
+			--with-pkg-config-dir="$PKGPREFIX/lib/pkgconfig:$PKGPREFIX/share/pkgconfig"
 	;;
 	nasm*)
 		./configure				\
@@ -49,6 +49,7 @@ case "$PKGARCHIVE" in
 				--prefix="$PKGPREFIX"		\
 				--disable-multilib		\
 				--disable-bootstrap		\
+				--disable-lto			\
 				--with-system-zlib		\
 				--enable-default-pie		\
 				--enable-default-ssp		\
@@ -64,12 +65,10 @@ case "$PKGARCHIVE" in
 		##############################################################
 		# adjust gcc specs
 		# e.g: https://wiki.gentoo.org/wiki/Hardened/Toolchain
-		# commented because my toolchain handles this
-		# before the real userland build starts
 		##############################################################
 		# enable relro linker flag by default
-		#gcc -dumpspecs | sed 's#%{pie:-pie}#%{pie:-pie} %{!norelro: -z relro} %{relro: }#' > \
-		#	`dirname $(gcc --print-libgcc-file-name)`/specs
+		gcc -dumpspecs | sed 's#%{pie:-pie}#%{pie:-pie} %{!norelro: -z relro} %{relro: }#' > \
+			`dirname $(gcc --print-libgcc-file-name)`/specs
 
 		;;
 		*)

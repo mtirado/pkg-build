@@ -1,10 +1,10 @@
-1 coreutils  coreutils-8.27.tar.xz
+1 coreutils  coreutils-8.28.tar.xz
 1 zlib       zlib-1.2.11.tar.gz
 1 xz         xz-5.2.3.tar.xz
-2 util-linux util-linux-2.29.2.tar.xz
+2 util-linux util-linux-2.31.tar.xz
 2 kmod       kmod-24.tar.xz
-2 pciutils   pciutils-3.5.4.tar.xz
-0 2usbutils   usbutils-008.tar.xz
+2 pciutils   pciutils-3.5.6.tar.xz
+0 2 usbutils   usbutils-009.tar.xz
 2 lsscsi     lsscsi-0.28.tar.gz
 2 less       less-487.tar.gz
 2 htop       htop-2.0.2.tar.gz
@@ -15,12 +15,13 @@
 2 file       file-5.30.tar.gz
 2 findutils  findutils-4.6.0.tar.gz
 2 diffutils  diffutils-3.6.tar.xz
-2 e2fsprogs  e2fsprogs-1.43.tar.gz
+2 e2fsprogs  e2fsprogs-1.43.7.tar.gz
 2 sed        sed-4.4.tar.xz
-2 grep       grep-3.0.tar.xz
+2 grep       grep-3.1.tar.xz
 2 gzip       gzip-1.8.tar.xz
 2 bzip       bzip2-1.0.6.tar.gz
-2 tar        tar-1.29.tar.xz
+2 tar        tar-1.30.tar.xz
+3 which      which-2.21.tar.gz
 3 lilo       lilo-24.2.tar.gz
 2 lvm2       LVM2.2.02.167.tar.gz
 3 parted     parted-3.2.tar.xz

@@ -30,12 +30,15 @@ case "$PKGARCHIVE" in
 		# XXX test fails regarding a "not a terminal" type error, which
 		# /could/ be jettison bug regarding glibc not having fall back
 		# to fd 0,1,2 stdio fd's if can't open /proc/self/0,1,2 symlinks
+		# this \might\ be related to the strange stdio breakage that can be
+		# observed under heavy build conditions (firefox, gcc, glibc, etc)
 		#DOTEST="test"
 
 		#parallel breakage
 		JOBS=1
 	;;
 	bash*)
+		export PKGPREFIX="/"
 		./configure 			\
 			--prefix="$PKGROOT"	\
 			--disable-rpath		\
