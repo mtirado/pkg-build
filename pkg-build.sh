@@ -104,8 +104,8 @@ echo " prepared."
 # main subdirectory will not work with this script and should be recreated. =(
 while read LINE ;do
 	cd "$PKGBUILDDIR"
-	export PKGDISTNAME="$(echo $LINE | cut -d " " -f 2)"
-	export PKGROOT="$PKGDISTDIR/$PKGDISTNAME"
+	export PKG="$(echo $LINE | cut -d " " -f 2)"
+	export PKGROOT="$PKGDISTDIR/$PKG"
 	PKGARCHIVE="$(echo $LINE | cut -d " " -f 3)"
 	PKGARCHIVE="${PKGARCHIVE%.tar.*}"
 	PKGARCHIVE="$(basename "$PKGARCHIVE")"
@@ -120,7 +120,7 @@ while read LINE ;do
 		exit -1
 	fi
 
-	if [ -e "$PKGARCHIVE/.pkg-built-$PKGDISTNAME" ]; then
+	if [ -e "$PKGARCHIVE/.pkg-built-$PKG" ]; then
 		continue
 	fi
 
@@ -135,7 +135,7 @@ while read LINE ;do
 		exit -1
 	}
 
-	touch ".pkg-built-$PKGDISTNAME"
+	touch ".pkg-built-$PKG"
 
 done < "$PKGBUILDDIR/wares"
 

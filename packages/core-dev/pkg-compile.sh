@@ -42,7 +42,7 @@ case "$PKGARCHIVE" in
 		#GCC_VERSION=${GCC_VERSION%.tar*}
 		# TODO support subpackages for extra languages, gnat, objc, etc
 		# and gcc-specs option in later pass after gcc has been installed
-		case "$PKGDISTNAME" in
+		case "$PKG" in
 		gcc)
 		if [ "$PKGNOCONF" == "" ]; then
 			./configure				\

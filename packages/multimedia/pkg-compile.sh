@@ -36,9 +36,9 @@ MPlayer*)
 ;;
 xmmplayer*|hwswskin*)
 	#mplayer skins
-	echo "PKGDISTNAME=$PKGDISTNAME"
-	mkdir -pv "$PKGROOT/share/mplayer/skins/$PKGDISTNAME/"
-	cp -av ./* "$PKGROOT/share/mplayer/skins/$PKGDISTNAME/"
+	echo "PKG=$PKG"
+	mkdir -pv "$PKGROOT/share/mplayer/skins/$PKG/"
+	cp -av ./* "$PKGROOT/share/mplayer/skins/$PKG/"
 	case "$PKGARCHIVE" in
 		# use hwswskin as default
 		hwswskin*)

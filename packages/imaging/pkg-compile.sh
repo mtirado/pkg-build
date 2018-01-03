@@ -30,11 +30,17 @@ case "$PKGARCHIVE" in
 			--disable-introspection
 	;;
 	gimp*)
+		echo "SED1"
+		sed -i "/add_deps_error(\[glib-networking/d" configure.ac
+		echo "SED2"
+		sed -i "s/\[Test for glib-networking failed.*\])/warning_glib_networking=\" we do not have glib-networking\"/" configure.ac
+		autoreconf
 		./configure 			\
 			--prefix="$PKGPREFIX"	\
 			--disable-glibtest	\
 			--disable-gtktest	\
-			--disable-python
+			--disable-python	\
+			--without-webkit
 	;;
 	gegl*)
 		./configure 			\

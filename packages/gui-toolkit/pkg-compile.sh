@@ -88,7 +88,7 @@ case "$PKGARCHIVE" in
 	qt-everywhere*)
 		export COMMERCIAL_USER="no"
 		export QTROOT="$PWD"
-		case "$PKGDISTNAME" in
+		case "$PKG" in
 		qt5)
 			export QMAKE="$QTROOT/qtbase/bin/qmake"
 			cd qtbase

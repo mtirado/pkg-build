@@ -9,7 +9,7 @@ KPATCH="$_PKG_DIR/linux-x86-drm-fix.patch"
 
 case "$PKGARCHIVE" in
 linux-*)
-	case "$PKGDISTNAME" in
+	case "$PKG" in
 	linux-headers)
 		make mrproper
 		make headers_install ARCH="$KARCH" INSTALL_HDR_PATH="$PKGROOT/usr"
