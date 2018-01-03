@@ -19,13 +19,6 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
-	qemu*)
-		./configure 						\
-			--prefix="$PKGPREFIX"				\
-			--disable-vnc					\
-			--disable-bluez					\
-			--target-list="i386-softmmu, i386-linux-user, arm-softmmu, arm-linux-user, mips-softmmu, mips-linux-user, x86_64-softmmu, x86_64-linux-user"
-	;;
 	*)
 		./configure 			\
 			--prefix="$PKGPREFIX"
