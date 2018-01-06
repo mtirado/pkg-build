@@ -5,15 +5,13 @@ source "$PKGINCLUDE"
 KARCH="i386"
 ARCHDIR="x86"
 KCONFIG="$_PKG_DIR/linux-x86-config"
-KPATCH="$_PKG_DIR/linux-x86-drm-fix.patch"
-
+KPATCH="$_PKG_DIR/drm_file_offset.patch $_PKG_DIR/nouveau_prime_mmap.patch"
 case "$PKGARCHIVE" in
 linux-*)
 	case "$PKG" in
 	linux-headers)
 		make mrproper
-		make headers_install ARCH="$KARCH" INSTALL_HDR_PATH="$PKGROOT/usr"
-		#make_tar_flatten_subdirs "$PKGROOT"
+		make headers_install ARCH="$KARCH" INSTALL_HDR_PATH="$PKGROOT"
 		make_tar "$PKGROOT"
 		exit 0
 	;;
@@ -23,13 +21,18 @@ linux-*)
 		make mrproper
 
 		#TODO patch list
-		patch -p1 < "$KPATCH"
-		# C#3
+		for PATCHFILE in $KPATCH; do
+			echo "PATCHFILE: $PATCHFILE"
+			patch -p1 < "$PATCHFILE"
+		done
+
+		# beep at C#3
 		sed -i 's/DEFAULT_BELL_PITCH.*750/DEFAULT_BELL_PITCH 277/' \
 			drivers/tty/vt/vt.c
 
 		cp -v "$KCONFIG" ./.config
-		# notice new config options
+
+		# notice new config options with oldconfig
 		make oldconfig
 	fi
 
