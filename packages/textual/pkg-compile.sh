@@ -39,14 +39,22 @@ case "$PKGARCHIVE" in
 	;;
 	bash*)
 		export PKGPREFIX="/"
-		./configure 			\
-			--prefix="$PKGROOT"	\
-			--disable-rpath		\
-			--without-bash-malloc	\
-			--disable-net-redirection
+		bash_cv_termcap_lib=gnutermcap		\
+		./configure 				\
+			--prefix="$PKGROOT"		\
+			--disable-rpath			\
+			--without-curses		\
+			--without-bash-malloc		\
+			--without-libintl-prefix	\
+			--without-libiconv-prefix	\
+			--without-afs			\
+			--disable-nls			\
+			--disable-multibyte		\
+			--disable-net-redirection	\
+			--enable-glob-asciiranges-default
+		#--enable-static-link		\
 		#--enable-mem-scramble
 		#--disable-largefile
-		#--enable-static-link
 
 	;;
 	hunspell-*)
