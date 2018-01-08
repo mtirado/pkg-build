@@ -75,7 +75,8 @@ esac
 make "-j$JOBS"
 DESTDIR="$PKGROOT" make install
 
-# prune mupdf, instead of static linked blimp by default (over 100MB .xz)
+# prune mupdf, static linked blimp (over 100MB .xz)
+# by far the largest package in the dist if we don't do this...
 case "$PKGARCHIVE" in
 	mupdf*)
 		rm -r "$PKGROOT/$PKGPREFIX/include"
@@ -83,6 +84,9 @@ case "$PKGARCHIVE" in
 		rm    "$PKGROOT/$PKGPREFIX/bin/muraster"
 		rm    "$PKGROOT/$PKGPREFIX/bin/mujstest"
 		rm    "$PKGROOT/$PKGPREFIX/bin/mupdf-x11-curl"
+		rm    "$PKGROOT/$PKGPREFIX/bin/mupdf-gl"
+		rm    "$PKGROOT/$PKGPREFIX/bin/mutool"
+		rm    "$PKGROOT/$PKGPREFIX/bin/mjsgen"
 	;;
 esac
 make_tar_flatten_subdirs "$PKGROOT"
