@@ -65,8 +65,8 @@
 9 font-bitstream-75dpi     font/font-bitstream-75dpi-1.0.3.tar.gz
 0 font-ibm-type1           font/font-ibm-type1-1.0.3.tar.gz
 0 font-xfree86-type1       font/font-xfree86-type1-1.0.4.tar.gz
-9 xf86-input-keyboard      driver/xf86-input-keyboard-1.8.1.tar.gz
-9 xf86-input-mouse         driver/xf86-input-mouse-1.9.1.tar.gz
+0 gcc7 no like xf86-input-keyboard      driver/xf86-input-keyboard-1.8.1.tar.gz
+0 xf86-input-mouse         driver/xf86-input-mouse-1.9.1.tar.gz
 9 xf86-input-void          driver/xf86-input-void-1.4.1.tar.gz
 0 xf86-video-vga           driver/xf86-video-vga-4.1.0.tar.gz
 0 xf86-video-vesa          driver/xf86-video-vesa-2.3.4.tar.gz

@@ -153,9 +153,9 @@ case "$PKGARCHIVE" in
 	;;
 	xkeyboard-config*)
 		./autogen.sh
-		./configure 		\
-		--disable-static	\
-		--prefix="$PKGPREFIX"	\
+		./configure 			\
+			--disable-static	\
+			--prefix="$PKGPREFIX"
 	;;
 	xf86-video-dummy*)
 		./configure 		\
