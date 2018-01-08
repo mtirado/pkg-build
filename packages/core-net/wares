@@ -10,6 +10,7 @@
 2 tcpdump      tcpdump-4.9.2.tar.gz
 3 wget         wget-1.19.2.tar.gz
 3 curl         curl-7.57.0.tar.gz
+4 netcat       netcat-0.7.1.tar.gz
 1 libnfnetlink libnfnetlink-1.0.1.tar.bz2
 2 libnf-acct   libnetfilter_acct-1.0.3.tar.bz2
 2 libnf-ct     libnetfilter_conntrack-1.0.6.tar.bz2
