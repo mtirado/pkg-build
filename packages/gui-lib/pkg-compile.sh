@@ -3,19 +3,28 @@ set -e
 source "$PKGINCLUDE"
 case "$PKGARCHIVE" in
 	pixman*)
-		./configure 			\
-		--prefix="$PKGPREFIX"		\
-		--disable-static		\
-		--disable-openmp		\
-		--disable-longsoon-mmi		\
-		--disable-arm-simd		\
-		--disable-arm-neon		\
-		--disable-arm-iwmmxt		\
-		--disable-arm-iwmmxt2		\
-		--disable-mips-dspr2		\
-		--disable-gtk			\
-		--disable-libpng		\
-		--disable-timers
+		./configure 				\
+			--prefix="$PKGPREFIX"		\
+			--disable-gtk			\
+			--disable-libpng		\
+			--disable-timers		\
+			--enable-sse2			\
+			--enable-sse3			\
+			--enable-mmx
+
+
+			#--disable-openmp		\
+			#--disable-longsoon-mmi		\
+			#--disable-mmx			\
+			#--disable-sse2			\
+			#--disable-sse3			\
+			#--disable-vmx			\
+			#--disable-arm-simd		\
+			#--disable-arm-neon		\
+			#--disable-arm-iwmmxt		\
+			#--disable-arm-iwmmxt2		\
+			#--disable-mips-dspr2		\
+			#--disable-gcc-inline-asm
 	;;
 	libdrm*)
 		./configure 		\

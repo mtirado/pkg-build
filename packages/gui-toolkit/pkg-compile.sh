@@ -16,7 +16,6 @@ case "$PKGARCHIVE" in
 	gtk+-2*)
 		./configure 			\
 			--prefix="$PKGPREFIX"	\
-			--disable-static	\
 			--disable-shm		\
 			--disable-xinerama	\
 			--disable-visibility	\
@@ -39,7 +38,6 @@ case "$PKGARCHIVE" in
 		#./autogen.sh 			\
 		#./configure 			\
 			--prefix="$PKGPREFIX"	\
-			--disable-static	\
 			--disable-shm		\
 			--disable-xinerama	\
 			--disable-visibility	\

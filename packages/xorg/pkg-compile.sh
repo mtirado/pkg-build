@@ -86,6 +86,7 @@ case "$PKGARCHIVE" in
 		--disable-tcp-transport		\
 		--disable-ipv6			\
 		--disable-listen-local		\
+		--disable-listen-tcp		\
 		--disable-local-transport	\
 		--disable-secure-rpc		\
 		--disable-xselinux		\
@@ -133,6 +134,7 @@ case "$PKGARCHIVE" in
 		#--disable-xfbdev		\
 		#--disable-xf86vidmode		\
 		#--disable-xfree86-utils	\
+
 	;;
 	xkbcomp*)
 		./configure 		\

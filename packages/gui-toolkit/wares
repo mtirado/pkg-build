@@ -1,4 +1,4 @@
-1 mime-info       shared-mime-info-1.9.tar.xz
+1 mime-info       shared-mime-info-1.7.tar.xz
 2 gdk-pixbuf      gdk-pixbuf-2.36.11.tar.xz
 2 cairo           cairo-1.14.6.tar.xz
 2 atk             atk-2.20.0.tar.xz
@@ -15,9 +15,9 @@
 6 fox             fox-1.6.54.tar.gz
 6 imlib           imlib2-1.4.10.tar.gz
 6 mesa-demos      mesa-demos-8.3.0.tar.gz
-7 qt5             qt-everywhere-opensource-src-5.9.0.tar.xz
-8 qt5svg          qt-everywhere-opensource-src-5.9.0.tar.xz
-8 qt5declarative  qt-everywhere-opensource-src-5.9.0.tar.xz
+0 7 qt5             qt-everywhere-opensource-src-5.9.0.tar.xz
+0 8 qt5svg          qt-everywhere-opensource-src-5.9.0.tar.xz
+0 8 qt5declarative  qt-everywhere-opensource-src-5.9.0.tar.xz
 0 qt5multimedia   qt-everywhere-opensource-src-5.9.0.tar.xz
 0 qt5webchannel   qt-everywhere-opensource-src-5.9.0.tar.xz
 0 -- busted template code....
