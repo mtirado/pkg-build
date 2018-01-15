@@ -96,7 +96,8 @@ IFS="
 			echo ""
 		fi
 
-		FILES=$(cat "$GROUPDIR/$PKG")
+		# FIXME added -v, we also need to check for unexpected  . files and ~ files...
+		FILES=$(cat -v "$GROUPDIR/$PKG")
 		# TODO add version number entry
 		PKGNAME="$PKG-$(date +%G).tar"
 		if [ -e "$FLOCKDIR/$PKGNAME.xz" ]; then
