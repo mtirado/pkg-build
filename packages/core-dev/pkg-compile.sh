@@ -47,16 +47,20 @@ case "$PKGARCHIVE" in
 		if [ "$PKGNOCONF" == "" ]; then
 			./configure				\
 				--prefix="$PKGPREFIX"		\
+				--enable-bootstrap		\
 				--disable-multilib		\
-				--disable-bootstrap		\
-				--disable-lto			\
 				--with-system-zlib		\
 				--enable-default-pie		\
 				--enable-default-ssp		\
 				--enable-secure-plt		\
 				--enable-targets=all		\
-				--enable-languages=c,c++
+				--enable-languages=c,c++	\
+				--enable-threads=posix		\
+				--enable-__cxa_atexit		\
+				--with-default-libstdcxx-abi=gcc4-compatible
 			# --enable-default-pie doesnt work on 5.4, use specs
+			# __cxa_atexit is for standard compliant c++ global destructors
+			#--disable-lto			\
 		fi
 		;;
 		gcc-specs*)
@@ -115,6 +119,15 @@ case "$PKGARCHIVE" in
 pkgconf*)
 	# OpenBSD pkgconf, needs symlink
 	ln -sv pkgconf "$PKGROOT/$PKGPREFIX/bin/pkg-config"
+;;
+gcc*)
+	case "$PKG" in
+		gcc)
+			# cc -> gcc symlink
+			ln -sv gcc "$PKGROOT/$PKGPREFIX/bin/cc"
+		;;
+	esac
+
 ;;
 esac
 make_tar_flatten_subdirs "$PKGROOT"
