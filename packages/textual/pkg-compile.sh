@@ -95,6 +95,7 @@ case "$PKGARCHIVE" in
 		make_tar_flatten_subdirs "$PKGROOT"
 	;;
 	bash*)
+		ln -s "/bin/bash $PKGROOT/bin/sh"
 		make_tar "$PKGROOT"
 	;;
 	*)
