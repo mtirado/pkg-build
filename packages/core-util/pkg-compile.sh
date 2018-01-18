@@ -165,7 +165,7 @@ case "$PKGARCHIVE" in
 		make_tar "$PKGROOT"
 		exit 0
 	;;
-	coreutils-*|lsscsi-*|findutils-*|diffutils-*|gzip-*|tar-*|grep-*|sed-*|file-*)
+	coreutils-*|lsscsi-*|diffutils-*|gzip-*|tar-*|grep-*|sed-*|findutils-*)
 		PKGPREFIX="/"
 		./configure 			\
 			--prefix="$PKGPREFIX"
