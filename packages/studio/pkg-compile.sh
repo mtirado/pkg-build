@@ -31,11 +31,16 @@ case "$PKGARCHIVE" in
 			--prefix="$PKGPREFIX"
 	;;
 	ardour*)
-		sed -i "s#rev = fetch_git_revision.*#rev = '6.0-pre0'#" ./wscript
+		echo "#include \"ardour/revision.h\"" \
+						> libs/ardour/revision.cc
+		echo "namespace ARDOUR { const char* revision = \"5.12\"; }" \
+						>> libs/ardour/revision.cc
+		#sed -i "s#-msse#-mssse3#" ./wscript
 		./waf configure 		\
 			--prefix="$PKGPREFIX"	\
 			--no-phone-home		\
 			--libjack=weak		\
+			--optimize		\
 			--with-backends=alsa,jack,dummy
 			# broken gcc7?
 			#--no-nls
