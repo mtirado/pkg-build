@@ -6,8 +6,7 @@
 set -e
 
 # use '\n' for field separation
-IFS="
-"
+IFS=$'\n'
 
 PKGGROUP="ungrouped"
 #-----------------------------------------------------------------------------

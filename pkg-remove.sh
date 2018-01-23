@@ -43,7 +43,7 @@ do_pkgremove() {
 		;;
 	esac
 
-	FILES=$(cat "$PKGFILE")
+	IFS=$'\n' FILES=$(cat -v "$PKGFILE")
 	for FILE in $FILES; do
 		FILEPATH="$PKGINSTALL/$FILE"
 		if [ -e "$FILEPATH" ] || [ -L "$FILEPATH" ]; then

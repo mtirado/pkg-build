@@ -82,9 +82,8 @@ do_group_migrate() {
 
 	for PKG in $(find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n'); do
 
-# allow spaces and tabs in filenames
-IFS="
-"
+		# allow spaces and tabs in filenames
+		IFS=$'\n'
 		if [ "$SINGLEPKG" ]; then
 			if [ "$PKG" != "$SINGLEPKG" ]; then
 				continue
@@ -133,9 +132,9 @@ IFS="
 			if [ ! -d "$MKPATH" ]; then
 				mkdir -p "$MKPATH"
 			fi
-# newline IFS
-FILEGLOB+="$FILE
-"
+
+			FILEGLOB+="$FILE"
+			FILEGLOB+=$'\n'
 		done
 
 		#is there another way to do this?
