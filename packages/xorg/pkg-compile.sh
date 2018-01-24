@@ -101,9 +101,14 @@ case "$PKGARCHIVE" in
 		--enable-xv			\
 		--enable-xorg			\
 		--disable-xnest			\
-		--with-xkb-output=/var/lib/xkb
-		#--enable-xv needed for xf86-video-modesetting driver
+		--with-xkb-output=/var/lib/xkb	\
+		--disable-vgahw			\
+		--disable-vbe			\
+		--disable-int10-module		\
+		--disable-pciaccess		\
+		--disable-input-thread
 
+		#--enable-xv needed for xf86-video-modesetting driver
 		# TODO don't think weneed these, testing things...
 		#--disable-mitshm		\
 		#--disable-static		\
